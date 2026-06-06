@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/* detail */
+
+	
+/*  zoznam vsetkych */	
+
+h1.article_h1 {
+    position: relative;
+    display: block;
+    padding: 0;
+    margin: 30px 0 10px 0;
+    color: var(--titan-darker);
+    font-size: 36px;
+    font-weight: 700;
+    text-align: left;
+}
+h2 {
+	position: relative;
+	clear: both;
+	font-size: 26px;
+}
+
+
+/*  include novinky */	
+
+.article .item {
+    border: 0 none;
+}
+.article .text {
+    text-align: justify;
+    color: var(--titan-darker);
+}
+#article-detail .preview {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    color: var(--titan-darker);
+    font-style: italic;
+    border-bottom: 1px solid #d8d8d8;
+	}

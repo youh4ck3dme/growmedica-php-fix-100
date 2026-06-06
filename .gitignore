@@ -1,0 +1,11 @@
+.env.local
+dump.sql
+*.sql
+*.sql.gz
+*.gz
+backups/
+database/
+stats/
+.DS_Store
+export/shopify/*.csv
+reports/*.csv

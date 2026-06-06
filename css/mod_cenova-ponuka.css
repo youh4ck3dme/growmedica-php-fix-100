@@ -1,0 +1,216 @@
+#mod_cenova_ponuka{
+        font-size: 13px;
+        
+}
+        #mod_cenova_ponuka .type_style{
+            background-color: #F7F7F7;
+            padding: 0px 10px 3px 10px;
+            border: thin solid #CCC;
+            margin-top: 5px;
+        }
+                
+        #mod_cenova_ponuka input[type="text"]{
+            height:20px;
+        }
+        #mod_cenova_ponuka .name{
+            width:150px;
+            
+        }
+
+        #mod_cenova_ponuka textarea{
+            width:400px;
+        }       
+
+        #mod_cenova_ponuka input{
+            width:300px;   
+            height: 25px;
+            margin: 0 0 5px 0;
+        }
+        
+        #mod_cenova_ponuka input[type="radio"]{
+            width: auto;
+            height: auto;
+            margin: 0 5px 0 0;
+        }
+        
+        #mod_cenova_ponuka input[type="submit"]{
+            width: auto;
+            height: auto;
+            margin: 10px 0 0 150px;
+        }
+        #mod_cenova_ponuka input[type="submit"]:hover{
+            border:2px solid #CBDC2C;
+        }
+        #mod_cenova_ponuka input[type="submit"]:focus{
+            color:#666;
+        }
+        
+        #mod_cenova_ponuka .paragraph0{
+            font-weight: bold;
+            margin: 5px 0 3px 0 ;
+            font-size: 15px;
+            color:#12827C;
+        }
+        
+        #mod_cenova_ponuka .paragraph1{
+            font-weight: bold;
+            float:left;
+            margin-top:10px; 
+        }
+        
+        #mod_cenova_ponuka .paragraph1_with_margin_bottom{
+            font-weight: bold;
+            float:left;
+            margin-bottom: 10px;
+            width: 101px;
+        }
+        
+        #mod_cenova_ponuka .paragraph2{
+            margin: 2px 0 3px 20px ;
+            font-size: 13px;
+            float: left;
+        }
+        
+        #mod_cenova_ponuka .paragraph3{
+            margin: 2px 0 0 10px;
+            float: left;
+        }
+        
+        #mod_cenova_ponuka .paragraph3_bez_float{
+            margin: 2px 0 0 40px;
+        }
+        
+        #mod_cenova_ponuka .paragraph4{
+            margin: 0 0 0 60px;
+        }
+        
+        #mod_cenova_ponuka .radio_left_float label{
+            margin: 0 20px 0 0; 
+        }
+        
+        #mod_cenova_ponuka #zabradlia_popis{
+            width:170px;
+            height: 146px;
+            float: left;
+            background-image: url(../images/cenova_ponuka/zabradlia_popis.png);
+            background-repeat: no-repeat;
+            margin: -8px 0 0 10px;
+            background-size: auto 146px;
+        }
+        
+        #mod_cenova_ponuka #zabradlia_popis2{
+            width:180px;
+            height: 190px;
+            float: left;
+            background-image: url(../images/cenova_ponuka/zabradlia_popis2.png);
+            background-repeat: no-repeat;
+            margin: -5px 0 0 10px;
+            background-size: auto 190px;            
+        }
+        
+        .odsadenie{
+            margin: 0 0 0 40px;
+        }
+        
+        .udaje{
+            margin:5px 0 0 150px;
+            font-size:13px
+        }
+        
+        .showimage_div{
+            width: 550px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            margin-top: -150px;
+            margin-left: -250px;
+            z-index: 100000;
+            position: fixed;
+            display: none;
+            font-size: 35px;
+            text-align: center;
+            line-height: 300px;
+            background-color: #FAFAFA;
+            border: thin solid #A6A6A6;
+        }
+        
+        .showimage{
+            width: auto;
+        }
+        
+        
+        
+#price_offer{
+        margin: -80px auto 80px auto;
+        width: 980px;
+        position: relative;
+        z-index: 10000;
+    }        
+                
+            #price_offer .price_offer_item{
+                padding: 10px 24px;
+                background-color: #CBDC2C;
+                float: left;
+                display: block;
+                text-transform: uppercase;
+                font-size: 20px;
+                margin-right: 15px;
+                cursor: pointer;
+                color: #293B47;
+            }
+
+
+            #price_offer .price_offer_item:hover{
+                background-color:#293B47;
+                color:#CBDC2C;
+            }
+            
+            #price_offer .price_offer_item_selected{
+                padding: 10px 24px;
+                background-color:#293B47;
+                float: left;
+                display: block;
+                text-transform: uppercase;
+                font-size: 20px;
+                margin-right: 15px;
+                cursor: pointer;
+                color:#CBDC2C;
+            }
+
+            
+#price_offer_content{
+        margin: 50px auto 0 auto;
+        width: 980px;
+        position: relative;
+        z-index: 10000;
+    }        
+                
+            #price_offer_content .price_offer_item{
+                padding: 10px 24px;
+                background-color: #CBDC2C;
+                float: left;
+                display: block;
+                text-transform: uppercase;
+                font-size: 20px;
+                margin-right: 15px;
+                cursor: pointer;
+                color: #293B47;
+            }
+
+
+            #price_offer_content .price_offer_item:hover{
+                background-color:#293B47;
+                color:#CBDC2C;
+            }
+            
+            #price_offer_content .price_offer_item_selected{
+                padding: 10px 24px;
+                background-color:#293B47;
+                float: left;
+                display: block;
+                text-transform: uppercase;
+                font-size: 20px;
+                margin-right: 15px;
+                cursor: pointer;
+                color:#CBDC2C;
+            }

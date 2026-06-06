@@ -1,0 +1,75 @@
+/**
+ * Shopify Storefront API GraphQL Client
+ *
+ * Rules:
+ * - Server-side only (never import in 'use client' components)
+ * - No Admin API usage
+ * - Typed responses via generics
+ * - ISR-friendly cache strategy
+ */
+
+import type { ShopifyResponse } from './types'
+
+const SHOPIFY_STORE_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!
+const SHOPIFY_STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!
+const SHOPIFY_API_VERSION = '2025-01'
+
+if (!SHOPIFY_STORE_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
+  throw new Error(
+    '❌ Missing Shopify environment variables. Copy .env.example to .env.local and fill in the values.'
+  )
+}
+
+const SHOPIFY_GRAPHQL_URL = `https://${SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`
+
+interface ShopifyFetchOptions {
+  query: string
+  variables?: Record<string, unknown>
+  cache?: RequestCache
+  revalidate?: number | false
+  tags?: string[]
+}
+
+export async function shopifyFetch<T>({
+  query,
+  variables,
+  cache = 'force-cache',
+  revalidate = 3600,
+  tags,
+}: ShopifyFetchOptions): Promise<T> {
+  const nextOptions: RequestInit['next'] = {}
+
+  if (revalidate !== false) {
+    nextOptions.revalidate = revalidate
+  }
+  if (tags && tags.length > 0) {
+    nextOptions.tags = tags
+  }
+
+  const response = await fetch(SHOPIFY_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
+      'X-Shopify-Api-Version': SHOPIFY_API_VERSION,
+    },
+    body: JSON.stringify({ query, variables }),
+    cache,
+    next: Object.keys(nextOptions).length > 0 ? nextOptions : undefined,
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      `Shopify API error: ${response.status} ${response.statusText} — ${await response.text()}`
+    )
+  }
+
+  const body = (await response.json()) as ShopifyResponse<T>
+
+  if (body.errors && body.errors.length > 0) {
+    const errorMessages = body.errors.map((e) => e.message).join(', ')
+    throw new Error(`Shopify GraphQL errors: ${errorMessages}`)
+  }
+
+  return body.data
+}

@@ -1,0 +1,38 @@
+@charset "utf-8";
+/* CSS Document */
+#content.gallery {
+}
+.gallery-content {
+    margin: 0 0 20px;
+}
+.gallery-item {
+    height: auto;
+    margin:3px;
+    float: left;
+    width: 49%;
+}
+.gallery-item:hover {
+}
+.gallery-item .photo-desc {
+    float: left
+}
+.gallery-item .photo-item {
+    margin-right:10px;
+}
+.gallery-item .photo-item img {
+    border:2px solid #CBDC2C;
+    padding: 0px;
+}
+.gallery-item .photo-item img:hover {
+    border:2px solid #A0AD24;
+}
+.gallery-item .text {
+    width: 58%;	
+}
+.gallery-item .text h2 a{
+    color: #ACBA27;
+    font-size: 17px;
+}
+.gallery-item .text a:hover{
+    color: #99A624;
+}

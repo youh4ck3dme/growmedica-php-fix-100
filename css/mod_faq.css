@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+
+#faq-list .item {
+	margin-bottom: 20px;
+}
+#faq-list .item h3 {
+	cursor: pointer;
+}
+#faq-list .item .answer,
+#faq-list .item .footer {
+	display: none;
+}

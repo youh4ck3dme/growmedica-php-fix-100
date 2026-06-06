@@ -1,0 +1,101 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/* detail */
+
+#detail .preview {
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+	
+/*  zoznam vsetkych */	
+#ref-list .item {
+    /*height: 200px;*/
+    margin-bottom: 0;
+}
+.home #ref-list .item {
+    /*height: 300px;*/
+}
+
+#references-list .item .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+     transition:        all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition:    all 0.25s ease-in-out;
+    -ms-transition:     all 0.25s ease-in-out;
+    -o-transition:      all 0.25s ease-in-out;
+}
+#references-list .item .content h2 {
+    position: relative;
+    margin: 0;
+    padding: 15px;
+    background-color: rgba(35, 132, 198, 0.75);
+    font-size: 18px;
+    line-height: 24px;
+    color: #ffffff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+#references-list .item .content h2:before {
+    display: none;
+}
+
+#references-list .item .preview {
+    padding: 15px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-size: 15px;
+    text-align: justify;
+    visibility: hidden;
+     transition:        all 0.15s ease-in-out;
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition:    all 0.15s ease-in-out;
+    -ms-transition:     all 0.15s ease-in-out;
+    -o-transition:      all 0.15s ease-in-out;
+}
+#references-list .item .unfold {
+    color: #707070;
+    background-color: rgba(35, 132, 198, 0.05);
+    visibility: visible;
+}
+
+
+#references-list .item:hover .preview {
+    visibility: visible;
+     transition:        all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition:    all 0.25s ease-in-out;
+    -ms-transition:     all 0.25s ease-in-out;
+    -o-transition:      all 0.25s ease-in-out;
+}
+#references-list .item:hover .content {
+    background-color: rgba(0, 0, 0, 0.4);
+     transition:        all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition:    all 0.25s ease-in-out;
+    -ms-transition:     all 0.25s ease-in-out;
+    -o-transition:      all 0.25s ease-in-out;
+}
+#references-list .item:hover .unfold {
+    color: #ffffff;
+}
+
+
+
+.slick-next {
+    right: -25px;
+}
+.slick-prev, .slick-next {
+    z-index: 3000;
+}
+.slick-slide > div {
+    margin-bottom: -5px;
+}
+
+

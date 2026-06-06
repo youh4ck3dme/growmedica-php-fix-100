@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /sixadmin-new/
+
+<Files *.php>
+allow from all
+</Files>
