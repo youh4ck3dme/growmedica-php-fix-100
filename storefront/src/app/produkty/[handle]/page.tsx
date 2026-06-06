@@ -35,7 +35,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const images = p.images.edges.map((e) => e.node)
   const mainImage = p.featuredImage ?? images[0]
   const firstVariant = p.variants.edges[0]?.node
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedical.sk'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedica.nexify-studio.tech'
 
   const productJsonLd = getProductJsonLd(p)
   const breadcrumbJsonLd = getBreadcrumbJsonLd([

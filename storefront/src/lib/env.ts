@@ -19,10 +19,10 @@ type Env = z.infer<typeof envSchema>
 
 function validateEnv(): Env {
   const result = envSchema.safeParse({
-    NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN,
+    NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'tn43yx-0k.myshopify.com',
     NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN:
-      process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-    SHOPIFY_REVALIDATION_SECRET: process.env.SHOPIFY_REVALIDATION_SECRET,
+      process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '2c8fd10ebe58e830aeb025800e3874ea',
+    SHOPIFY_REVALIDATION_SECRET: process.env.SHOPIFY_REVALIDATION_SECRET || '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',
   })
 
   if (!result.success) {

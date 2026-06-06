@@ -38,7 +38,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               src={image.url}
               alt={image.altText ?? product.title}
               fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
               className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
               priority={priority}
             />
@@ -82,7 +82,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         </h3>
 
         {/* Stock status */}
-        <p className="text-xs font-medium" style={{ color: product.availableForSale ? 'var(--color-accent-green)' : 'var(--color-error)' }}>
+        <p className="text-xs font-medium" style={{ color: product.availableForSale ? 'var(--color-accent-green-dark)' : 'var(--color-error)' }}>
           {product.availableForSale ? '✓ Skladom' : '✗ Vypredané'}
         </p>
 

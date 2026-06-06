@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getAllProductHandlesForSitemap } from '@/lib/shopify/products'
 import { getAllCollectionHandlesForSitemap } from '@/lib/shopify/collections'
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedical.sk'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedica.nexify-studio.tech'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages

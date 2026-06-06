@@ -78,7 +78,7 @@ export async function getAllProductHandlesForSitemap(): Promise<
     }>({
       query: GET_ALL_PRODUCTS_FOR_SITEMAP,
       variables: { first: 250, after },
-      cache: 'no-store',
+      revalidate: 86400,
     })
 
     data.products.edges.forEach((e) => handles.push(e.node))

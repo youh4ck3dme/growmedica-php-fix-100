@@ -66,10 +66,11 @@ export default function CookieBanner() {
           </button>
           <button
             onClick={accept}
-            className="px-5 py-2.5 rounded-lg text-sm font-bold text-white transition-colors"
+            className="px-5 py-2.5 rounded-lg text-sm font-bold transition-colors"
             style={{
               fontFamily: 'Montserrat, sans-serif',
               background: '#6BAE2E',
+              color: '#152B46',
             }}
           >
             Prijať všetky

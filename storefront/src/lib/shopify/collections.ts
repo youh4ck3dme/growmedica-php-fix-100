@@ -48,7 +48,7 @@ export async function getAllCollectionHandlesForSitemap(): Promise<
   }>({
     query: GET_ALL_COLLECTIONS_FOR_SITEMAP,
     variables: { first: 250 },
-    cache: 'no-store',
+    revalidate: 86400,
   })
   return data.collections.edges.map((e) => e.node)
 }

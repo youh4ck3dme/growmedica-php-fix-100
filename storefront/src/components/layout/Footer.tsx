@@ -107,7 +107,7 @@ export default function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-md transition-colors bg-white/8 hover:bg-white/15"
+                  className="flex h-11 w-11 sm:h-8 sm:w-8 items-center justify-center rounded-md transition-colors bg-white/8 hover:bg-white/15"
                   style={{ color: 'var(--color-footer-text)' }}
                   aria-label={label}
                 >
@@ -131,7 +131,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm transition-colors hover:text-white"
+                      className="text-sm transition-colors hover:text-white py-1.5 inline-block"
                       style={{ color: 'var(--color-footer-text)' }}
                     >
                       {link.label}
@@ -188,11 +188,11 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} Growmedica s.r.o. Všetky práva vyhradené.</p>
 
           {/* Payment logos (text placeholders) */}
-          <div className="flex items-center gap-3 text-white/50">
+          <div className="flex items-center gap-3 text-white/90">
             {['VISA', 'MC', 'GPAY', 'APAY', 'DPD', 'Packeta'].map((method) => (
               <span
                 key={method}
-                className="px-2 py-0.5 border border-white/15 rounded text-[0.65rem] font-bold tracking-wider"
+                className="px-2 py-0.5 border border-white/20 rounded text-[0.65rem] font-bold tracking-wider"
                 style={{ fontFamily: 'Montserrat, sans-serif' }}
               >
                 {method}

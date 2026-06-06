@@ -267,7 +267,7 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-accent-green);
+    color: var(--color-accent-green-dark);
     font-family: 'Montserrat', sans-serif;
     margin-bottom: 0.375rem;
   }

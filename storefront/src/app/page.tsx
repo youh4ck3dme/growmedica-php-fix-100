@@ -146,7 +146,7 @@ export default async function HomePage() {
           <div className="max-w-2xl">
             <p
               className="text-sm font-bold uppercase tracking-widest mb-4"
-              style={{ color: '#6BAE2E', fontFamily: 'Montserrat, sans-serif' }}
+              style={{ color: '#9CE159', fontFamily: 'Montserrat, sans-serif' }}
             >
               Growmedica — výživa s výsledkami
             </p>

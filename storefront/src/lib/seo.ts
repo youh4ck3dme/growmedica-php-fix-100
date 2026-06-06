@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 import type { Product, Collection } from './shopify/types'
 
 const SITE_NAME = 'Grow Medical'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedical.sk'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedica.nexify-studio.tech'
 const SITE_DESCRIPTION =
   'Prémiové doplnky výživy, proteíny a zdravotné produkty. Odborná výživa pre aktívnych ľudí.'
 
