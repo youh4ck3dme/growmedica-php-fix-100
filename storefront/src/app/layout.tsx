@@ -19,12 +19,15 @@ const inter = Inter({
   display: 'swap',
 })
 
-export const metadata: Metadata = DEFAULT_METADATA
+export const metadata: Metadata = {
+  ...DEFAULT_METADATA,
+  manifest: '/manifest.webmanifest',
+}
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#1E3A5F',
+  themeColor: '#35C79A',
 }
 
 export default function RootLayout({
@@ -34,7 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sk" className={`${montserrat.variable} ${inter.variable}`}>
-      <body className="font-[var(--font-inter)] antialiased">
+      <body className="font-(--font-inter) antialiased">
         <div className="flex min-h-dvh flex-col">
           <Header />
           <main className="flex-1">{children}</main>

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Container } from '@/components/ui/Container'
+import Logo from '@/components/ui/Logo'
 import MobileNav from './MobileNav'
 
 const NAV_LINKS = [
@@ -48,18 +49,16 @@ export default function Header() {
   return (
     <>
       <header
-        className="sticky top-0 z-30 w-full transition-shadow duration-200"
+        className="sticky top-0 z-30 w-full bg-white transition-shadow duration-200"
         style={{
-          background: '#1E3A5F',
-          boxShadow: scrolled ? '0 2px 12px rgba(30,58,95,0.25)' : 'none',
+          boxShadow: scrolled ? '0 1px 12px rgba(16, 22, 21, 0.08)' : '0 1px 0 var(--color-border)',
         }}
       >
         <Container>
           <div className="flex h-[60px] items-center justify-between gap-4">
-            {/* Mobile: Hamburger */}
             <button
               id="mobile-nav-toggle"
-              className="p-2 lg:hidden text-white/80 hover:text-white transition-colors"
+              className="p-2 lg:hidden text-(--color-text) hover:text-(--color-primary) transition-colors"
               onClick={() => setMobileOpen(true)}
               aria-label="Otvoriť menu"
               aria-expanded={mobileOpen}
@@ -69,60 +68,34 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* Logo */}
             <Link
               href="/"
               id="site-logo"
-              className="flex items-center gap-2 flex-shrink-0"
-              aria-label="Growmedica — domov"
+              className="shrink-0"
+              aria-label="GrowMedica.sk — domov"
             >
-              {/* Leaf SVG + wordmark */}
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                <circle cx="16" cy="16" r="16" fill="#6BAE2E" />
-                {/* Leaf shape */}
-                <path
-                  d="M16 7C16 7 9 11 9 18C9 21.3137 12.134 24 16 24C19.866 24 23 21.3137 23 18C23 11 16 7 16 7Z"
-                  fill="white"
-                />
-                <path
-                  d="M16 24V14"
-                  stroke="#6BAE2E"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M16 18C16 18 13 15 11 13"
-                  stroke="#6BAE2E"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="font-montserrat font-800 text-lg leading-none" style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 800 }}>
-                <span className="text-white">grow</span><span style={{ color: '#CBD5E0' }}>medica</span>
-              </span>
+              <Logo iconSize={32} />
             </Link>
 
-            {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-0" aria-label="Hlavná navigácia">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-2 text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors uppercase tracking-wider"
+                  className="px-4 py-2 text-sm font-semibold text-(--color-text-muted) hover:text-(--color-primary) transition-colors uppercase tracking-wider relative group"
                   style={{ fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.06em', fontSize: '0.78rem' }}
                 >
                   {link.label}
+                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-(--color-primary) scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                 </Link>
               ))}
             </nav>
 
-            {/* Right: Search + Cart */}
             <div className="flex items-center gap-1">
-              {/* Search */}
               <Link
                 href="/vyhladavanie"
                 id="search-button"
-                className="p-2 text-white/70 hover:text-white transition-colors rounded"
+                className="p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg"
                 aria-label="Vyhľadávanie"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -130,11 +103,10 @@ export default function Header() {
                 </svg>
               </Link>
 
-              {/* Cart */}
               <Link
                 href="/kosik"
                 id="cart-button"
-                className="p-2 text-white/70 hover:text-white transition-colors rounded relative"
+                className="p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg relative"
                 aria-label={`Košík${cartCount > 0 ? `, ${cartCount} položiek` : ''}`}
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -142,8 +114,7 @@ export default function Header() {
                 </svg>
                 {cartCount > 0 && (
                   <span
-                    className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white"
-                    style={{ background: '#C53030' }}
+                    className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white bg-(--color-primary)"
                     aria-hidden="true"
                   >
                     {cartCount > 9 ? '9+' : cartCount}
@@ -155,7 +126,6 @@ export default function Header() {
         </Container>
       </header>
 
-      {/* Mobile Nav Drawer */}
       <MobileNav
         isOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}

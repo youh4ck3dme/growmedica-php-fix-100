@@ -10,6 +10,8 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "test": "playwright test",
+    "test:integrity": "playwright test --project=integrity",
+    "test:e2e": "playwright test --project=e2e-chromium --project=e2e-mobile",
     "test:ui": "playwright test --ui"
   },
   "dependencies": {

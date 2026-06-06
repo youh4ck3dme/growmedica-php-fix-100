@@ -1,0 +1,17 @@
+{
+  "name": "GrowMedica.sk",
+  "short_name": "GrowMedica",
+  "description": "Prémiový medical e-shop — doplnky výživy a zdravotné produkty",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#35C79A",
+  "icons": [
+    {
+      "src": "/logo-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

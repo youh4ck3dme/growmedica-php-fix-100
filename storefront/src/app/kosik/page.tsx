@@ -29,9 +29,9 @@ export default async function KosikPage() {
   const isEmpty = !cart || lines.length === 0
 
   return (
-    <div className="py-8 lg:py-12 bg-[var(--color-surface-2)] min-h-[70vh]">
+    <div className="py-8 lg:py-12 bg-(--color-surface-2) min-h-[70vh]">
       <Container>
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-8">Nákupný košík</h1>
+        <h1 className="text-3xl font-bold text-(--color-text) mb-8">Nákupný košík</h1>
 
         {isEmpty ? (
           <EmptyState

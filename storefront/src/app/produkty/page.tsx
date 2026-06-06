@@ -57,25 +57,25 @@ export default async function ProduktyPage({ searchParams }: ProductsPageProps) 
       <Container>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
+          <h1 className="text-3xl font-bold text-(--color-text) mb-2">
             {query ? `Výsledky pre: "${query}"` : 'Všetky produkty'}
           </h1>
-          <p className="text-[var(--color-text-muted)]">
+          <p className="text-(--color-text-muted)">
             {products.length} {products.length === 1 ? 'produkt' : products.length < 5 ? 'produkty' : 'produktov'}
           </p>
         </div>
 
         {/* Sorting (simple, no JS required for initial load) */}
         <div className="flex items-center gap-3 mb-6 flex-wrap">
-          <span className="text-sm text-[var(--color-text-muted)]">Zoradiť:</span>
+          <span className="text-sm text-(--color-text-muted)">Zoradiť:</span>
           {SORT_OPTIONS.map((option, i) => (
             <Link
               key={i}
               href={`/produkty?zoradenie=${option.value}${option.reverse ? '&rev=1' : ''}${query ? `&q=${encodeURIComponent(query)}` : ''}`}
               className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
                 sortValue === option.value
-                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
-                  : 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+                  ? 'border-(--color-primary) bg-(--color-primary) text-white'
+                  : 'border-(--color-border) text-(--color-text-muted) hover:border-(--color-primary) hover:text-(--color-primary)'
               }`}
             >
               {option.label}
@@ -97,7 +97,7 @@ export default async function ProduktyPage({ searchParams }: ProductsPageProps) 
         {/* Load more (TODO: cursor-based pagination) */}
         {productData.pageInfo.hasNextPage && (
           <div className="mt-12 text-center">
-            <p className="text-sm text-[var(--color-text-muted)] mb-4">
+            <p className="text-sm text-(--color-text-muted) mb-4">
               Zobrazených {products.length} produktov
             </p>
             <Link href="/produkty?dalej=1" className="btn btn-secondary">

@@ -26,22 +26,22 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <div className="py-12 lg:py-20 bg-[var(--color-bg)] min-h-screen">
+    <div className="py-12 lg:py-20 bg-(--color-bg) min-h-screen">
       <Container>
-        <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-[var(--shadow-card)] border border-[var(--color-border)]">
-          <h1 className="text-3xl font-bold text-[var(--color-primary)] mb-8 font-montserrat text-center">Často kladené otázky (FAQ)</h1>
+        <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-(--shadow-card) border border-(--color-border)">
+          <h1 className="text-3xl font-bold text-(--color-primary) mb-8 font-montserrat text-center">Často kladené otázky (FAQ)</h1>
           
           <div className="space-y-6">
             {faqs.map((faq, index) => (
-              <div key={index} className="p-6 rounded-xl border border-[var(--color-border)] bg-gray-50 hover:bg-gray-100 transition-colors">
-                <h3 className="text-lg font-bold text-[var(--color-text)] mb-3">{faq.q}</h3>
-                <p className="text-[var(--color-text-muted)] leading-relaxed">{faq.a}</p>
+              <div key={index} className="p-6 rounded-xl border border-(--color-border) bg-gray-50 hover:bg-gray-100 transition-colors">
+                <h3 className="text-lg font-bold text-(--color-text) mb-3">{faq.q}</h3>
+                <p className="text-(--color-text-muted) leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 text-center pt-8 border-t border-[var(--color-border)]">
-            <p className="text-[var(--color-text-muted)] mb-4">Nenašli ste odpoveď na svoju otázku?</p>
+          <div className="mt-12 text-center pt-8 border-t border-(--color-border)">
+            <p className="text-(--color-text-muted) mb-4">Nenašli ste odpoveď na svoju otázku?</p>
             <a href="/kontakt" className="btn btn-primary inline-flex">
               Kontaktujte nás
             </a>

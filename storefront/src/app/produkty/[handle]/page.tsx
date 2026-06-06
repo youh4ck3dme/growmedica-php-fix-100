@@ -60,21 +60,21 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         <Container>
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+            <ol className="flex items-center gap-2 text-sm text-(--color-text-muted)">
               <li>
-                <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">
+                <Link href="/" className="hover:text-(--color-primary) transition-colors">
                   Domov
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[var(--color-text-light)]">/</li>
+              <li aria-hidden="true" className="text-(--color-text-light)">/</li>
               <li>
-                <Link href="/produkty" className="hover:text-[var(--color-primary)] transition-colors">
+                <Link href="/produkty" className="hover:text-(--color-primary) transition-colors">
                   Produkty
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[var(--color-text-light)]">/</li>
+              <li aria-hidden="true" className="text-(--color-text-light)">/</li>
               <li
-                className="text-[var(--color-text)] font-medium truncate max-w-48"
+                className="text-(--color-text) font-medium truncate max-w-48"
                 aria-current="page"
               >
                 {p.title}
@@ -85,7 +85,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             {/* ─── Gallery ─── */}
             <div className="space-y-3">
-              <div className="relative aspect-square rounded-xl overflow-hidden bg-[var(--color-surface-2)]">
+              <div className="relative aspect-square rounded-xl overflow-hidden bg-(--color-surface-2)">
                 {mainImage ? (
                   <Image
                     src={mainImage.url}
@@ -98,7 +98,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <svg
-                      className="h-20 w-20 text-[var(--color-text-light)]"
+                      className="h-20 w-20 text-(--color-text-light)"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -121,7 +121,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                     <div
                       key={img.id ?? i}
                       role="listitem"
-                      className="relative aspect-square rounded-lg overflow-hidden bg-[var(--color-surface-2)] border border-[var(--color-border)] cursor-pointer hover:border-[var(--color-primary)] transition-colors"
+                      className="relative aspect-square rounded-lg overflow-hidden bg-(--color-surface-2) border border-(--color-border) cursor-pointer hover:border-(--color-primary) transition-colors"
                     >
                       <Image
                         src={img.url}
@@ -140,11 +140,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             <div className="space-y-6">
               <div>
                 {p.vendor && (
-                  <p className="text-sm font-medium text-[var(--color-primary)] uppercase tracking-wide mb-2">
+                  <p className="text-sm font-medium text-(--color-primary) uppercase tracking-wide mb-2">
                     {p.vendor}
                   </p>
                 )}
-                <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text)] leading-tight text-balance mb-3">
+                <h1 className="text-2xl lg:text-3xl font-bold text-(--color-text) leading-tight text-balance mb-3">
                   {p.title}
                 </h1>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -180,14 +180,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   '✓ Doručenie do 24 hodín',
                   '✓ 30-dňová záruka vrátenia',
                 ].map((benefit) => (
-                  <li key={benefit} className="text-sm text-[var(--color-text-muted)]">
+                  <li key={benefit} className="text-sm text-(--color-text-muted)">
                     {benefit}
                   </li>
                 ))}
               </ul>
 
               {p.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--color-border)]">
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-(--color-border)">
                   {p.tags.map((tag) => (
                     <span key={tag} className="badge badge-muted text-xs">
                       {tag}
@@ -200,7 +200,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
           {p.descriptionHtml && (
             <section className="mt-12 max-w-2xl" aria-label="Popis produktu">
-              <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">Popis produktu</h2>
+              <h2 className="text-xl font-bold text-(--color-text) mb-4">Popis produktu</h2>
               <div
                 className="product-description"
                 dangerouslySetInnerHTML={{ __html: sanitizeHtml(p.descriptionHtml) }}

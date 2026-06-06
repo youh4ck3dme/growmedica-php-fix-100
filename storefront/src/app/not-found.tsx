@@ -3,7 +3,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 
 export default function NotFound() {
   return (
-    <div className="py-20 bg-[var(--color-surface-2)] min-h-[60vh] flex items-center">
+    <div className="py-20 bg-(--color-surface-2) min-h-[60vh] flex items-center">
       <Container>
         <EmptyState
           icon="error"
