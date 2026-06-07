@@ -539,9 +539,31 @@
   }
 
   .mega-hero-banner {
+    position: relative;
+    overflow: hidden;
     border-radius: var(--radius-card);
     min-height: 280px;
     animation: mega-hero-fade var(--transition-base) ease-out;
+  }
+
+  .mega-hero-banner-image {
+    z-index: 0;
+    object-position: center right;
+  }
+
+  .mega-hero-banner--has-image {
+    background: none !important;
+  }
+
+  .mega-hero-banner--has-image .mega-hero-banner-inner {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.72) 42%,
+      rgba(255, 255, 255, 0.12) 100%
+    );
   }
 
   .mega-hero-banner-inner {
