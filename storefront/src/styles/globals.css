@@ -699,6 +699,63 @@
     overflow: hidden;
   }
 
+  /* Compact desktop mega menu — scoped to panel, mobile unchanged */
+  @media (min-width: 1024px) {
+    .mega-menu-panel .mega-menu-grid {
+      padding: 0.75rem 0 1rem;
+      gap: 1.25rem;
+    }
+
+    .mega-menu-panel .mega-menu-list-item {
+      padding: 0.35rem 0.5rem;
+      font-size: 0.8125rem;
+    }
+
+    .mega-menu-panel .mega-menu-all-link {
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.5rem;
+    }
+
+    .mega-menu-panel .mega-menu-list--scroll ul {
+      max-height: 240px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-primary) var(--color-border);
+    }
+
+    .mega-menu-panel .mega-hero-banner {
+      min-height: 140px;
+      height: 140px;
+    }
+
+    .mega-menu-panel .mega-hero-banner-inner {
+      min-height: 140px;
+      padding: 1rem;
+    }
+
+    .mega-menu-panel .mega-hero-icon {
+      display: none;
+    }
+
+    .mega-menu-panel .mega-hero-title {
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .mega-menu-panel .mega-hero-description {
+      display: none;
+    }
+
+    .mega-menu-panel .mega-hero-count {
+      margin-bottom: 0.5rem;
+    }
+
+    .mega-menu-panel .mega-hero-cta {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mega-menu-intent-bar--active::after {
       animation: none;
