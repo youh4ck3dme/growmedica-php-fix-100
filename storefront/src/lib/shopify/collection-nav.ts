@@ -213,3 +213,28 @@ export async function getCollectionViewByHandle(
     totalOnPage: products.length,
   }
 }
+
+/** Top products for mega menu sidebar (cached via shopifyFetch). */
+export async function getCategoryFeaturedProducts(
+  handle: string,
+  count = 3
+): Promise<ProductListItem[]> {
+  const slug = normalizeCategorySlug(handle)
+  if (!slug || slug === 'ostatne') return []
+
+  const shopifyCollection = await getCollectionByHandle(slug, count)
+  const fromCollection =
+    shopifyCollection?.products?.edges?.map((e) => e.node).slice(0, count) ?? []
+  if (fromCollection.length > 0) return fromCollection
+
+  const query = buildCategorySearchQuery(slug)
+  if (!query) return []
+
+  const result = await getProducts({
+    first: count,
+    query,
+    sortKey: 'BEST_SELLING',
+  })
+
+  return result.edges.map((e) => e.node)
+}

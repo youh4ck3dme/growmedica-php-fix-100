@@ -1,30 +1,25 @@
 import Header from '@/components/layout/Header'
-import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
-import { getHeaderCategories, type MainCategory } from '@/lib/category-map'
+import type { MegaMenuCategory } from '@/components/layout/HeaderMegaMenu'
+import {
+  getCategoryFeaturedProducts,
+  getNavCollectionItems,
+} from '@/lib/shopify/collection-nav'
 
 export default async function HeaderShell() {
-  let collections: Awaited<ReturnType<typeof getNavCollectionItems>> = []
+  let megaMenuCategories: MegaMenuCategory[] = []
   try {
-    collections = await getNavCollectionItems()
+    const collections = await getNavCollectionItems()
+    const withProducts = collections.filter((c) => c.productCount > 0)
+
+    megaMenuCategories = await Promise.all(
+      withProducts.map(async (cat) => ({
+        ...cat,
+        featuredProducts: await getCategoryFeaturedProducts(cat.handle, 3),
+      }))
+    )
   } catch {
-    // Shopify not configured
+    // Shopify not configured — header still renders without mega menu categories
   }
 
-  const headerSlugs = new Set(getHeaderCategories().map((c) => c.slug as MainCategory))
-  const withProducts = collections.filter((c) => c.productCount > 0)
-
-  const headerCategories = withProducts
-    .filter((c) => headerSlugs.has(c.handle as MainCategory))
-    .map((c) => ({ href: c.href, label: c.menuLabel }))
-
-  const moreCategories = withProducts
-    .filter((c) => !headerSlugs.has(c.handle as MainCategory))
-    .map((c) => ({ href: c.href, label: c.menuLabel }))
-
-  return (
-    <Header
-      headerCategories={headerCategories}
-      moreCategories={moreCategories}
-    />
-  )
+  return <Header megaMenuCategories={megaMenuCategories} />
 }

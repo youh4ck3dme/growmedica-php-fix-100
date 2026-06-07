@@ -12,6 +12,8 @@
     "test": "playwright test",
     "test:integrity": "playwright test --project=integrity",
     "generate:category-fixture": "node scripts/generate-category-coverage-fixture.mjs",
+    "setup:env": "bash scripts/setup-env.sh",
+    "pull:env": "bash scripts/pull-env-from-vercel.sh",
     "test:e2e": "playwright test --project=e2e-chromium --project=e2e-mobile",
     "test:ui": "playwright test --ui"
   },
