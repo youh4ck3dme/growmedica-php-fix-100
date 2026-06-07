@@ -45,7 +45,17 @@ function productsConnection(edges: Array<{ node: ReturnType<typeof productNode>;
   }
 }
 
-function installShopifyFetchMock(finalPageEdges: Array<{ node: ReturnType<typeof productNode>; cursor: string }>) {
+type ProductsConnectionOptions = {
+  pageOneEdges?: Array<{ node: ReturnType<typeof productNode>; cursor: string }>
+  pageOneHasNext?: boolean
+  finalPageEdges?: Array<{ node: ReturnType<typeof productNode>; cursor: string }>
+}
+
+function installShopifyFetchMock({
+  pageOneEdges = [],
+  pageOneHasNext = false,
+  finalPageEdges = [],
+}: ProductsConnectionOptions = {}) {
   const calls: ShopifyFetchCall[] = []
   const originalFetch = globalThis.fetch
 
@@ -79,10 +89,7 @@ function installShopifyFetchMock(finalPageEdges: Array<{ node: ReturnType<typeof
       if (variables.after === undefined) {
         return Response.json({
           data: {
-            products: productsConnection(
-              [{ node: productNode('page-1-product'), cursor: 'cursor-page-1' }],
-              true,
-            ),
+            products: productsConnection(pageOneEdges, pageOneHasNext),
           },
         })
       }
@@ -109,7 +116,7 @@ test.describe('collection catalog pagination', () => {
   test.describe.configure({ mode: 'serial' })
 
   test('returns null for an empty first catalog page', async () => {
-    const mock = installShopifyFetchMock([])
+    const mock = installShopifyFetchMock()
 
     try {
       const view = await getCollectionViewByHandle('vitaminy-mineraly', { page: 1 })
@@ -126,7 +133,10 @@ test.describe('collection catalog pagination', () => {
   })
 
   test('returns an empty CollectionView for an empty catalog page after page 1', async () => {
-    const mock = installShopifyFetchMock([])
+    const mock = installShopifyFetchMock({
+      pageOneEdges: [{ node: productNode('page-1-product'), cursor: 'cursor-page-1' }],
+      pageOneHasNext: true,
+    })
 
     try {
       const view = await getCollectionViewByHandle('vitaminy-mineraly', { page: 2 })
