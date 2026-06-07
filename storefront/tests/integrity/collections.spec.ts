@@ -109,6 +109,40 @@ test.describe('Collections — catalog navigation', () => {
 
     await items.first().hover()
     await page.waitForTimeout(200)
-    await expect(panel.locator('.mega-hero-icon')).toBeVisible()
+    await expect(panel.locator('.mega-hero-title')).toBeVisible()
+  })
+
+  test('mega menu: compact desktop panel height', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page.locator('#category-mega-menu-trigger').hover()
+    await page.waitForTimeout(400)
+
+    const panel = page.locator('#category-mega-menu-panel')
+    await expect(panel).toBeVisible()
+
+    const box = await panel.boundingBox()
+    expect(box?.height).toBeLessThan(420)
+  })
+
+  test('mega menu: category list is scrollable on desktop', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page.locator('#category-mega-menu-trigger').hover()
+    await page.waitForTimeout(400)
+
+    const scrollList = page.locator('.mega-menu-list--scroll ul')
+    await expect(scrollList).toBeVisible()
+
+    const overflowY = await scrollList.evaluate((el) => getComputedStyle(el).overflowY)
+    expect(overflowY).toBe('auto')
+
+    const { scrollHeight, clientHeight } = await scrollList.evaluate((el) => ({
+      scrollHeight: el.scrollHeight,
+      clientHeight: el.clientHeight,
+    }))
+    expect(scrollHeight).toBeGreaterThan(clientHeight)
   })
 })

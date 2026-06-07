@@ -39,7 +39,10 @@ export default function CategoryMegaPanel({
 
   return (
     <div className="mega-menu-grid">
-      <nav className="mega-menu-list" aria-label="Kategórie produktov">
+      <nav
+        className="mega-menu-list mega-menu-list--scroll"
+        aria-label="Kategórie produktov"
+      >
         <ul className="space-y-0.5">
           {categories.map((cat) => {
             const isActive = cat.handle === active.handle
