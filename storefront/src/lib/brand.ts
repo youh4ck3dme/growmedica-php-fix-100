@@ -18,6 +18,8 @@ export const LEGACY_COLORS = {
 
 export const BRAND_COPY = {
   tagline: 'Biomedicínske supplementy · Stredná Európa',
+  footerBlurb:
+    'Moderná, prémiová a dôveryhodná značka pre zdravie, doplnky výživy a zdravotné produkty.',
   heroEyebrow: 'Najrýchlejšie rastúci e-shop v regióne',
   heroTitle: 'Prirodzené biomedicínske supplementy pre váš život',
   heroSubtitle:
