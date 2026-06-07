@@ -58,12 +58,28 @@ test.describe('Collections — catalog navigation', () => {
     expect(html).not.toContain('/kolekcie/doplnky-vyzivy')
   })
 
-  test('header obsahuje top kategórie', async ({ request }) => {
+  test('header obsahuje mega menu trigger a kategórie', async ({ request }) => {
     const response = await request.get('/')
     expect(response.status()).toBe(200)
     const html = await response.text()
 
     expect(html).toContain('/kolekcie/vitaminy-mineraly')
-    expect(html).toContain('id="categories-dropdown-toggle"')
+    expect(html).toContain('id="category-mega-menu-trigger"')
+    expect(html).not.toContain('id="categories-dropdown-toggle"')
+  })
+
+  test('mega menu panel sa otvorí po hover intent', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    const trigger = page.locator('#category-mega-menu-trigger')
+    await expect(trigger).toBeVisible()
+
+    await trigger.hover()
+    await page.waitForTimeout(400)
+
+    const panel = page.locator('#category-mega-menu-panel')
+    await expect(panel).toBeVisible()
+    await expect(panel.getByRole('link', { name: /Vitamíny a minerály/i })).toBeVisible()
   })
 })

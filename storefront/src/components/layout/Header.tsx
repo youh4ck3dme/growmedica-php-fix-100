@@ -1,16 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Container } from '@/components/ui/Container'
 import Logo from '@/components/ui/Logo'
 import MobileNav from './MobileNav'
+import HeaderMegaMenu, { type MegaMenuCategory } from './HeaderMegaMenu'
 
 const BASE_NAV_LINKS = [
   { href: '/produkty', label: 'Produkty' },
-  { href: '/vyhladavanie', label: 'Vyhľadávanie' },
   { href: '/o-nas', label: 'O nás' },
 ]
+
+const MOBILE_EXTRA_LINKS = [{ href: '/vyhladavanie', label: 'Vyhľadávanie' }]
 
 export interface NavLinkItem {
   href: string
@@ -18,25 +20,19 @@ export interface NavLinkItem {
 }
 
 interface HeaderProps {
-  headerCategories?: NavLinkItem[]
-  moreCategories?: NavLinkItem[]
+  megaMenuCategories?: MegaMenuCategory[]
 }
 
-export default function Header({
-  headerCategories = [],
-  moreCategories = [],
-}: HeaderProps) {
+export default function Header({ megaMenuCategories = [] }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [categoriesOpen, setCategoriesOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
   const [scrolled, setScrolled] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const mobileLinks: NavLinkItem[] = [
-    ...headerCategories,
-    ...moreCategories,
+    ...megaMenuCategories.map((c) => ({ href: c.href, label: c.menuLabel })),
     { href: '/kolekcie', label: 'Všetky kategórie' },
     ...BASE_NAV_LINKS,
+    ...MOBILE_EXTRA_LINKS,
   ]
 
   useEffect(() => {
@@ -44,10 +40,12 @@ export default function Header({
       try {
         const res = await fetch('/api/cart')
         if (res.ok) {
-          const data = await res.json() as { count?: number }
+          const data = (await res.json()) as { count?: number }
           if (data.count !== undefined) setCartCount(data.count)
         }
-      } catch { /* silent */ }
+      } catch {
+        /* silent */
+      }
     }
     fetchCartCount()
 
@@ -61,17 +59,9 @@ export default function Header({
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setCategoriesOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-
     return () => {
       window.removeEventListener('cart-count-updated', handleCartCountUpdate)
       window.removeEventListener('scroll', handleScroll)
-      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
 
@@ -110,64 +100,7 @@ export default function Header({
             </Link>
 
             <nav className="hidden lg:flex items-center gap-0 min-w-0 flex-1 justify-center" aria-label="Hlavná navigácia">
-              {headerCategories.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={navLinkClass}
-                  style={{ fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.06em', fontSize: '0.72rem' }}
-                >
-                  {link.label}
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-(--color-primary) scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-                </Link>
-              ))}
-
-              {moreCategories.length > 0 && (
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    id="categories-dropdown-toggle"
-                    className={`${navLinkClass} flex items-center gap-1`}
-                    style={{ fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.06em', fontSize: '0.72rem' }}
-                    aria-expanded={categoriesOpen}
-                    aria-haspopup="true"
-                    onClick={() => setCategoriesOpen((v) => !v)}
-                  >
-                    Ďalšie
-                    <svg className={`h-3.5 w-3.5 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {categoriesOpen && (
-                    <div
-                      className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-(--color-border) bg-white shadow-lg py-2 z-50 max-h-80 overflow-y-auto"
-                      role="menu"
-                    >
-                      {moreCategories.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          role="menuitem"
-                          className="block px-4 py-2 text-sm font-medium text-(--color-text) hover:bg-(--color-primary-light) hover:text-(--color-primary-dark) transition-colors"
-                          style={{ fontFamily: 'Montserrat, sans-serif' }}
-                          onClick={() => setCategoriesOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                      <Link
-                        href="/kolekcie"
-                        role="menuitem"
-                        className="block px-4 py-2 text-sm font-semibold text-(--color-primary) border-t border-(--color-border) mt-1 pt-3"
-                        style={{ fontFamily: 'Montserrat, sans-serif' }}
-                        onClick={() => setCategoriesOpen(false)}
-                      >
-                        Všetky kategórie →
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              )}
+              <HeaderMegaMenu categories={megaMenuCategories} />
 
               {BASE_NAV_LINKS.map((link) => (
                 <Link
@@ -217,11 +150,7 @@ export default function Header({
         </Container>
       </header>
 
-      <MobileNav
-        isOpen={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        links={mobileLinks}
-      />
+      <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} links={mobileLinks} />
     </>
   )
 }
