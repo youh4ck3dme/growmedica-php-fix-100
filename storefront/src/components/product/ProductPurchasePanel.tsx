@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Product, ProductVariant } from '@/lib/shopify/types'
 import { Price } from '@/components/ui/Price'
 import VariantSelector from '@/components/product/VariantSelector'
