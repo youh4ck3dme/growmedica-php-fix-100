@@ -11,6 +11,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "test": "playwright test",
     "test:integrity": "playwright test --project=integrity",
+    "test:pwa": "yarn build && PWA_PRODUCTION_TEST=1 playwright test --project=pwa",
     "generate:category-fixture": "node scripts/generate-category-coverage-fixture.mjs",
     "setup:env": "bash scripts/setup-env.sh",
     "pull:env": "bash scripts/pull-env-from-vercel.sh",
@@ -18,9 +19,11 @@
     "test:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@serwist/next": "^9.5.11",
     "next": "^15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "serwist": "^9.5.11",
     "zod": "^3.23.8"
   },
   "devDependencies": {

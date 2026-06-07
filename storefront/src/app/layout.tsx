@@ -8,6 +8,7 @@ import HeaderShell from '@/components/layout/HeaderShell'
 import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
+import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -24,7 +25,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   ...DEFAULT_METADATA,
+  applicationName: BRAND_COPY.siteName,
   manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: BRAND_COPY.siteName,
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -60,6 +70,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <CookieBanner />
+          <PwaInstallBanner />
         </div>
       </body>
     </html>
