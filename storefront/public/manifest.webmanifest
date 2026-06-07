@@ -1,11 +1,16 @@
 {
+  "id": "/",
   "name": "GrowMedica.sk",
   "short_name": "GrowMedica",
   "description": "GrowMedica.sk — najrýchlejšie rastúci e-shop biomedicínskych supplementov v strednej Európe.",
+  "lang": "sk",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#FFFFFF",
   "theme_color": "#35C79A",
+  "categories": ["shopping", "health"],
   "icons": [
     {
       "src": "/logo-icon.svg",
@@ -23,7 +28,13 @@
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

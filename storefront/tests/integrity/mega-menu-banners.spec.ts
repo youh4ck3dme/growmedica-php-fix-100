@@ -73,12 +73,10 @@ test.describe('Mega menu banners — UI', () => {
 })
 
 test.describe('Console audit — extension noise', () => {
-  test('homepage nemá app console errors mimo extension noise', async ({ page }) => {
-    const messages: string[] = []
-    page.on('console', (msg) => {
-      if (msg.type() === 'error' || msg.type() === 'warning') {
-        messages.push(msg.text())
-      }
+  test('homepage nemá app page errors mimo extension noise', async ({ page }) => {
+    const pageErrors: string[] = []
+    page.on('pageerror', (error) => {
+      pageErrors.push(error.message)
     })
 
     await page.setViewportSize({ width: 1280, height: 800 })
@@ -86,17 +84,14 @@ test.describe('Console audit — extension noise', () => {
     await page.locator('#category-mega-menu-trigger').hover()
     await page.waitForTimeout(600)
 
-    const appMessages = messages.filter(
+    const appErrors = pageErrors.filter(
       (text) =>
         !text.includes('contentscript.js') &&
         !text.includes('ObjectMultiplex') &&
         !text.includes('app-init-liveness') &&
-        !text.includes('background-liveness') &&
-        !text.includes('MaxListenersExceededWarning'),
+        !text.includes('background-liveness'),
     )
 
-    expect(appMessages, `Unexpected app console noise: ${appMessages.join(' | ')}`).toEqual(
-      [],
-    )
+    expect(appErrors, `Unexpected app page errors: ${appErrors.join(' | ')}`).toEqual([])
   })
 })

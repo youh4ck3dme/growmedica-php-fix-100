@@ -41,3 +41,11 @@ next-env.d.ts
 # playwright
 /playwright-report/
 /test-results/
+
+# Serwist (generated at build)
+public/sw*
+public/swe-worker*
+
+# alternate package managers (project uses yarn)
+pnpm-lock.yaml
+pnpm-workspace.yaml
