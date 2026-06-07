@@ -1,3 +1,5 @@
+import { BRAND_COPY } from '@/lib/brand'
+
 interface LogoProps {
   variant?: 'light' | 'dark'
   showTagline?: boolean
@@ -74,7 +76,7 @@ export default function Logo({
               className="text-[0.55rem] font-semibold uppercase tracking-[0.14em]"
               style={{ color: taglineColor, fontFamily: 'Montserrat, sans-serif' }}
             >
-              Premium Medical E-shop
+              {BRAND_COPY.tagline}
             </span>
             <span className="h-px w-3 bg-current opacity-30" style={{ color: taglineColor }} />
           </div>

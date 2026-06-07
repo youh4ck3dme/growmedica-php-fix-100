@@ -2,13 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
+import { BRAND_COPY } from '@/lib/brand'
+import { buildPageMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Kolekcie — Grow Medical',
-  description: 'Prehliadajte naše kolekcie produktov. Vyberte si prémiové doplnky výživy podľa vašich potrieb.',
-}
+export const metadata: Metadata = buildPageMetadata(
+  'Kolekcie',
+  BRAND_COPY.pageDescriptions.collections,
+)
 
 export default async function KolekciePage() {
   let collections: Awaited<ReturnType<typeof getNavCollectionItems>> = []

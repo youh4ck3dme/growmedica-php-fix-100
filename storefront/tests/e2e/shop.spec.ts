@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { acceptCookies } from '../helpers/cookies';
+import { BRAND_COPY } from '../fixtures/brand';
 
 test.describe('1. Domovská stránka (Homepage)', () => {
   test('1. Mal by načítať domovskú stránku a overiť hlavný nadpis v Hero sekcii', async ({ page }) => {
     await page.goto('/');
     const heroHeading = page.locator('h1');
     await expect(heroHeading).toBeVisible();
-    await expect(heroHeading).toContainText('Starostlivosť o vaše zdravie');
+    await expect(heroHeading).toContainText(BRAND_COPY.heroTitle);
   });
 
   test('2. Mal by zobraziť logo a názov obchodu growmedica v hlavičke', async ({ page }) => {
@@ -70,7 +71,7 @@ test.describe('2. Navigácia a Statické Podstránky', () => {
     await page.goto('/o-nas');
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText('O spoločnosti Grow Medical');
+    await expect(heading).toContainText(BRAND_COPY.aboutPageTitle);
   });
 
   test('10. Mal by úspešne načítať podstránku "Doprava a platba"', async ({ page }) => {

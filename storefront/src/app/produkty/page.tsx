@@ -3,14 +3,15 @@ import type { Metadata } from 'next'
 import { Container } from '@/components/ui/Container'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { getProducts } from '@/lib/shopify/products'
+import { BRAND_COPY } from '@/lib/brand'
+import { buildPageMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Produkty',
-  description:
-    'Preskúmajte celý sortiment prémiových doplnkov výživy a zdravotných produktov Grow Medical.',
-}
+export const metadata: Metadata = buildPageMetadata(
+  'Produkty',
+  BRAND_COPY.pageDescriptions.products,
+)
 
 interface SearchParams {
   q?: string

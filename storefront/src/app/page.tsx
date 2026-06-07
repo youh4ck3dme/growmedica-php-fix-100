@@ -5,13 +5,13 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
 import { getHomepageCategories } from '@/lib/category-map'
+import { BRAND_COPY } from '@/lib/brand'
 
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'GrowMedica.sk — Prémiový medical e-shop',
-  description:
-    'Prémiové produkty pre zdravie a pohodu. Moderná, dôveryhodná značka pre doplnky výživy a zdravotné produkty na Slovensku.',
+  title: BRAND_COPY.siteTitle,
+  description: BRAND_COPY.siteDescription,
 }
 
 const VALUE_PROPS = [
@@ -34,11 +34,11 @@ const VALUE_PROPS = [
     ),
   },
   {
-    title: 'RÝCHLOSŤ',
-    subtitle: 'Rýchle doručenie',
+    title: 'RAST',
+    subtitle: 'Rastúca značka v regióne',
     icon: (
       <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
       </svg>
     ),
   },
@@ -99,19 +99,20 @@ export default async function HomePage() {
         <Container>
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
-              <p className="section-label mb-3">Premium Medical E-shop</p>
+              <p className="section-label mb-3">{BRAND_COPY.heroEyebrow}</p>
               <h1
                 id="hero-heading"
                 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight text-balance mb-4 text-(--color-text)"
                 style={{ fontFamily: 'Montserrat, sans-serif' }}
               >
-                Starostlivosť o vaše zdravie
+                {BRAND_COPY.heroTitle}
               </h1>
-              <p className="text-base lg:text-lg leading-relaxed mb-8 text-(--color-text-muted) max-w-lg">
-                Prémiové produkty pre zdravie a pohodu
+              <p className="text-base lg:text-lg leading-relaxed mb-8 text-(--color-text-muted) max-w-xl">
+                <span className="sm:hidden">{BRAND_COPY.heroSubtitleShort}</span>
+                <span className="hidden sm:inline">{BRAND_COPY.heroSubtitle}</span>
               </p>
               <Link href="/produkty" id="hero-cta-primary" className="btn btn-primary btn-lg w-full sm:w-auto">
-                Nakupovať
+                {BRAND_COPY.heroCta}
               </Link>
             </div>
 
@@ -208,7 +209,7 @@ export default async function HomePage() {
             <div>
               <p className="section-label">Obľúbené produkty</p>
               <h2 id="featured-heading" className="section-heading">
-                Najpredávanejšie produkty
+                {BRAND_COPY.featuredHeading}
               </h2>
             </div>
             <Link
@@ -234,14 +235,12 @@ export default async function HomePage() {
       <section className="py-12 lg:py-16 bg-white" aria-label="O Growmedica">
         <Container>
           <div className="max-w-3xl mx-auto text-center">
-            <p className="section-label" style={{ textAlign: 'center' }}>Prečo Growmedica</p>
+            <p className="section-label" style={{ textAlign: 'center' }}>{BRAND_COPY.aboutLabel}</p>
             <h2 className="section-heading mb-4" style={{ textAlign: 'center' }}>
-              Cesta za zdravím, vitalitou a kvalitným životom
+              {BRAND_COPY.aboutHeading}
             </h2>
             <p className="leading-relaxed text-(--color-text-muted)">
-              Moderná, prémiová a dôveryhodná značka pre e-shop zameraný na zdravie, doplnky výživy
-              a zdravotné produkty. Logo symbolizuje starostlivosť, rast a vitalitu. Značka spája
-              lekársku presnosť s prírodnou rovnováhou.
+              {BRAND_COPY.aboutBody}
             </p>
           </div>
         </Container>

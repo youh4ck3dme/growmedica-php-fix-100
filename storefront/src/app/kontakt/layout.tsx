@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
+import { BRAND_COPY } from '@/lib/brand'
 
-export const metadata: Metadata = {
-  title: 'Kontakt | Grow Medical',
-  description: 'Kontaktujte nás — GrowMedica s.r.o., BELLOVA 6, KOŠICE. E-mail: info@growmedica.sk',
-}
+export const metadata: Metadata = buildPageMetadata(
+  'Kontakt',
+  BRAND_COPY.pageDescriptions.contact,
+)
 
 export default function KontaktLayout({ children }: { children: React.ReactNode }) {
   return children

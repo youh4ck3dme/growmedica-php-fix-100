@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
 import '@/styles/globals.css'
-import { DEFAULT_METADATA } from '@/lib/seo'
+import { DEFAULT_METADATA, getOrganizationJsonLd } from '@/lib/seo'
+import { BRAND_COPY } from '@/lib/brand'
 import HeaderShell from '@/components/layout/HeaderShell'
+import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
 
@@ -35,7 +37,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#35C79A',
+  themeColor: BRAND_COPY.themeColor,
 }
 
 export default function RootLayout({
@@ -46,8 +48,13 @@ export default function RootLayout({
   return (
     <html lang="sk" className={`${montserrat.variable} ${inter.variable}`}>
       <body className="font-(--font-inter) antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
+        />
         <div className="flex min-h-dvh flex-col">
           <HeaderShell />
+          <TrustStrip />
           <main className="flex-1">{children}</main>
           <Footer />
           <CookieBanner />

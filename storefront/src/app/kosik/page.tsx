@@ -5,10 +5,11 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { InteractiveCart } from '@/components/cart/InteractiveCart'
 import { getCart, CART_COOKIE } from '@/lib/shopify/cart'
 import type { Cart } from '@/lib/shopify/types'
+import { BRAND_COPY } from '@/lib/brand'
+import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Košík — Grow Medical',
-  description: 'Nákupný košík s vybranými doplnkami výživy a zdravotnými produktmi.',
+  ...buildPageMetadata('Košík', BRAND_COPY.pageDescriptions.cart),
   robots: { index: false },
 }
 

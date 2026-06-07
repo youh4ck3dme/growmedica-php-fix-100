@@ -1,13 +1,13 @@
-
 import type { Metadata } from 'next'
 import { Container } from '@/components/ui/Container'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { getProducts } from '@/lib/shopify/products'
+import { BRAND_COPY } from '@/lib/brand'
+import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Vyhľadávanie',
-  description: 'Vyhľadajte produkty v Grow Medical',
+  ...buildPageMetadata('Vyhľadávanie', BRAND_COPY.pageDescriptions.search),
   robots: { index: false },
 }
 

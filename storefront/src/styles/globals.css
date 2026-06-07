@@ -278,6 +278,64 @@
     border: 1px solid var(--color-border);
   }
 
+  /* Trust strip — subpages only (hidden on homepage via component) */
+  .trust-strip {
+    background: var(--color-primary-light);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 0;
+  }
+
+  .trust-strip-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .trust-strip-tagline {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary-dark);
+    text-align: center;
+  }
+
+  .trust-strip-stats {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .trust-strip-stats {
+      display: flex;
+    }
+  }
+
+  .trust-strip-stat {
+    padding: 0.2rem 0.625rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .trust-strip-link {
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .trust-strip-link:hover {
+    color: var(--color-primary-dark);
+  }
+
   .section-label {
     font-size: 0.75rem;
     font-weight: 700;
