@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { MegaMenuCategory } from '@/components/layout/HeaderMegaMenu'
+import { getMegaMenuBannerSrc } from '@/lib/mega-menu-banners'
 import { getProductUrl } from '@/lib/utils'
 import { Price } from '@/components/ui/Price'
 
@@ -36,6 +37,8 @@ export default function CategoryMegaPanel({
       : active.productCount < 5
         ? `${active.productCount} produkty`
         : `${active.productCount} produktov`
+
+  const bannerSrc = getMegaMenuBannerSrc(active.handle)
 
   return (
     <div className="mega-menu-grid">
@@ -76,10 +79,19 @@ export default function CategoryMegaPanel({
       </nav>
 
       <div
-        className="mega-hero-banner"
+        className={`mega-hero-banner${bannerSrc ? ' mega-hero-banner--has-image' : ''}`}
         data-slug={active.handle}
         key={active.handle}
       >
+        {bannerSrc && (
+          <Image
+            src={bannerSrc}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="mega-hero-banner-image object-cover"
+          />
+        )}
         <div className="mega-hero-banner-inner">
           {active.icon && (
             <span className="mega-hero-icon" aria-hidden="true">
