@@ -1,13 +1,18 @@
 import { z } from 'zod'
 
+function readEnv(name: string): string | undefined {
+  const value = process.env[name]?.trim()
+  return value || undefined
+}
+
 function readShopifyStoreDomain(): string | undefined {
-  return process.env.SHOPIFY_STORE_DOMAIN ?? process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
+  return readEnv('SHOPIFY_STORE_DOMAIN') ?? readEnv('NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN')
 }
 
 function readShopifyStorefrontToken(): string | undefined {
   return (
-    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ??
-    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN
+    readEnv('SHOPIFY_STOREFRONT_ACCESS_TOKEN') ??
+    readEnv('NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN')
   )
 }
 
@@ -40,7 +45,7 @@ function validateShopifyEnv(): ShopifyEnv {
   const result = shopifyEnvSchema.safeParse({
     SHOPIFY_STORE_DOMAIN: readShopifyStoreDomain(),
     SHOPIFY_STOREFRONT_ACCESS_TOKEN: readShopifyStorefrontToken(),
-    SHOPIFY_API_VERSION: process.env.SHOPIFY_API_VERSION ?? '2025-01',
+    SHOPIFY_API_VERSION: readEnv('SHOPIFY_API_VERSION') ?? '2025-01',
   })
 
   if (!result.success) {

@@ -28,6 +28,18 @@ NEXT_PUBLIC_SITE_URL=
 
 Legacy `NEXT_PUBLIC_SHOPIFY_*` names are supported during migration but prefer `SHOPIFY_*`.
 
+## Local `.env.local`
+
+From `storefront/` after `vercel login`:
+
+```bash
+yarn pull:env
+```
+
+Uses Vercel **development** env (not `production` — `vercel env pull --environment=production` often writes empty `""` values locally). Sets `NEXT_PUBLIC_SITE_URL=http://localhost:5555`.
+
+Interactive alternative: `yarn setup:env`
+
 ## Smoke test (after deploy)
 
 Test against the **Vercel deployment URL** or configured Next.js domain — not `growmedica.sk` if that still points to legacy Apache PHP.
