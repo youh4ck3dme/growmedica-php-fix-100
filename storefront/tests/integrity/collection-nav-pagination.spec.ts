@@ -7,6 +7,8 @@ type ShopifyFetchCall = {
   variables: Record<string, unknown>
 }
 
+type ProductEdge = { node: ReturnType<typeof productNode>; cursor: string }
+
 function pageInfo(hasNextPage: boolean, endCursor: string | null = null) {
   return {
     hasNextPage,
@@ -38,7 +40,10 @@ function productNode(handle: string) {
   }
 }
 
-function productsConnection(edges: Array<{ node: ReturnType<typeof productNode>; cursor: string }>, hasNextPage: boolean) {
+function productsConnection(
+  edges: ProductEdge[],
+  hasNextPage: boolean,
+) {
   return {
     edges,
     pageInfo: pageInfo(hasNextPage, hasNextPage ? 'cursor-page-1' : null),
@@ -46,15 +51,20 @@ function productsConnection(edges: Array<{ node: ReturnType<typeof productNode>;
 }
 
 type ProductsConnectionOptions = {
-  pageOneEdges?: Array<{ node: ReturnType<typeof productNode>; cursor: string }>
+  pageOneEdges?: ProductEdge[]
   pageOneHasNext?: boolean
-  finalPageEdges?: Array<{ node: ReturnType<typeof productNode>; cursor: string }>
+  finalPageEdges?: ProductEdge[]
+  collectionPages?: {
+    first: ReturnType<typeof productsConnection>
+    afterCursor?: ReturnType<typeof productsConnection>
+  }
 }
 
 function installShopifyFetchMock({
   pageOneEdges = [],
   pageOneHasNext = false,
   finalPageEdges = [],
+  collectionPages,
 }: ProductsConnectionOptions = {}) {
   const calls: ShopifyFetchCall[] = []
   const originalFetch = globalThis.fetch
@@ -69,7 +79,28 @@ function installShopifyFetchMock({
 
     if (query.includes('query GetCollectionByHandle')) {
       calls.push({ operation: 'GetCollectionByHandle', variables })
-      return Response.json({ data: { collection: null } })
+      if (!collectionPages) {
+        return Response.json({ data: { collection: null } })
+      }
+
+      const products =
+        variables.after === undefined ? collectionPages.first : collectionPages.afterCursor
+
+      return Response.json({
+        data: {
+          collection: {
+            id: `gid://shopify/Collection/${variables.handle}`,
+            handle: variables.handle,
+            title: `Collection ${variables.handle}`,
+            description: 'Shopify collection description',
+            descriptionHtml: 'Shopify collection description',
+            image: null,
+            seo: { title: null, description: null },
+            updatedAt: '2026-01-01T00:00:00Z',
+            products: products ?? productsConnection([], false),
+          },
+        },
+      })
     }
 
     if (query.includes('query GetProducts')) {
@@ -158,6 +189,64 @@ test.describe('collection catalog pagination', () => {
         'GetProducts',
       ])
       expect(mock.calls.at(-1)?.variables.after).toBe('cursor-page-1')
+    } finally {
+      mock.restore()
+    }
+  })
+
+  test('returns the requested Shopify collection page instead of replaying page 1', async () => {
+    const mock = installShopifyFetchMock({
+      collectionPages: {
+        first: productsConnection(
+          [{ node: productNode('shopify-page-1-product'), cursor: 'cursor-page-1' }],
+          true,
+        ),
+        afterCursor: productsConnection(
+          [{ node: productNode('shopify-page-2-product'), cursor: 'cursor-page-2' }],
+          false,
+        ),
+      },
+    })
+
+    try {
+      const view = await getCollectionViewByHandle('vitaminy-mineraly', { page: 2 })
+
+      expect(view).toMatchObject({
+        handle: 'vitaminy-mineraly',
+        source: 'shopify',
+        page: 2,
+        hasNextPage: false,
+        hasPreviousPage: true,
+        totalOnPage: 1,
+      })
+      expect(view?.products.map((product) => product.handle)).toEqual([
+        'shopify-page-2-product',
+      ])
+      expect(mock.calls.map((call) => call.operation)).toEqual([
+        'GetCollectionByHandle',
+        'GetCollectionByHandle',
+      ])
+      expect(mock.calls.at(-1)?.variables.after).toBe('cursor-page-1')
+    } finally {
+      mock.restore()
+    }
+  })
+
+  test('returns null for Shopify collection pages beyond the available range', async () => {
+    const mock = installShopifyFetchMock({
+      collectionPages: {
+        first: productsConnection(
+          [{ node: productNode('shopify-page-1-product'), cursor: 'cursor-page-1' }],
+          false,
+        ),
+      },
+    })
+
+    try {
+      const view = await getCollectionViewByHandle('vitaminy-mineraly', { page: 2 })
+
+      expect(view).toBeNull()
+      expect(mock.calls.map((call) => call.operation)).toEqual(['GetCollectionByHandle'])
     } finally {
       mock.restore()
     }

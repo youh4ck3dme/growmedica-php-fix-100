@@ -250,9 +250,28 @@ export async function getCollectionViewByHandle(
 
   const shopifyCollection = await getCollectionByHandle(slug, PAGE_SIZE)
   if (shopifyCollection) {
-    const rawProducts = shopifyCollection.products?.edges?.map((e) => e.node) ?? []
+    let currentCollection = shopifyCollection
+    const availableVendors = extractVendors(
+      currentCollection.products?.edges?.map((e) => e.node) ?? [],
+    )
+
+    for (let i = 1; i < page; i++) {
+      const pageInfo = currentCollection.products.pageInfo
+      if (!pageInfo.hasNextPage) {
+        return null
+      }
+
+      const nextCollection = await getCollectionByHandle(
+        slug,
+        PAGE_SIZE,
+        pageInfo.endCursor ?? undefined,
+      )
+      if (!nextCollection) return null
+      currentCollection = nextCollection
+    }
+
+    const rawProducts = currentCollection.products?.edges?.map((e) => e.node) ?? []
     if (rawProducts.length > 0) {
-      const availableVendors = extractVendors(rawProducts)
       const products = applyClientSort(
         applyClientFilters(rawProducts, { vendor, inStockOnly }),
         sort,
@@ -264,10 +283,25 @@ export async function getCollectionViewByHandle(
         products,
         availableVendors,
         source: 'shopify',
-        page: 1,
-        hasNextPage: false,
-        hasPreviousPage: false,
+        page,
+        hasNextPage: currentCollection.products.pageInfo.hasNextPage,
+        hasPreviousPage: page > 1,
         totalOnPage: products.length,
+      }
+    }
+
+    if (page > 1) {
+      return {
+        handle: slug,
+        title: shopifyCollection.title,
+        description: shopifyCollection.description ?? def.description ?? null,
+        products: [],
+        availableVendors,
+        source: 'shopify',
+        page,
+        hasNextPage: currentCollection.products.pageInfo.hasNextPage,
+        hasPreviousPage: true,
+        totalOnPage: 0,
       }
     }
   }
