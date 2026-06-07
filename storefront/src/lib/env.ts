@@ -1,39 +1,68 @@
 import { z } from 'zod'
 
-const envSchema = z.object({
-  NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: z
+function readShopifyStoreDomain(): string | undefined {
+  return process.env.SHOPIFY_STORE_DOMAIN ?? process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
+}
+
+function readShopifyStorefrontToken(): string | undefined {
+  return (
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ??
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN
+  )
+}
+
+const shopifyEnvSchema = z.object({
+  SHOPIFY_STORE_DOMAIN: z
     .string()
-    .min(1, 'NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is required')
+    .min(1, 'SHOPIFY_STORE_DOMAIN is required')
     .refine((v) => v.endsWith('.myshopify.com'), {
-      message: 'NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN must end with .myshopify.com',
+      message: 'SHOPIFY_STORE_DOMAIN must end with .myshopify.com',
     }),
-  NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: z
+  SHOPIFY_STOREFRONT_ACCESS_TOKEN: z
     .string()
-    .min(1, 'NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN is required'),
-  SHOPIFY_REVALIDATION_SECRET: z
+    .min(1, 'SHOPIFY_STOREFRONT_ACCESS_TOKEN is required'),
+  SHOPIFY_API_VERSION: z
     .string()
-    .min(16, 'SHOPIFY_REVALIDATION_SECRET must be at least 16 characters'),
+    .regex(/^\d{4}-\d{2}$/, 'SHOPIFY_API_VERSION must match YYYY-MM'),
 })
 
-type Env = z.infer<typeof envSchema>
+const revalidationSecretSchema = z
+  .string()
+  .min(16, 'SHOPIFY_REVALIDATION_SECRET must be at least 16 characters')
+  .refine((v) => !v.startsWith('shpat_'), {
+    message:
+      'SHOPIFY_REVALIDATION_SECRET must be a custom webhook secret, not a Shopify Admin API token',
+  })
 
-function validateEnv(): Env {
-  const result = envSchema.safeParse({
-    NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'tn43yx-0k.myshopify.com',
-    NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN:
-      process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '2c8fd10ebe58e830aeb025800e3874ea',
-    SHOPIFY_REVALIDATION_SECRET: process.env.SHOPIFY_REVALIDATION_SECRET || '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',
+type ShopifyEnv = z.infer<typeof shopifyEnvSchema>
+
+function validateShopifyEnv(): ShopifyEnv {
+  const result = shopifyEnvSchema.safeParse({
+    SHOPIFY_STORE_DOMAIN: readShopifyStoreDomain(),
+    SHOPIFY_STOREFRONT_ACCESS_TOKEN: readShopifyStorefrontToken(),
+    SHOPIFY_API_VERSION: process.env.SHOPIFY_API_VERSION ?? '2025-01',
   })
 
   if (!result.success) {
-    console.error('❌ Invalid environment variables:')
+    console.error('Invalid environment variables:')
     result.error.errors.forEach((err) => {
       console.error(`  → ${err.path.join('.')}: ${err.message}`)
     })
-    throw new Error('Invalid environment variables. Check .env.example for required variables.')
+    throw new Error('Invalid environment variables. Copy .env.example to .env.local and fill in values.')
   }
 
   return result.data
 }
 
-export const env = validateEnv()
+/** Server-side Shopify Storefront API config (validated at import). */
+export const env = validateShopifyEnv()
+
+/** Webhook revalidation secret — validated when the revalidate route runs. */
+export function getRevalidationSecret(): string {
+  const result = revalidationSecretSchema.safeParse(process.env.SHOPIFY_REVALIDATION_SECRET)
+  if (!result.success) {
+    const message = result.error.errors.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ')
+    throw new Error(`Invalid SHOPIFY_REVALIDATION_SECRET: ${message}`)
+  }
+  return result.data
+}

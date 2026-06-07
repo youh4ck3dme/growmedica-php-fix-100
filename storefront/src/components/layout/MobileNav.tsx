@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect } from 'react'
+import Logo from '@/components/ui/Logo'
 
 interface MobileNavProps {
   isOpen: boolean
@@ -10,7 +11,6 @@ interface MobileNavProps {
 }
 
 export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
-  // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -24,14 +24,12 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
 
   return (
     <>
-      {/* Overlay */}
       <div
-        className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
+        className="fixed inset-0 z-40 bg-[#101615]/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
       <nav
         id="mobile-nav"
         className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white shadow-xl"
@@ -39,20 +37,9 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
         role="dialog"
         aria-modal="true"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] p-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 font-bold text-[var(--color-primary)] text-lg"
-            onClick={onClose}
-          >
-            <div
-              className="flex h-7 w-7 items-center justify-center rounded-lg"
-              style={{ background: 'var(--color-primary)' }}
-            >
-              <span className="text-white text-xs font-black">G</span>
-            </div>
-            Grow Medical
+        <div className="flex items-center justify-between border-b border-(--color-border) p-4">
+          <Link href="/" onClick={onClose} aria-label="GrowMedica.sk — domov">
+            <Logo iconSize={28} />
           </Link>
 
           <button
@@ -66,14 +53,14 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
           </button>
         </div>
 
-        {/* Nav links */}
         <ul className="flex-1 overflow-y-auto p-4 space-y-1">
           {links.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
                 onClick={onClose}
-                className="flex items-center px-3 py-3 text-base font-medium text-[var(--color-text)] rounded-lg hover:bg-[var(--color-surface-2)] transition-colors"
+                className="flex items-center px-3 py-3 text-base font-medium text-(--color-text) rounded-lg hover:bg-(--color-primary-light) hover:text-(--color-primary-dark) transition-colors"
+                style={{ fontFamily: 'Montserrat, sans-serif' }}
               >
                 {link.label}
               </Link>
@@ -81,9 +68,8 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
           ))}
         </ul>
 
-        {/* Footer */}
-        <div className="border-t border-[var(--color-border)] p-4">
-          <p className="text-xs text-[var(--color-text-light)]">© {new Date().getFullYear()} Grow Medical</p>
+        <div className="border-t border-(--color-border) p-4">
+          <p className="text-xs text-(--color-text-light)">© {new Date().getFullYear()} GrowMedica.sk</p>
         </div>
       </nav>
     </>

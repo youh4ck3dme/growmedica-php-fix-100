@@ -1,41 +1,30 @@
-import { test, expect, Page } from '@playwright/test';
-
-// Pomocná funkcia na prijatie cookies
-async function acceptCookies(page: Page) {
-  const cookieButton = page.getByRole('button', { name: 'Prijať všetky' });
-  try {
-    if (await cookieButton.isVisible({ timeout: 2000 })) {
-      await cookieButton.click();
-      await expect(cookieButton).toBeHidden();
-    }
-  } catch {
-    // Ak sa nezobrazí, pokračujeme
-  }
-}
+import { test, expect } from '@playwright/test';
+import { acceptCookies } from '../helpers/cookies';
+import { BRAND_COPY } from '../fixtures/brand';
 
 test.describe('1. Domovská stránka (Homepage)', () => {
   test('1. Mal by načítať domovskú stránku a overiť hlavný nadpis v Hero sekcii', async ({ page }) => {
     await page.goto('/');
     const heroHeading = page.locator('h1');
     await expect(heroHeading).toBeVisible();
-    await expect(heroHeading).toContainText('Prémiová výživa pre');
+    await expect(heroHeading).toContainText(BRAND_COPY.heroTitle);
   });
 
   test('2. Mal by zobraziť logo a názov obchodu growmedica v hlavičke', async ({ page }) => {
     await page.goto('/');
     const logo = page.locator('#site-logo');
     await expect(logo).toBeVisible();
-    await expect(logo).toContainText('growmedica');
+    await expect(logo).toContainText('Medica');
   });
 
   test('3. Mal by zobraziť USP panel s benefitmi', async ({ page }) => {
     await page.goto('/');
     const uspBar = page.locator('.usp-bar');
     await expect(uspBar).toBeVisible();
-    await expect(uspBar).toContainText('Doručenie do 24 hodín');
+    await expect(uspBar).toContainText('DÔVERYHODNOSŤ');
   });
 
-  test('4. Mal by obsahovať hlavné navigačné odkazy na produkty a kolekcie', async ({ page }) => {
+  test('4. Mal by obsahovať hlavné navigačné odkazy na produkty a kategórie', async ({ page }) => {
     await page.goto('/');
     const isMobile = await page.locator('#mobile-nav-toggle').isVisible();
     if (isMobile) {
@@ -44,22 +33,22 @@ test.describe('1. Domovská stránka (Homepage)', () => {
       const nav = page.locator('nav[aria-label="Hlavná navigácia"]');
       await expect(nav).toBeVisible();
       await expect(nav.locator('a[href="/produkty"]')).toBeVisible();
-      await expect(nav.locator('a[href="/kolekcie"]')).toBeVisible();
+      await expect(nav.locator('a[href="/kolekcie/vitaminy-mineraly"]').first()).toBeVisible();
     }
   });
 
-  test('5. Mal by obsahovať sekciu "Nakupujte podľa kategórie"', async ({ page }) => {
+  test('5. Mal by obsahovať sekciu "Nakupujte podľa kategórie" s dynamickými kolekciami', async ({ page }) => {
     await page.goto('/');
     const categoriesSection = page.locator('section[aria-labelledby="categories-heading"]');
     await expect(categoriesSection).toBeVisible();
-    await expect(categoriesSection.locator('a[href="/kolekcie/balicky-zdravia"]')).toBeVisible();
+    await expect(categoriesSection.locator('a[href="/kolekcie/vitaminy-mineraly"]')).toBeVisible();
   });
 
   test('6. Mal by obsahovať sekciu "Obľúbené produkty"', async ({ page }) => {
     await page.goto('/');
     const featuredHeading = page.locator('#featured-heading');
     await expect(featuredHeading).toBeVisible();
-    await expect(featuredHeading).toContainText('Obľúbené produkty');
+    await expect(featuredHeading).toContainText('Najpredávanejšie produkty');
   });
 
   test('7. Mal by obsahovať sekciu "Prečo Growmedica" so SEO popisom', async ({ page }) => {
@@ -82,7 +71,7 @@ test.describe('2. Navigácia a Statické Podstránky', () => {
     await page.goto('/o-nas');
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText('O spoločnosti Grow Medical');
+    await expect(heading).toContainText(BRAND_COPY.aboutPageTitle);
   });
 
   test('10. Mal by úspešne načítať podstránku "Doprava a platba"', async ({ page }) => {
@@ -170,11 +159,12 @@ test.describe('3. Produkty a Kolekcie', () => {
     await expect(heading).toContainText('Kolekcie produktov');
   });
 
-  test('20. Mal by úspešne načítať konkrétnu kolekciu (frontpage)', async ({ page }) => {
-    await page.goto('/kolekcie/frontpage');
+  test('20. Mal by úspešne načítať konkrétnu kolekciu s produktmi', async ({ page }) => {
+    await page.goto('/kolekcie/regeneracia');
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText('Domovská stránka');
+    await expect(heading).toContainText('Regeneračné doplnky');
+    await expect(page.locator('article.product-card').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('21. Mal by pri neexistujúcej alebo prázdnej kolekcii zobraziť prázdny stav (EmptyState)', async ({ page }) => {
@@ -195,7 +185,7 @@ test.describe('3. Produkty a Kolekcie', () => {
     
     const detailHeading = page.locator('h1');
     await expect(detailHeading).toBeVisible();
-    await expect(detailHeading).toContainText(productTitle.substring(0, 10)); // Overenie zhody časti názvu
+    await expect(detailHeading).toContainText(productTitle.substring(0, 10));
   });
 
   test('23. Mal by zobraziť stav zásob a výrobcu na detaile produktu', async ({ page }) => {
@@ -289,7 +279,6 @@ test.describe('5. Košík a Nákupný Proces', () => {
     if (await addToCartBtn.isEnabled()) {
       await addToCartBtn.click();
       
-      // Počkáme, kým sa zmení stav v košíku v hlavičke
       const cartIcon = page.locator('#cart-button');
       await expect(cartIcon).toContainText('1');
       
@@ -310,7 +299,6 @@ test.describe('5. Košík a Nákupný Proces', () => {
     if (await addToCartBtn.isEnabled()) {
       await addToCartBtn.click();
       
-      // Počkáme, kým sa zmení stav v košíku v hlavičke
       const cartIcon = page.locator('#cart-button');
       await expect(cartIcon).toContainText('1');
       

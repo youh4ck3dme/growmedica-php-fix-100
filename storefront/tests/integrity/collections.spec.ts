@@ -1,0 +1,69 @@
+import { test, expect } from '@playwright/test'
+
+test.describe('Collections — catalog navigation', () => {
+  test('/kolekcie vracia aspoň 10 kategórií s produktmi', async ({ request }) => {
+    const response = await request.get('/kolekcie')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    expect(html).toContain('Kolekcie produktov')
+    expect(html).not.toContain('/kolekcie/frontpage')
+    expect(html).toContain('/kolekcie/vitaminy-mineraly')
+    expect(html).toContain('/kolekcie/regeneracia')
+    expect(html).toContain('/kolekcie/specialna-vyziva')
+  })
+
+  test('/kolekcie/vitaminy-mineraly zobrazí produkty z katalógu', async ({ request }) => {
+    const response = await request.get('/kolekcie/vitaminy-mineraly')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    expect(html).toContain('Vitamíny a minerály')
+    expect(html).toContain('product-card')
+  })
+
+  test('/kolekcie/regeneracia zobrazí produkty', async ({ request }) => {
+    const response = await request.get('/kolekcie/regeneracia')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    expect(html).toContain('Regeneračné doplnky')
+    expect(html).toContain('product-card')
+  })
+
+  test('/kolekcie/frontpage vracia 404', async ({ request }) => {
+    const response = await request.get('/kolekcie/frontpage')
+    expect(response.status()).toBe(404)
+  })
+
+  test('legacy /kolekcia/:slug presmeruje na /kolekcie/:slug', async ({ request }) => {
+    const response = await request.get('/kolekcia/vitaminy-mineraly', { maxRedirects: 0 })
+    expect(response.status()).toBe(308)
+    expect(response.headers()['location']).toBe('/kolekcie/vitaminy-mineraly')
+  })
+
+  test('legacy /kolekcie/doplnky-vyzivy presmeruje na vitaminy-mineraly', async ({ request }) => {
+    const response = await request.get('/kolekcie/doplnky-vyzivy', { maxRedirects: 0 })
+    expect(response.status()).toBe(308)
+    expect(response.headers()['location']).toBe('/kolekcie/vitaminy-mineraly')
+  })
+
+  test('footer menu obsahuje nové kategórie', async ({ request }) => {
+    const response = await request.get('/')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    expect(html).toContain('VITAMÍNY A MINERÁLY')
+    expect(html).toContain('/kolekcie/vitaminy-mineraly')
+    expect(html).not.toContain('/kolekcie/doplnky-vyzivy')
+  })
+
+  test('header obsahuje top kategórie', async ({ request }) => {
+    const response = await request.get('/')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    expect(html).toContain('/kolekcie/vitaminy-mineraly')
+    expect(html).toContain('id="categories-dropdown-toggle"')
+  })
+})

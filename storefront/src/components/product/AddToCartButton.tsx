@@ -100,7 +100,7 @@ export default function AddToCartButton({
       </Button>
 
       {error && (
-        <p className="text-sm text-[var(--color-error)] text-center" role="alert">
+        <p className="text-sm text-(--color-error) text-center" role="alert">
           {error}
         </p>
       )}

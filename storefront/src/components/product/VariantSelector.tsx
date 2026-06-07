@@ -53,12 +53,12 @@ export default function VariantSelector({ product, onVariantChange }: VariantSel
         <div key={option.id}>
           <div className="flex items-center gap-2 mb-2">
             <label
-              className="text-sm font-semibold text-[var(--color-text)]"
+              className="text-sm font-semibold text-(--color-text)"
               id={`option-label-${option.name}`}
             >
               {option.name}:
             </label>
-            <span className="text-sm text-[var(--color-text-muted)]">
+            <span className="text-sm text-(--color-text-muted)">
               {selectedOptions[option.name]}
             </span>
           </div>
@@ -84,10 +84,10 @@ export default function VariantSelector({ product, onVariantChange }: VariantSel
                   className={cn(
                     'px-3 py-2 rounded-lg text-sm font-medium border transition-all',
                     selected
-                      ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+                      ? 'border-(--color-primary) bg-(--color-primary) text-white'
                       : available
-                      ? 'border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
-                      : 'border-[var(--color-border)] text-[var(--color-text-light)] opacity-50 cursor-not-allowed line-through'
+                      ? 'border-(--color-border) text-(--color-text) hover:border-(--color-primary) hover:text-(--color-primary)'
+                      : 'border-(--color-border) text-(--color-text-light) opacity-50 cursor-not-allowed line-through'
                   )}
                 >
                   {value}
@@ -100,12 +100,12 @@ export default function VariantSelector({ product, onVariantChange }: VariantSel
 
       {/* Variant info */}
       {selectedVariant && (
-        <div className="text-xs text-[var(--color-text-muted)] pt-1">
+        <div className="text-xs text-(--color-text-muted) pt-1">
           {selectedVariant.sku && <span>SKU: {selectedVariant.sku}</span>}
           {selectedVariant.quantityAvailable !== null &&
             selectedVariant.quantityAvailable > 0 &&
             selectedVariant.quantityAvailable <= 10 && (
-              <span className="ml-3 text-[var(--color-warning)] font-medium">
+              <span className="ml-3 text-(--color-warning) font-medium">
                 Zostatok: {selectedVariant.quantityAvailable} ks
               </span>
             )}

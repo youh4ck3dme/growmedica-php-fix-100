@@ -10,6 +10,9 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "test": "playwright test",
+    "test:integrity": "playwright test --project=integrity",
+    "generate:category-fixture": "node scripts/generate-category-coverage-fixture.mjs",
+    "test:e2e": "playwright test --project=e2e-chromium --project=e2e-mobile",
     "test:ui": "playwright test --ui"
   },
   "dependencies": {

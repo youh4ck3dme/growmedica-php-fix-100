@@ -8,19 +8,10 @@
  * - ISR-friendly cache strategy
  */
 
+import { env } from '@/lib/env'
 import type { ShopifyResponse } from './types'
 
-const SHOPIFY_STORE_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'tn43yx-0k.myshopify.com'
-const SHOPIFY_STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '2c8fd10ebe58e830aeb025800e3874ea'
-const SHOPIFY_API_VERSION = '2025-01'
-
-if (!SHOPIFY_STORE_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
-  throw new Error(
-    '❌ Missing Shopify environment variables. Copy .env.example to .env.local and fill in the values.'
-  )
-}
-
-const SHOPIFY_GRAPHQL_URL = `https://${SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`
+const SHOPIFY_GRAPHQL_URL = `https://${env.SHOPIFY_STORE_DOMAIN}/api/${env.SHOPIFY_API_VERSION}/graphql.json`
 
 interface ShopifyFetchOptions {
   query: string
@@ -50,8 +41,8 @@ export async function shopifyFetch<T>({
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
-      'X-Shopify-Api-Version': SHOPIFY_API_VERSION,
+      'X-Shopify-Storefront-Access-Token': env.SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+      'X-Shopify-Api-Version': env.SHOPIFY_API_VERSION,
     },
     body: JSON.stringify({ query, variables }),
     cache,

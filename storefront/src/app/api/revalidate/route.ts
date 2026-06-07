@@ -1,10 +1,19 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
+import { getRevalidationSecret } from '@/lib/env'
 
 export async function POST(request: NextRequest) {
+  let expectedSecret: string
+  try {
+    expectedSecret = getRevalidationSecret()
+  } catch (error) {
+    console.error('[Revalidation] Config error:', error)
+    return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+  }
+
   const secret = request.headers.get('x-revalidation-secret')
 
-  if (secret !== process.env.SHOPIFY_REVALIDATION_SECRET) {
+  if (secret !== expectedSecret) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

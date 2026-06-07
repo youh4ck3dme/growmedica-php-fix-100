@@ -26,7 +26,7 @@ export function Price({ price, compareAtPrice, className, size = 'md' }: PricePr
         className={cn(
           'font-semibold tabular-nums',
           sizeClass,
-          hasDiscount ? 'text-[var(--color-error)]' : 'text-[var(--color-text)]'
+          hasDiscount ? 'text-(--color-error)' : 'text-(--color-text)'
         )}
       >
         {formatMoney(price)}
@@ -36,7 +36,7 @@ export function Price({ price, compareAtPrice, className, size = 'md' }: PricePr
         <>
           <span
             className={cn(
-              'text-[var(--color-text-light)] line-through tabular-nums',
+              'text-(--color-text-light) line-through tabular-nums',
               size === 'lg' ? 'text-base' : 'text-sm'
             )}
           >

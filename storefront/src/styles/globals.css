@@ -1,55 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
-/* ─── Design Tokens — Growmedica Brand ────────────────────────────────────── */
+/* ─── Design Tokens — GrowMedica.sk Brand Board ─────────────────────────── */
 
 @layer base {
   :root {
-    /* Brand — Navy Blue (logo, navbar, footer, buttons) */
-    --color-primary: #1E3A5F;
-    --color-primary-dark: #152B46;
-    --color-primary-light: #D0DCF0;
+    /* Brand — Teal primary */
+    --color-primary: #35C79A;
+    --color-primary-dark: #2AA882;
+    --color-primary-light: #E7F8F2;
 
-    /* Accent — Leaf Green (in stock, hover accents) */
-    --color-accent-green: #6BAE2E;
-    --color-accent-green-dark: #4E8A1E;
+    /* Accent */
+    --color-accent-blue: #4FA3FF;
+    --color-accent-green: #35C79A;
+    --color-accent-green-dark: #2AA882;
+    --color-accent-gold: #E8A317;
 
-    /* Gold — highlights */
-    --color-accent-gold: #D4920A;
-
-    /* Backgrounds */
-    --color-bg: #F5F7FA;
+    /* Neutrals */
+    --color-neutral-warm: #D8D3C8;
+    --color-bg: #FFFFFF;
     --color-surface: #FFFFFF;
-    --color-surface-2: #EEF2F7;
+    --color-surface-2: #F9FAFB;
 
     /* Text */
-    --color-text: #1A202C;
-    --color-text-muted: #2D3748;
-    --color-text-light: #4A5568;
+    --color-text: #101615;
+    --color-text-muted: #4B5563;
+    --color-text-light: #9CA3AF;
 
     /* Borders */
-    --color-border: #DDE3EE;
-    --color-border-focus: #1E3A5F;
+    --color-border: #E5E7EB;
+    --color-border-focus: #35C79A;
 
     /* Status */
-    --color-success: #6BAE2E;
-    --color-warning: #D4920A;
-    --color-error: #C53030;
+    --color-success: #35C79A;
+    --color-warning: #E8A317;
+    --color-error: #DC2626;
 
     /* Footer */
-    --color-footer-bg: #1E3A5F;
-    --color-footer-text: #CBD5E0;
-    --color-footer-border: #2D5282;
+    --color-footer-bg: #101615;
+    --color-footer-text: #D1D5DB;
+    --color-footer-border: #374151;
 
     /* Shadows */
-    --shadow-card: 0 1px 3px rgba(30,58,95,0.07), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-hover: 0 8px 24px rgba(30,58,95,0.14), 0 2px 6px rgba(0,0,0,0.06);
-    --shadow-modal: 0 20px 60px rgba(0,0,0,0.18);
+    --shadow-card: 0 1px 3px rgba(16, 22, 21, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-hover: 0 8px 24px rgba(53, 199, 154, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+    --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.18);
 
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-base: 240ms ease;
     --transition-slow: 340ms ease-in-out;
+
+    /* Radius */
+    --radius-card: 12px;
+    --radius-btn: 8px;
   }
 
   html {
@@ -77,10 +81,9 @@
   }
 }
 
-/* ─── Components ─────────────────────────────────────────────────────────────── */
+/* ─── Components ─────────────────────────────────────────────────────────── */
 
 @layer components {
-  /* Container */
   .container {
     width: 100%;
     max-width: 1280px;
@@ -96,7 +99,6 @@
     .container { padding-inline: 2rem; }
   }
 
-  /* Product Grid */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -111,11 +113,10 @@
     .product-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
   }
 
-  /* Product Card — Growmedica style */
   .product-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
+    border-radius: var(--radius-card);
     overflow: hidden;
     box-shadow: var(--shadow-card);
     transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
@@ -126,15 +127,14 @@
   .product-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
-    border-color: var(--color-primary-light);
+    border-color: var(--color-primary);
   }
 
-  /* Badge */
   .badge {
     display: inline-flex;
     align-items: center;
     padding: 0.15rem 0.55rem;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.03em;
@@ -143,21 +143,20 @@
     font-family: 'Montserrat', sans-serif;
   }
 
-  .badge-success { background: #E8F7D8; color: #3A7A10; }
-  .badge-error   { background: #FCEAEA; color: #9B1515; }
-  .badge-warning { background: #FEF3C7; color: #7A4E05; }
-  .badge-brand   { background: var(--color-primary-light); color: var(--color-primary); }
-  .badge-muted   { background: #EEF2F7; color: var(--color-text-muted); }
+  .badge-success { background: var(--color-primary-light); color: var(--color-primary-dark); }
+  .badge-error   { background: #FEE2E2; color: #991B1B; }
+  .badge-warning { background: #FEF3C7; color: #92400E; }
+  .badge-brand   { background: var(--color-primary-light); color: var(--color-primary-dark); }
+  .badge-muted   { background: var(--color-surface-2); color: var(--color-text-muted); }
   .badge-gold    { background: #FEF3C7; color: var(--color-accent-gold); }
   .badge-sale    { background: var(--color-accent-gold); color: white; }
-  .badge-new     { background: var(--color-accent-green); color: white; }
+  .badge-new     { background: var(--color-primary); color: white; }
 
-  /* Skeleton */
   .skeleton {
-    background: linear-gradient(90deg, #DDE3EE 25%, #EEF2F7 50%, #DDE3EE 75%);
+    background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: 0.4rem;
+    border-radius: 0.5rem;
   }
 
   @keyframes shimmer {
@@ -165,14 +164,13 @@
     100% { background-position: -200% 0; }
   }
 
-  /* Buttons — Growmedica */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     padding: 0.6rem 1.25rem;
-    border-radius: 4px;
+    border-radius: var(--radius-btn);
     font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -190,7 +188,6 @@
     cursor: not-allowed;
   }
 
-  /* Primary = Navy (main CTA, DETAIL button) */
   .btn-primary {
     background: var(--color-primary);
     color: white;
@@ -202,7 +199,6 @@
     border-color: var(--color-primary-dark);
   }
 
-  /* Secondary = Outline Navy */
   .btn-secondary {
     background: transparent;
     border-color: var(--color-primary);
@@ -214,16 +210,15 @@
     color: white;
   }
 
-  /* Green = In stock / success action */
   .btn-green {
-    background: var(--color-accent-green);
+    background: var(--color-primary);
     color: white;
-    border-color: var(--color-accent-green);
+    border-color: var(--color-primary);
   }
 
   .btn-green:hover:not(:disabled) {
-    background: var(--color-accent-green-dark);
-    border-color: var(--color-accent-green-dark);
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
   }
 
   .btn-ghost {
@@ -237,10 +232,24 @@
     color: var(--color-text);
   }
 
+  .btn-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+  }
+
+  .btn-icon:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+
   .btn-lg {
     padding: 0.875rem 1.75rem;
     font-size: 0.9375rem;
-    border-radius: 4px;
+    border-radius: var(--radius-btn);
   }
 
   .btn-sm {
@@ -250,24 +259,89 @@
 
   .btn-full { width: 100%; }
 
-  /* USP bar strip */
+  /* USP value props strip */
   .usp-bar {
-    background: var(--color-primary);
-    color: white;
-    padding: 0.625rem 0;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    background: var(--color-primary-light);
+    color: var(--color-text);
+    padding: 1.25rem 0;
   }
 
-  /* Section headings — Growmedica style */
+  .usp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+  }
+
+  /* Trust strip — subpages only (hidden on homepage via component) */
+  .trust-strip {
+    background: var(--color-primary-light);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 0;
+  }
+
+  .trust-strip-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .trust-strip-tagline {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary-dark);
+    text-align: center;
+  }
+
+  .trust-strip-stats {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .trust-strip-stats {
+      display: flex;
+    }
+  }
+
+  .trust-strip-stat {
+    padding: 0.2rem 0.625rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .trust-strip-link {
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .trust-strip-link:hover {
+    color: var(--color-primary-dark);
+  }
+
   .section-label {
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-accent-green-dark);
+    color: var(--color-primary);
     font-family: 'Montserrat', sans-serif;
     margin-bottom: 0.375rem;
   }
@@ -275,7 +349,7 @@
   .section-heading {
     font-size: 1.625rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-text);
     font-family: 'Montserrat', sans-serif;
     line-height: 1.25;
   }
@@ -283,9 +357,26 @@
   @media (min-width: 1024px) {
     .section-heading { font-size: 2rem; }
   }
-}
 
-/* ─── Utilities ───────────────────────────────────────────────────────────────── */
+  .search-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--color-primary-light);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .search-pill:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(53, 199, 154, 0.15);
+  }
+}
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
@@ -293,7 +384,6 @@
   .aspect-product { aspect-ratio: 1 / 1; }
   .font-montserrat { font-family: 'Montserrat', sans-serif; }
 
-  /* Prose reset for Shopify bodyHtml */
   .product-description h1,
   .product-description h2,
   .product-description h3 {
@@ -301,7 +391,7 @@
     font-family: 'Montserrat', sans-serif;
     margin-top: 1.25em;
     margin-bottom: 0.5em;
-    color: var(--color-primary);
+    color: var(--color-text);
   }
 
   .product-description p {
