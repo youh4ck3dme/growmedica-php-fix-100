@@ -30,8 +30,9 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# vercel
-.vercel
+# Vercel CLI link metadata (projectId/orgId — never commit)
+.vercel/
+**/.vercel/
 
 # typescript
 *.tsbuildinfo

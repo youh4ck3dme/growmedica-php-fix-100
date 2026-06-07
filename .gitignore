@@ -13,4 +13,8 @@ stats/
 export/shopify/*.csv
 reports/*.csv
 docs/products_export_shopify.zip
-.vercel
+
+# Vercel CLI link metadata (projectId/orgId — never commit)
+.vercel/
+**/.vercel/
+storefront/.vercel/

@@ -252,6 +252,8 @@ Očakávané: `401` (zlý secret) alebo `200` (platný secret). `302` z Apache =
 ## Bezpečnosť
 
 - Nikdy necommituj `.env.local`, tokeny, `shpat_*`, PDF/ZIP exporty
+- Nikdy necommituj `storefront/.vercel/project.json` ani koreňové `.vercel/repo.json` (obsahujú `projectId` / `orgId` — len lokálne po `vercel link`)
+- Integrity test `tests/integrity/vercel-secrets-guard.spec.ts` kontroluje, že tieto súbory nie sú v git indexe ani v histórii
 - Nikdy nevypisuj secrets v logoch, PR popisoch ani CI outputoch
 - `storefront/.env.local` chmod `600` (nastavuje `pull-env-from-vercel.sh`)
 - GitGuardian check na PR — secrets audit musí byť PASS
