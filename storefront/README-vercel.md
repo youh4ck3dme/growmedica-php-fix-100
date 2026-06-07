@@ -4,7 +4,7 @@ Referenčná dokumentácia pre deploy, env workflow a CLI príkazy.
 
 | | |
 |---|---|
-| **GitHub repo** | `youh4ck3dme/growmedica-php-fix-100` |
+| **GitHub repo** | `youh4ck3dme/growmedica-nextjs-storefront` |
 | **Vercel team** | `h4ck3d` |
 | **Vercel project** | `growmedicanextjs` |
 | **Production URL** | https://growmedicanextjs.vercel.app |
