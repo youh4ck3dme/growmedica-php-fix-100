@@ -98,6 +98,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'regeneracia',
     title: 'Regeneračné doplnky',
     menuLabel: 'REGENERÁCIA',
+    icon: '🔄',
     navPriority: 2,
     showInHeader: true,
     description: 'Podpora regenerácie po záťaži a športe.',
@@ -110,6 +111,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'zdrave-potraviny',
     title: 'Zdravé potraviny',
     menuLabel: 'ZDRAVÉ POTRAVINY',
+    icon: '🥗',
     navPriority: 3,
     showInHeader: true,
     description: 'Prírodné potraviny a superpotraviny pre každodennú stravu.',
@@ -122,6 +124,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'klby-pohyb',
     title: 'Kĺby a pohyb',
     menuLabel: 'KĹBY A POHYB',
+    icon: '🦴',
     navPriority: 5,
     showInHeader: false,
     rules: [
@@ -146,6 +149,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'travenie',
     title: 'Trávenie',
     menuLabel: 'TRÁVENIE',
+    icon: '🫄',
     navPriority: 7,
     showInHeader: true,
     rules: [{ kind: 'tag', value: 'Trávenie', match: 'ci' }],
@@ -154,6 +158,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'srdce-cievy',
     title: 'Srdce a cievy',
     menuLabel: 'SRDCE A CIEVY',
+    icon: '❤️',
     navPriority: 8,
     showInHeader: false,
     rules: [
@@ -165,6 +170,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'spanok-stres',
     title: 'Spánok a stres',
     menuLabel: 'SPÁNOK A STRES',
+    icon: '😴',
     navPriority: 9,
     showInHeader: false,
     rules: [
@@ -178,6 +184,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     slug: 'detox-pecen',
     title: 'Detox a pečeň',
     menuLabel: 'DETOX A PEČEŇ',
+    icon: '🧹',
     navPriority: 10,
     showInHeader: false,
     rules: [

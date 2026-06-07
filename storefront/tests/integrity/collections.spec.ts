@@ -82,4 +82,33 @@ test.describe('Collections — catalog navigation', () => {
     await expect(panel).toBeVisible()
     await expect(panel.getByRole('link', { name: /Vitamíny a minerály/i })).toBeVisible()
   })
+
+  test('mega menu: každá kategória má ikonku', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    const trigger = page.locator('#category-mega-menu-trigger')
+    await expect(trigger).toBeVisible()
+
+    await trigger.hover()
+    await page.waitForTimeout(400)
+
+    const panel = page.locator('#category-mega-menu-panel')
+    await expect(panel).toBeVisible()
+
+    const items = page.locator('.mega-menu-list-item')
+    const count = await items.count()
+    expect(count).toBeGreaterThanOrEqual(14)
+
+    for (let i = 0; i < count; i++) {
+      const item = items.nth(i)
+      const icon = item.locator('.mega-menu-list-icon')
+      await expect(icon, `item ${i} missing icon`).toBeVisible()
+      await expect(icon).not.toBeEmpty()
+    }
+
+    await items.first().hover()
+    await page.waitForTimeout(200)
+    await expect(panel.locator('.mega-hero-icon')).toBeVisible()
+  })
 })
