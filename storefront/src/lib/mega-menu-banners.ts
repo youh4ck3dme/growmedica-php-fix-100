@@ -12,6 +12,10 @@ export const MEGA_MENU_BANNER_HANDLES = [
   'klby-pohyb',
   'zdrave-potraviny',
   'krasa-pokozka',
+  'aminokyseliny',
+  'detox-pecen',
+  'spanok-stres',
+  'specialna-vyziva',
 ] as const satisfies readonly MainCategory[]
 
 export type MegaMenuBannerHandle = (typeof MEGA_MENU_BANNER_HANDLES)[number]

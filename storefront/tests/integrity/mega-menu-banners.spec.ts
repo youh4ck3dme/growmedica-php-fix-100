@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
-import { MEGA_MENU_BANNER_HANDLES } from '../../src/lib/mega-menu-banners'
+import { MEGA_MENU_BANNER_HANDLES, getMegaMenuBannerSrc } from '../../src/lib/mega-menu-banners'
 
 const BANNERS_DIR = path.join(process.cwd(), 'public', 'images', 'mega-menu')
 
@@ -19,6 +19,10 @@ test.describe('Mega menu banners — static assets', () => {
       expect(response.status(), handle).toBe(200)
       expect(response.headers()['content-type']).toContain('image')
     }
+  })
+  test('handles bez banner asset map vracajú null', () => {
+    expect(getMegaMenuBannerSrc('ostatne')).toBeNull()
+    expect(getMegaMenuBannerSrc('unknown-slug')).toBeNull()
   })
 })
 
@@ -43,7 +47,7 @@ test.describe('Mega menu banners — UI', () => {
     expect(decodeURIComponent(src ?? '')).toContain('/images/mega-menu/vitaminy-mineraly.webp')
   })
 
-  test('mega menu: kategória bez banneru ostáva na gradient fallback', async ({ page }) => {
+  test('mega menu: všetkých 14 nav kategórií má WebP banner', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
@@ -51,12 +55,20 @@ test.describe('Mega menu banners — UI', () => {
     await page.waitForTimeout(400)
 
     const panel = page.locator('#category-mega-menu-panel')
-    const spanokLink = panel.getByRole('link', { name: /Spánok a stres/i })
-    await spanokLink.hover()
-    await page.waitForTimeout(200)
+    await expect(panel).toBeVisible()
 
-    await expect(panel.locator('.mega-hero-banner--has-image')).toHaveCount(0)
-    await expect(panel.locator('.mega-hero-title')).toContainText('Spánok a stres')
+    const items = panel.locator('.mega-menu-list-item')
+    const count = await items.count()
+    expect(count).toBeGreaterThanOrEqual(14)
+
+    for (let i = 0; i < count; i++) {
+      await items.nth(i).hover()
+      await page.waitForTimeout(200)
+      await expect(
+        panel.locator('.mega-hero-banner--has-image'),
+        `item ${i} missing banner`,
+      ).toBeVisible()
+    }
   })
 })
 
