@@ -303,8 +303,10 @@ export async function getCollectionViewByHandle(
   })
 
   const products = result.edges.map((e) => e.node)
+
+  // page 1 with no products → category is genuinely empty (return null → 404)
+  // page > 1 with no products → valid empty page, return CollectionView with products: []
   if (products.length === 0 && page === 1) return null
-  if (products.length === 0) return null
 
   return {
     handle: slug,
