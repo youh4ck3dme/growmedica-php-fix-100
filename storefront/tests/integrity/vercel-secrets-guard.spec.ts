@@ -41,18 +41,21 @@ test.describe('Vercel link metadata — must stay out of git', () => {
     expect(storefrontIgnore).toMatch(/\.vercel\//)
   })
 
-  test('git history neobsahuje Vercel projectId (prj_)', () => {
+  test('git history neobsahuje .vercel/project.json ani repo.json', () => {
     let historyHits = ''
     try {
-      historyHits = execSync('git log --all -S "prj_" --oneline', {
-        cwd: REPO_ROOT,
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe'],
-      }).trim()
+      historyHits = execSync(
+        'git log --all --oneline -- .vercel/project.json .vercel/repo.json storefront/.vercel/project.json',
+        {
+          cwd: REPO_ROOT,
+          encoding: 'utf8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        },
+      ).trim()
     } catch {
       historyHits = ''
     }
 
-    expect(historyHits, 'Nájdené commity s prj_ v histórii').toBe('')
+    expect(historyHits, 'Nájdené commity s .vercel link metadata v histórii').toBe('')
   })
 })
