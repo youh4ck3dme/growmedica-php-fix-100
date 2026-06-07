@@ -3,12 +3,12 @@
  */
 
 import type { Metadata } from 'next'
+import { BRAND_COPY } from './brand'
 import type { Product, Collection } from './shopify/types'
 
-const SITE_NAME = 'Grow Medical'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedical.sk'
-const SITE_DESCRIPTION =
-  'Prémiové doplnky výživy, proteíny a zdravotné produkty. Odborná výživa pre aktívnych ľudí.'
+const SITE_NAME = BRAND_COPY.siteName
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedica.nexify-studio.tech'
+const SITE_DESCRIPTION = BRAND_COPY.siteDescription
 
 export const DEFAULT_METADATA: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,6 +36,13 @@ export const DEFAULT_METADATA: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+}
+
+export function buildPageMetadata(title: string, description?: string): Metadata {
+  return {
+    title,
+    ...(description ? { description } : {}),
+  }
 }
 
 export function getProductMetadata(product: Product): Metadata {
@@ -140,5 +147,16 @@ export function getBreadcrumbJsonLd(
       name: item.name,
       item: item.item,
     })),
+  }
+}
+
+export function getOrganizationJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: BRAND_COPY.heroSubtitle,
+    slogan: BRAND_COPY.heroSubtitleShort,
   }
 }

@@ -1,4 +1,11 @@
 import type { NextConfig } from 'next'
+import { getLegacyRedirectEntries } from './src/lib/category-map'
+
+const categoryRedirects = getLegacyRedirectEntries().map(({ source, destination }) => ({
+  source,
+  destination,
+  permanent: true,
+}))
 
 const nextConfig: NextConfig = {
   images: {
@@ -35,6 +42,7 @@ const nextConfig: NextConfig = {
   // Legacy PHP URL redirects
   async redirects() {
     return [
+      ...categoryRedirects,
       {
         source: '/produkt/:slug',
         destination: '/produkty/:slug',
@@ -47,6 +55,16 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/kategoria/:slug',
+        destination: '/kolekcie/:slug',
+        permanent: true,
+      },
+      {
+        source: '/kolekcia/:slug',
+        destination: '/kolekcie/:slug',
+        permanent: true,
+      },
+      {
+        source: '/sk/kolekcia/:slug',
         destination: '/kolekcie/:slug',
         permanent: true,
       },

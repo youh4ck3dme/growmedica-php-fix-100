@@ -1,4 +1,7 @@
-.env.local
+.env
+.env.*
+!.env.example
+!.env.local.example
 dump.sql
 *.sql
 *.sql.gz
@@ -9,3 +12,5 @@ stats/
 .DS_Store
 export/shopify/*.csv
 reports/*.csv
+docs/products_export_shopify.zip
+.vercel
