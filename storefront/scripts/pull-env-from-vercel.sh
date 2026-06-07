@@ -7,15 +7,17 @@ ENV_FILE=".env.local"
 TMP=".env.vercel-pull.tmp"
 BACKUP=".env.local.backup.$(date +%Y%m%d-%H%M%S)"
 LOCAL_SITE_URL="${LOCAL_SITE_URL:-http://localhost:5555}"
+VERCEL_SCOPE="${VERCEL_SCOPE:-h4ck3d}"
+VERCEL_PROJECT="${VERCEL_PROJECT:-growmedicanextjs}"
 
 if ! command -v vercel >/dev/null 2>&1; then
   echo "Chyba: nainstaluj Vercel CLI (npm i -g vercel) a spusti vercel login"
   exit 1
 fi
 
-if [[ ! -d .vercel ]]; then
-  echo "Linkujem projekt growmedicanextjs..."
-  vercel link --yes
+if [[ ! -f .vercel/project.json ]]; then
+  echo "Linkujem projekt ${VERCEL_PROJECT} (team ${VERCEL_SCOPE})..."
+  vercel link --yes --project "$VERCEL_PROJECT" --scope "$VERCEL_SCOPE"
 fi
 
 if [[ -f "$ENV_FILE" ]]; then
@@ -23,7 +25,7 @@ if [[ -f "$ENV_FILE" ]]; then
   echo "Zaloha: $BACKUP"
 fi
 
-vercel env pull "$TMP" --environment=development --yes
+vercel env pull "$TMP" --environment=development --yes --scope "$VERCEL_SCOPE"
 
 get_var() {
   local key="$1"
@@ -48,7 +50,7 @@ missing=()
 
 if ((${#missing[@]})); then
   echo "Chyba: prazdne hodnoty z Vercel: ${missing[*]}"
-  echo "Skus: vercel login && vercel link --yes"
+  echo "Skus: vercel login && vercel teams switch h4ck3d && yarn pull:env"
   rm -f "$TMP"
   exit 1
 fi
@@ -72,6 +74,7 @@ echo ""
 echo "OK: $ENV_FILE z Vercel development env."
 echo ""
 echo "Kontrola (bez tokenov):"
-grep -E '^(SHOPIFY_STORE_DOMAIN|SHOPIFY_API_VERSION|NEXT_PUBLIC_SITE_URL)=' "$ENV_FILE"
+grep -q '^SHOPIFY_STORE_DOMAIN=.' "$ENV_FILE" && echo "SHOPIFY_STORE_DOMAIN=PRESENT" || echo "SHOPIFY_STORE_DOMAIN=MISSING"
+grep -E '^(SHOPIFY_API_VERSION|NEXT_PUBLIC_SITE_URL)=' "$ENV_FILE"
 grep -q '^SHOPIFY_STOREFRONT_ACCESS_TOKEN=.' "$ENV_FILE" && echo "SHOPIFY_STOREFRONT_ACCESS_TOKEN=PRESENT" || echo "SHOPIFY_STOREFRONT_ACCESS_TOKEN=MISSING"
 grep -q '^SHOPIFY_REVALIDATION_SECRET=.' "$ENV_FILE" && echo "SHOPIFY_REVALIDATION_SECRET=PRESENT" || echo "SHOPIFY_REVALIDATION_SECRET=MISSING"
