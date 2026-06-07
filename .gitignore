@@ -12,4 +12,5 @@ stats/
 .DS_Store
 export/shopify/*.csv
 reports/*.csv
+docs/products_export_shopify.zip
 .vercel

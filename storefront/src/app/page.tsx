@@ -2,7 +2,9 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Container } from '@/components/ui/Container'
 import { ProductGrid } from '@/components/product/ProductGrid'
+import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
+import { getHomepageCategories } from '@/lib/category-map'
 
 export const revalidate = 3600
 
@@ -51,24 +53,23 @@ const VALUE_PROPS = [
   },
 ]
 
-const CATEGORIES = [
-  { title: 'Balíčky zdravia', href: '/kolekcie/balicky-zdravia', icon: '💊' },
-  { title: 'Proteíny', href: '/kolekcie/proteiny', icon: '💪' },
-  { title: 'Aminokyseliny', href: '/kolekcie/aminokyseliny', icon: '⚡' },
-  { title: 'Vitamíny', href: '/kolekcie/vitaminy', icon: '🌿' },
-  { title: 'Mykologické produkty', href: '/kolekcie/mykologicke-produkty', icon: '🍄' },
-  { title: 'Zdravotné riešenia', href: '/kolekcie/zdravotne-riesenia', icon: '❤️' },
-  { title: 'Kosmetika', href: '/kolekcie/kosmetika', icon: '✨' },
-  { title: 'Pre zvieratá', href: '/kolekcie/pre-zvierata', icon: '🐾' },
-]
 
 export default async function HomePage() {
   let featuredProducts: Awaited<ReturnType<typeof getFeaturedProducts>> = []
+  let allCategories: Awaited<ReturnType<typeof getNavCollectionItems>> = []
   try {
-    featuredProducts = await getFeaturedProducts(8)
+    ;[featuredProducts, allCategories] = await Promise.all([
+      getFeaturedProducts(8),
+      getNavCollectionItems(),
+    ])
   } catch {
     // Shopify not configured
   }
+
+  const categoriesByHandle = new Map(allCategories.map((c) => [c.handle, c]))
+  const categories = getHomepageCategories()
+    .map((def) => categoriesByHandle.get(def.slug))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c))
 
   return (
     <div>
@@ -168,13 +169,15 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <Link
-                key={cat.href}
+                key={cat.handle}
                 href={cat.href}
                 className="group flex flex-col items-center text-center p-4 bg-white rounded-xl border border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-primary-light) hover:-translate-y-0.5 hover:shadow-md transition-all"
               >
-                <span className="text-2xl mb-2" aria-hidden="true">{cat.icon}</span>
+                {cat.icon && (
+                  <span className="text-2xl mb-2" aria-hidden="true">{cat.icon}</span>
+                )}
                 <h3
                   className="text-xs font-bold leading-tight text-(--color-text) group-hover:text-(--color-primary-dark)"
                   style={{ fontFamily: 'Montserrat, sans-serif' }}
@@ -184,10 +187,18 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+
+          <div className="mt-6 text-center">
+            <Link
+              href="/kolekcie"
+              className="text-sm font-semibold text-(--color-primary) hover:text-(--color-primary-dark) transition-colors"
+              style={{ fontFamily: 'Montserrat, sans-serif' }}
+            >
+              Všetky kategórie →
+            </Link>
+          </div>
         </Container>
       </section>
-
-      {/* Featured products */}
       <section
         className="py-12 lg:py-16 bg-(--color-surface-2)"
         aria-labelledby="featured-heading"

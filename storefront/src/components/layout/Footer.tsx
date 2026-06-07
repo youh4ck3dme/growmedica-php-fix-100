@@ -1,30 +1,38 @@
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import Logo from '@/components/ui/Logo'
+import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 
-const FOOTER_LINKS = {
-  'Menu': [
-    { href: '/kolekcie/balicky-zdravia', label: 'BALÍČKY ZDRAVIA' },
-    { href: '/kolekcie/zdravotne-riesenia', label: 'ZDRAVOTNÉ RIEŠENIA' },
-    { href: '/kolekcie/mykologicke-produkty', label: 'MYKOLOGICKÉ PRODUKTY' },
-    { href: '/kolekcie/doplnky-vyzivy', label: 'DOPLNKY VÝŽIVY' },
-    { href: '/kolekcie/zdravie', label: 'ZDRAVIE' },
-    { href: '/kolekcie/kozmetika', label: 'KOZMETIKA' },
-    { href: '/kolekcie/pre-zvierata', label: 'PRE ZVIERATÁ' },
-    { href: '/blog', label: 'BLOG' },
-  ],
-  'Informácie': [
-    { href: '/obchodne-podmienky', label: 'Obchodné podmienky' },
-    { href: '/reklamacny-poriadok', label: 'Reklamačný poriadok' },
-    { href: '/kontakt', label: 'Kontakt' },
-    { href: '/ochrana-osobnych-udajov', label: 'Ochrana osobných údajov' },
-    { href: '/doprava-a-platba', label: 'Doprava a platba' },
-    { href: '/faq', label: 'Často kladené otázky' },
-    { href: '/velkoobchod', label: 'Kontakt a Veľkoobchodná spolupráca' },
-  ],
-}
+const INFO_LINKS = [
+  { href: '/obchodne-podmienky', label: 'Obchodné podmienky' },
+  { href: '/reklamacny-poriadok', label: 'Reklamačný poriadok' },
+  { href: '/kontakt', label: 'Kontakt' },
+  { href: '/ochrana-osobnych-udajov', label: 'Ochrana osobných údajov' },
+  { href: '/doprava-a-platba', label: 'Doprava a platba' },
+  { href: '/faq', label: 'Často kladené otázky' },
+  { href: '/velkoobchod', label: 'Kontakt a Veľkoobchodná spolupráca' },
+]
 
-export default function Footer() {
+export default async function Footer() {
+  let menuLinks: Array<{ href: string; label: string }> = []
+  try {
+    const collections = await getNavCollectionItems()
+    menuLinks = [
+      ...collections.map((item) => ({
+        href: item.href,
+        label: item.menuLabel,
+      })),
+      { href: '/blog', label: 'BLOG' },
+    ]
+  } catch {
+    // Shopify not configured — footer still renders info links
+  }
+
+  const footerSections: Record<string, Array<{ href: string; label: string }>> = {
+    Menu: menuLinks,
+    Informácie: INFO_LINKS,
+  }
+
   return (
     <footer role="contentinfo" style={{ background: 'var(--color-footer-bg)' }}>
       <Container>
@@ -72,7 +80,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {Object.entries(FOOTER_LINKS).map(([title, links]) => (
+          {Object.entries(footerSections).map(([title, links]) => (
             <nav key={title} aria-label={`${title} navigácia`}>
               <h3
                 className="text-xs font-bold uppercase tracking-widest mb-4 text-white"

@@ -7,7 +7,8 @@ import { Price } from '@/components/ui/Price'
 import { Badge } from '@/components/ui/Badge'
 import { getProductByHandle } from '@/lib/shopify/products'
 import { getProductMetadata, getProductJsonLd, getBreadcrumbJsonLd } from '@/lib/seo'
-import { sanitizeHtml } from '@/lib/utils'
+import { sanitizeHtml, getCollectionUrl } from '@/lib/utils'
+import { getCategoryDefinition, resolveCategory } from '@/lib/category-map'
 import AddToCartButton from '@/components/product/AddToCartButton'
 import VariantSelector from '@/components/product/VariantSelector'
 
@@ -32,6 +33,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
   const p = product!
 
+  const categorySlug = resolveCategory({ productType: p.productType, tags: p.tags })
+  const categoryDef = getCategoryDefinition(categorySlug)
   const images = p.images.edges.map((e) => e.node)
   const mainImage = p.featuredImage ?? images[0]
   const firstVariant = p.variants.edges[0]?.node
@@ -155,6 +158,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   )}
                   {p.productType && (
                     <Badge variant="muted">{p.productType}</Badge>
+                  )}
+                  {categorySlug !== 'ostatne' && (
+                    <Link href={getCollectionUrl(categorySlug)}>
+                      <Badge variant="brand">{categoryDef.title}</Badge>
+                    </Link>
                   )}
                 </div>
               </div>

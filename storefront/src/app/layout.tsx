@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
 import '@/styles/globals.css'
 import { DEFAULT_METADATA } from '@/lib/seo'
-import Header from '@/components/layout/Header'
+import HeaderShell from '@/components/layout/HeaderShell'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
 
@@ -47,7 +47,7 @@ export default function RootLayout({
     <html lang="sk" className={`${montserrat.variable} ${inter.variable}`}>
       <body className="font-(--font-inter) antialiased">
         <div className="flex min-h-dvh flex-col">
-          <Header />
+          <HeaderShell />
           <main className="flex-1">{children}</main>
           <Footer />
           <CookieBanner />

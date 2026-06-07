@@ -23,7 +23,7 @@ test.describe('1. Domovská stránka (Homepage)', () => {
     await expect(uspBar).toContainText('DÔVERYHODNOSŤ');
   });
 
-  test('4. Mal by obsahovať hlavné navigačné odkazy na produkty a kolekcie', async ({ page }) => {
+  test('4. Mal by obsahovať hlavné navigačné odkazy na produkty a kategórie', async ({ page }) => {
     await page.goto('/');
     const isMobile = await page.locator('#mobile-nav-toggle').isVisible();
     if (isMobile) {
@@ -32,15 +32,15 @@ test.describe('1. Domovská stránka (Homepage)', () => {
       const nav = page.locator('nav[aria-label="Hlavná navigácia"]');
       await expect(nav).toBeVisible();
       await expect(nav.locator('a[href="/produkty"]')).toBeVisible();
-      await expect(nav.locator('a[href="/kolekcie"]')).toBeVisible();
+      await expect(nav.locator('a[href="/kolekcie/vitaminy-mineraly"]').first()).toBeVisible();
     }
   });
 
-  test('5. Mal by obsahovať sekciu "Nakupujte podľa kategórie"', async ({ page }) => {
+  test('5. Mal by obsahovať sekciu "Nakupujte podľa kategórie" s dynamickými kolekciami', async ({ page }) => {
     await page.goto('/');
     const categoriesSection = page.locator('section[aria-labelledby="categories-heading"]');
     await expect(categoriesSection).toBeVisible();
-    await expect(categoriesSection.locator('a[href="/kolekcie/balicky-zdravia"]')).toBeVisible();
+    await expect(categoriesSection.locator('a[href="/kolekcie/vitaminy-mineraly"]')).toBeVisible();
   });
 
   test('6. Mal by obsahovať sekciu "Obľúbené produkty"', async ({ page }) => {
@@ -158,11 +158,12 @@ test.describe('3. Produkty a Kolekcie', () => {
     await expect(heading).toContainText('Kolekcie produktov');
   });
 
-  test('20. Mal by úspešne načítať konkrétnu kolekciu (frontpage)', async ({ page }) => {
-    await page.goto('/kolekcie/frontpage');
+  test('20. Mal by úspešne načítať konkrétnu kolekciu s produktmi', async ({ page }) => {
+    await page.goto('/kolekcie/regeneracia');
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText('Domovská stránka');
+    await expect(heading).toContainText('Regeneračné doplnky');
+    await expect(page.locator('article.product-card').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('21. Mal by pri neexistujúcej alebo prázdnej kolekcii zobraziť prázdny stav (EmptyState)', async ({ page }) => {

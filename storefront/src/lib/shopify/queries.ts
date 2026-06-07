@@ -284,6 +284,28 @@ export const GET_COLLECTIONS_QUERY = /* GraphQL */ `
   }
 `
 
+export const GET_COLLECTIONS_PAGINATED_QUERY = /* GraphQL */ `
+  ${IMAGE_FRAGMENT}
+  query GetCollectionsPaginated($first: Int!, $after: String) {
+    collections(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          id
+          handle
+          title
+          description
+          image { ...ImageFragment }
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
 // ─── Search Query ─────────────────────────────────────────────────────────────
 
 export const SEARCH_PRODUCTS_QUERY = /* GraphQL */ `

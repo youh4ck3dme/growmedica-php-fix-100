@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
-import { getCollections } from '@/lib/shopify/collections'
+import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 
 export const revalidate = 3600
 
@@ -11,17 +11,16 @@ export const metadata: Metadata = {
 }
 
 export default async function KolekciePage() {
-  let collections: Awaited<ReturnType<typeof getCollections>> = []
+  let collections: Awaited<ReturnType<typeof getNavCollectionItems>> = []
   try {
-    collections = await getCollections(100)
+    collections = await getNavCollectionItems()
   } catch {
-    // Shopify nie je nakonfigurovaný
+    // Shopify not configured
   }
 
   return (
     <div className="py-8 lg:py-12 bg-(--color-surface-2) min-h-[60vh]">
       <Container>
-        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-6">
           <ol className="flex items-center gap-2 text-sm text-(--color-text-muted)">
             <li>
@@ -36,7 +35,6 @@ export default async function KolekciePage() {
           </ol>
         </nav>
 
-        {/* Header */}
         <header className="mb-10 text-center max-w-2xl mx-auto">
           <h1 className="text-3xl lg:text-4xl font-bold text-(--color-text) mb-3">
             Kolekcie produktov
@@ -46,7 +44,6 @@ export default async function KolekciePage() {
           </p>
         </header>
 
-        {/* Collections Grid */}
         {collections.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl border border-(--color-border)">
             <p className="text-(--color-text-muted)">Nenašli sa žiadne kolekcie.</p>
@@ -55,8 +52,8 @@ export default async function KolekciePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {collections.map((collection) => (
               <Link
-                key={collection.id}
-                href={`/kolekcie/${collection.handle}`}
+                key={collection.handle}
+                href={collection.href}
                 className="group flex flex-col justify-between bg-white rounded-xl p-6 border border-(--color-border) hover:border-(--color-primary-light) hover:shadow-md transition-all h-full"
               >
                 <div>
@@ -74,6 +71,9 @@ export default async function KolekciePage() {
                       {collection.description}
                     </p>
                   )}
+                  <p className="text-xs text-(--color-text-light) mt-3">
+                    {collection.productCount} {collection.productCount === 1 ? 'produkt' : collection.productCount < 5 ? 'produkty' : 'produktov'}
+                  </p>
                 </div>
               </Link>
             ))}

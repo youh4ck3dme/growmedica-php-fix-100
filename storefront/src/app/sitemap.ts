@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getAllProductHandlesForSitemap } from '@/lib/shopify/products'
-import { getAllCollectionHandlesForSitemap } from '@/lib/shopify/collections'
+import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://growmedica.nexify-studio.tech'
 
@@ -39,10 +39,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const collections = await getAllCollectionHandlesForSitemap()
-    collectionPages = collections.map(({ handle, updatedAt }) => ({
+    const collections = await getNavCollectionItems()
+    collectionPages = collections.map(({ handle }) => ({
       url: `${BASE_URL}/kolekcie/${handle}`,
-      lastModified: new Date(updatedAt),
+      lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))
