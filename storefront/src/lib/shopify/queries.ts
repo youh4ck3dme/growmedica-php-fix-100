@@ -132,6 +132,15 @@ export const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
       description
     }
     updatedAt
+    metafields(identifiers: [
+      { namespace: "custom", key: "composition" }
+      { namespace: "custom", key: "zlozenie" }
+    ]) {
+      namespace
+      key
+      value
+      type
+    }
   }
 `
 

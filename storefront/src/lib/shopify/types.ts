@@ -81,6 +81,12 @@ export interface Product {
     title: string | null
     description: string | null
   }
+  metafields?: Array<{
+    namespace: string
+    key: string
+    value: string
+    type: string
+  } | null> | null
   updatedAt: string
 }
 

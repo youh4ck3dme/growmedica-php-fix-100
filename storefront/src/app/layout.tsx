@@ -3,6 +3,7 @@ import { Montserrat, Inter } from 'next/font/google'
 import '@/styles/globals.css'
 import { DEFAULT_METADATA, getOrganizationJsonLd } from '@/lib/seo'
 import { BRAND_COPY } from '@/lib/brand'
+import AnnouncementBar from '@/components/layout/AnnouncementBar'
 import HeaderShell from '@/components/layout/HeaderShell'
 import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
@@ -53,6 +54,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
         />
         <div className="flex min-h-dvh flex-col">
+          <AnnouncementBar />
           <HeaderShell />
           <TrustStrip />
           <main className="flex-1">{children}</main>

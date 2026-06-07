@@ -16,6 +16,19 @@ export const LEGACY_COLORS = {
   oldGreen: '#6BAE2E',
 } as const
 
+export const ANNOUNCEMENT_BAR = {
+  enabled: true,
+  message: 'Doprava zdarma pri objednávke nad 50 € · Overené biomedicínske supplementy',
+  href: '/doprava-a-platba',
+  linkLabel: 'Viac info',
+} as const
+
+export const SHIPPING_TAB_CONTENT = [
+  'Objednávky odosielame do 24 hodín v pracovné dni. Doručenie zvyčajne do 1–3 pracovných dní v rámci Slovenska.',
+  'Ak produkt nevyhovuje, môžete ho vrátiť do 30 dní od prevzatia v súlade s našimi obchodnými podmienkami.',
+  'Podrobnosti o doprave, platbe a reklamáciách nájdete v sekcii Doprava a platba.',
+] as const
+
 export const BRAND_COPY = {
   tagline: 'Biomedicínske supplementy · Stredná Európa',
   footerBlurb:

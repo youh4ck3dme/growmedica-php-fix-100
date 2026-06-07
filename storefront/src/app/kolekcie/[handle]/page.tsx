@@ -1,16 +1,63 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { Suspense } from 'react'
 import { Container } from '@/components/ui/Container'
 import { ProductGrid } from '@/components/product/ProductGrid'
-import { getCollectionViewByHandle } from '@/lib/shopify/collection-nav'
+import CollectionHero from '@/components/collection/CollectionHero'
+import CollectionToolbar from '@/components/collection/CollectionToolbar'
+import {
+  getCollectionViewByHandle,
+  type CollectionListOptions,
+} from '@/lib/shopify/collection-nav'
 import { getCollectionMetadata } from '@/lib/seo'
-import Link from 'next/link'
 
 export const revalidate = 3600
 
 interface CollectionPageProps {
   params: Promise<{ handle: string }>
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{
+    page?: string
+    sort?: string
+    vendor?: string
+    stock?: string
+  }>
+}
+
+function parseListOptions(searchParams: {
+  page?: string
+  sort?: string
+  vendor?: string
+  stock?: string
+}): CollectionListOptions {
+  const sort = searchParams.sort
+  const validSort =
+    sort === 'price-asc' || sort === 'price-desc' || sort === 'title'
+      ? sort
+      : 'recommended'
+
+  return {
+    page: Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1),
+    sort: validSort,
+    vendor: searchParams.vendor || undefined,
+    inStockOnly: searchParams.stock === '1',
+  }
+}
+
+function buildPageHref(
+  handle: string,
+  page: number,
+  searchParams: { sort?: string; vendor?: string; stock?: string },
+): string {
+  const params = new URLSearchParams()
+  if (page > 1) params.set('page', String(page))
+  if (searchParams.sort && searchParams.sort !== 'recommended') {
+    params.set('sort', searchParams.sort)
+  }
+  if (searchParams.vendor) params.set('vendor', searchParams.vendor)
+  if (searchParams.stock === '1') params.set('stock', '1')
+  const qs = params.toString()
+  return qs ? `/kolekcie/${handle}?${qs}` : `/kolekcie/${handle}`
 }
 
 export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
@@ -32,18 +79,21 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
 
 export default async function CollectionPage({ params, searchParams }: CollectionPageProps) {
   const { handle } = await params
-  const { page: pageParam } = await searchParams
-  const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
+  const rawSearch = await searchParams
+  const listOptions = parseListOptions(rawSearch)
 
   let view: Awaited<ReturnType<typeof getCollectionViewByHandle>> = null
 
   try {
-    view = await getCollectionViewByHandle(handle, page)
+    view = await getCollectionViewByHandle(handle, listOptions)
   } catch {
     notFound()
   }
 
   if (!view) notFound()
+
+  const page = listOptions.page ?? 1
+  const productCount = view.totalOnPage
 
   return (
     <div className="py-8 lg:py-12">
@@ -58,17 +108,21 @@ export default async function CollectionPage({ params, searchParams }: Collectio
           </ol>
         </nav>
 
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-(--color-text) mb-2">{view.title}</h1>
-          {view.description && (
-            <p className="text-(--color-text-muted) max-w-2xl">{view.description}</p>
-          )}
-        </header>
+        <CollectionHero
+          handle={view.handle}
+          title={view.title}
+          description={view.description}
+          productCount={productCount}
+        />
+
+        <Suspense fallback={null}>
+          <CollectionToolbar vendors={view.availableVendors} totalOnPage={view.totalOnPage} />
+        </Suspense>
 
         <ProductGrid
           products={view.products}
-          emptyTitle="Táto kolekcia je prázdna"
-          emptyDescription="Zatiaľ tu nie sú žiadne produkty."
+          emptyTitle="V tejto kategórii nie sú produkty"
+          emptyDescription="Skúste zmeniť filtre alebo prejsť na inú kategóriu."
         />
 
         {(view.hasPreviousPage || view.hasNextPage) && (
@@ -78,7 +132,7 @@ export default async function CollectionPage({ params, searchParams }: Collectio
           >
             {view.hasPreviousPage ? (
               <Link
-                href={page > 2 ? `/kolekcie/${view.handle}?page=${page - 1}` : `/kolekcie/${view.handle}`}
+                href={buildPageHref(view.handle, page - 1, rawSearch)}
                 className="btn btn-secondary"
               >
                 ← Predchádzajúca
@@ -91,7 +145,7 @@ export default async function CollectionPage({ params, searchParams }: Collectio
             <span className="text-sm text-(--color-text-muted)">Strana {view.page}</span>
             {view.hasNextPage ? (
               <Link
-                href={`/kolekcie/${view.handle}?page=${page + 1}`}
+                href={buildPageHref(view.handle, page + 1, rawSearch)}
                 className="btn btn-secondary"
               >
                 Ďalšia →

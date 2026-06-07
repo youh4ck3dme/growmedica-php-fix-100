@@ -358,6 +358,32 @@
     .section-heading { font-size: 2rem; }
   }
 
+  .announcement-bar {
+    background: var(--color-primary-dark);
+    color: white;
+  }
+
+  .collection-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.72) 45%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+  }
+
+  .sticky-atc-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -4px 20px rgba(16, 22, 21, 0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
   .search-pill {
     display: flex;
     align-items: center;

@@ -9,6 +9,7 @@ import {
   GET_FEATURED_PRODUCTS_QUERY,
   GET_ALL_PRODUCTS_FOR_SITEMAP,
 } from './queries'
+import { buildCategorySearchQuery, type MainCategory } from '@/lib/category-map'
 import type { Product, ProductListItem, Connection } from './types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -87,4 +88,36 @@ export async function getAllProductHandlesForSitemap(): Promise<
   }
 
   return handles
+}
+
+export async function getRelatedProducts(
+  categorySlug: MainCategory,
+  excludeHandle: string,
+  count = 4,
+): Promise<ProductListItem[]> {
+  const query = buildCategorySearchQuery(categorySlug)
+  if (!query || categorySlug === 'ostatne') return []
+
+  const result = await getProducts({
+    first: count + 8,
+    query,
+    sortKey: 'BEST_SELLING',
+  })
+
+  return result.edges
+    .map((e) => e.node)
+    .filter((p) => p.handle !== excludeHandle)
+    .slice(0, count)
+}
+
+export function getProductCompositionHtml(product: Product): string | null {
+  const fields = product.metafields?.filter(Boolean) ?? []
+  const composition = fields.find(
+    (f) => f && (f.key === 'composition' || f.key === 'zlozenie'),
+  )
+  if (!composition?.value) return null
+  if (composition.type === 'multi_line_text_field' || composition.value.includes('<')) {
+    return composition.value
+  }
+  return `<p>${composition.value}</p>`
 }

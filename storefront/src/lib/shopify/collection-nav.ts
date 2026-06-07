@@ -33,6 +33,7 @@ export type CollectionView = {
   title: string
   description: string | null
   products: ProductListItem[]
+  availableVendors: string[]
   source: 'shopify' | 'catalog'
   page: number
   hasNextPage: boolean
@@ -40,7 +41,93 @@ export type CollectionView = {
   totalOnPage: number
 }
 
+export type CollectionListOptions = {
+  page?: number
+  sort?: 'recommended' | 'price-asc' | 'price-desc' | 'title'
+  vendor?: string
+  inStockOnly?: boolean
+}
+
 const PAGE_SIZE = 24
+
+type SortConfig = {
+  sortKey: 'TITLE' | 'PRICE' | 'BEST_SELLING' | 'CREATED_AT' | 'UPDATED_AT' | 'RELEVANCE'
+  reverse: boolean
+}
+
+function resolveSort(sort?: CollectionListOptions['sort']): SortConfig {
+  switch (sort) {
+    case 'price-asc':
+      return { sortKey: 'PRICE', reverse: false }
+    case 'price-desc':
+      return { sortKey: 'PRICE', reverse: true }
+    case 'title':
+      return { sortKey: 'TITLE', reverse: false }
+    default:
+      return { sortKey: 'BEST_SELLING', reverse: false }
+  }
+}
+
+function escapeVendor(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+}
+
+function augmentProductQuery(
+  base: string,
+  vendor?: string,
+  inStockOnly?: boolean,
+): string {
+  let query = base
+  if (vendor) {
+    query = `${query} AND vendor:'${escapeVendor(vendor)}'`
+  }
+  if (inStockOnly) {
+    query = `${query} AND available_for_sale:true`
+  }
+  return query
+}
+
+function applyClientFilters(
+  products: ProductListItem[],
+  options: Pick<CollectionListOptions, 'vendor' | 'inStockOnly'>,
+): ProductListItem[] {
+  return products.filter((product) => {
+    if (options.vendor && product.vendor !== options.vendor) return false
+    if (options.inStockOnly && !product.availableForSale) return false
+    return true
+  })
+}
+
+function applyClientSort(
+  products: ProductListItem[],
+  sort?: CollectionListOptions['sort'],
+): ProductListItem[] {
+  const list = [...products]
+  switch (sort) {
+    case 'price-asc':
+      return list.sort(
+        (a, b) =>
+          parseFloat(a.priceRange.minVariantPrice.amount) -
+          parseFloat(b.priceRange.minVariantPrice.amount),
+      )
+    case 'price-desc':
+      return list.sort(
+        (a, b) =>
+          parseFloat(b.priceRange.minVariantPrice.amount) -
+          parseFloat(a.priceRange.minVariantPrice.amount),
+      )
+    case 'title':
+      return list.sort((a, b) => a.title.localeCompare(b.title, 'sk'))
+    default:
+      return list
+  }
+}
+
+function extractVendors(products: ProductListItem[]): string[] {
+  return [...new Set(products.map((p) => p.vendor).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b, 'sk'),
+  )
+}
 
 async function getCatalogCategoryCounts(): Promise<Map<MainCategory, number>> {
   const counts = new Map<MainCategory, number>()
@@ -144,8 +231,11 @@ export async function getNavCollectionItems(): Promise<NavCollectionItem[]> {
 
 export async function getCollectionViewByHandle(
   handle: string,
-  page = 1
+  options: CollectionListOptions = {},
 ): Promise<CollectionView | null> {
+  const page = Math.max(1, options.page ?? 1)
+  const { sort, vendor, inStockOnly } = options
+
   if (HIDDEN_COLLECTION_HANDLES.has(handle)) {
     return null
   }
@@ -155,19 +245,24 @@ export async function getCollectionViewByHandle(
 
   const def = getCategoryDefinition(slug)
   if (slug === 'ostatne') {
-    // Fallback category: products not matched by search — skip for now in listing
     return null
   }
 
   const shopifyCollection = await getCollectionByHandle(slug, PAGE_SIZE)
   if (shopifyCollection) {
-    const products = shopifyCollection.products?.edges?.map((e) => e.node) ?? []
-    if (products.length > 0) {
+    const rawProducts = shopifyCollection.products?.edges?.map((e) => e.node) ?? []
+    if (rawProducts.length > 0) {
+      const availableVendors = extractVendors(rawProducts)
+      const products = applyClientSort(
+        applyClientFilters(rawProducts, { vendor, inStockOnly }),
+        sort,
+      )
       return {
         handle: slug,
         title: shopifyCollection.title,
         description: shopifyCollection.description ?? def.description ?? null,
         products,
+        availableVendors,
         source: 'shopify',
         page: 1,
         hasNextPage: false,
@@ -177,13 +272,22 @@ export async function getCollectionViewByHandle(
     }
   }
 
-  const query = buildCategorySearchQuery(slug)
-  if (!query) return null
+  const baseQuery = buildCategorySearchQuery(slug)
+  if (!baseQuery) return null
 
-  const safePage = Math.max(1, page)
+  const query = augmentProductQuery(baseQuery, vendor, inStockOnly)
+  const { sortKey, reverse } = resolveSort(sort)
+
+  const vendorSample = await getProducts({
+    first: 50,
+    query: baseQuery,
+    sortKey: 'BEST_SELLING',
+  })
+  const availableVendors = extractVendors(vendorSample.edges.map((e) => e.node))
+
   let after: string | undefined
-  for (let i = 1; i < safePage; i++) {
-    const skip = await getProducts({ first: PAGE_SIZE, after, query, sortKey: 'BEST_SELLING' })
+  for (let i = 1; i < page; i++) {
+    const skip = await getProducts({ first: PAGE_SIZE, after, query, sortKey, reverse })
     if (!skip.pageInfo.hasNextPage) {
       return null
     }
@@ -194,11 +298,12 @@ export async function getCollectionViewByHandle(
     first: PAGE_SIZE,
     after,
     query,
-    sortKey: 'BEST_SELLING',
+    sortKey,
+    reverse,
   })
 
   const products = result.edges.map((e) => e.node)
-  if (products.length === 0 && safePage === 1) return null
+  if (products.length === 0 && page === 1) return null
   if (products.length === 0) return null
 
   return {
@@ -206,10 +311,11 @@ export async function getCollectionViewByHandle(
     title: def.title,
     description: def.description ?? null,
     products,
+    availableVendors,
     source: 'catalog',
-    page: safePage,
+    page,
     hasNextPage: result.pageInfo.hasNextPage,
-    hasPreviousPage: safePage > 1,
+    hasPreviousPage: page > 1,
     totalOnPage: products.length,
   }
 }
