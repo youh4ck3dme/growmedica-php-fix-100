@@ -39,6 +39,16 @@ test.describe('PWA — manifest & offline', () => {
     expect(html).toContain('Bez pripojenia')
   })
 
+  test('HTML dokumenty majú DOCTYPE (žiadny Quirks Mode)', async ({ request }) => {
+    for (const path of ['/', '/offline', '/offline.html', '/kosik']) {
+      const response = await request.get(path)
+      expect(response.status(), `${path} should return 200`).toBe(200)
+      const html = await response.text()
+      expect(html.startsWith('<!DOCTYPE html>'), `${path} missing DOCTYPE`).toBe(true)
+      expect(html.charCodeAt(0), `${path} has UTF-8 BOM before DOCTYPE`).toBe(60) // '<'
+    }
+  })
+
   test('sw.js je dostupný po production build', async ({ request }) => {
     const response = await request.get('/sw.js')
     test.skip(
@@ -70,6 +80,6 @@ test.describe('PWA — manifest & offline', () => {
     )
     const content = await response.text()
     expect(content).not.toContain('navigationPreload:!0')
-    expect(content).toMatch(/"navigate"===e\.mode,handler:new X/)
+    expect(content).toMatch(/"navigate"===\w\.mode\},handler:new X/)
   })
 })

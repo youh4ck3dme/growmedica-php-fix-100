@@ -177,6 +177,56 @@ the production URL and expect:
 18/18 PASS
 ```
 
+## Chrome DevTools Issues (očakávané správanie)
+
+Pri testovaní checkout flow alebo PWA v Chrome → **Issues** sa môžu objaviť dve
+správy. Obe sme overili na živých deployoch (`noor.nexify-studio.tech`,
+`growmedicanextjs.vercel.app`).
+
+### 1. Bounce tracking — `tn43yx-0k.myshopify.com`
+
+**Správa:** „Chrome may soon delete state for intermediate websites… 1
+potentially tracking website: tn43yx-0k.myshopify.com“
+
+**Príčina:** Headless storefront presmeruje z `/kosik` priamo na Shopify checkout
+URL vrátenú Storefront API (`cart.checkoutUrl`). Doména `*.myshopify.com` je
+Shopify-hosted checkout — Chrome ju v reťazci navigácie berie ako medzistránku
+bez predchádzajúcej interakcie (bounce tracking mitigation).
+
+**Stav:** Očakávané správanie, nie chyba GrowMedica kódu. Checkout link je v
+`InteractiveCart.tsx` (`href={cart.checkoutUrl}`); doména pochádza z Vercel env
+`SHOPIFY_STORE_DOMAIN` (typicky `tn43yx-0k.myshopify.com` pre demo store).
+
+**Čo sa nedá jednoducho opraviť:** Bez Shopify Plus / embedded checkoutu alebo
+vlastnej platobnej brány vždy existuje redirect na `myshopify.com`. Chrome môže
+vymazať cookies/storage tejto medzistránky — checkout stále funguje.
+
+**Čo môže užívateľ urobiť:** Ignorovať warning pri vývoji; pri QA checkoutu
+kliknúť „Prejsť k pokladni“ a dokončiť platbu na Shopify stránke.
+
+### 2. Quirks Mode
+
+**Správa:** „Page layout may be unexpected due to Quirks Mode“
+
+**Overenie (2026-06-08):**
+
+| Zdroj | DOCTYPE na byte 0 | UTF-8 BOM |
+|-------|-------------------|-----------|
+| `/` (Next.js `layout.tsx`) | `<!DOCTYPE html>` | nie |
+| `/kosik`, `/offline` | `<!DOCTYPE html>` | nie |
+| `public/offline.html` | `<!DOCTYPE html>` | nie |
+| Lighthouse audit `doctype` | score 1 (PASS) | — |
+
+Next.js App Router vkladá `<!DOCTYPE html>` automaticky; `layout.tsx` nemusí
+obsahovať vlastný DOCTYPE. Statická PWA záloha `offline.html` má platný
+DOCTYPE bez BOM.
+
+**Stav:** GrowMedica HTML dokumenty sú v standards mode. Ak warning pretrváva
+po návrate z Shopify checkoutu, pravdepodobne sa týka **Shopify checkout
+stránky** v reťazci navigácie, nie nášho storefrontu.
+
+**Regresný test:** `yarn test:pwa` — test „HTML dokumenty majú DOCTYPE“.
+
 ## Suggested AI/report response
 
 ```text
