@@ -532,10 +532,39 @@
   .collection-hero-overlay {
     background: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.92) 0%,
-      rgba(255, 255, 255, 0.68) 42%,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.72) 42%,
       rgba(255, 255, 255, 0.08) 100%
     );
+  }
+
+  .collection-hero-image {
+    z-index: 0;
+    object-position: center right;
+  }
+
+  .collection-hero--has-banner .collection-hero-copy {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.72) 42%,
+      rgba(255, 255, 255, 0.12) 100%
+    );
+  }
+
+  .collection-card--has-banner {
+    background: none !important;
+  }
+
+  .collection-card-banner-image {
+    z-index: 0;
+    object-position: center;
+  }
+
+  .collection-card-banner-overlay {
+    z-index: 1;
   }
 
   .sticky-atc-bar {

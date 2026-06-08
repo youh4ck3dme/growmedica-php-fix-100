@@ -39,7 +39,6 @@ export default function CollectionHero({
               sizes="(min-width: 1024px) 1120px, 100vw"
               className="collection-hero-image object-cover object-center"
             />
-            <div className="collection-hero-overlay absolute inset-0" aria-hidden="true" />
           </>
         ) : (
           <div
@@ -51,7 +50,7 @@ export default function CollectionHero({
             aria-hidden="true"
           />
         )}
-        <div className="relative z-10 flex h-full min-h-[220px] flex-col justify-center p-6 sm:min-h-[260px] lg:min-h-[320px] lg:p-10">
+        <div className={`relative z-10 flex h-full min-h-[220px] flex-col justify-center p-6 sm:min-h-[260px] lg:min-h-[320px] lg:p-10${bannerSrc ? ' collection-hero-copy' : ''}`}>
           <p className="mb-2 text-xs font-bold uppercase tracking-wider text-(--color-primary-dark)">
             {countLabel}
           </p>
