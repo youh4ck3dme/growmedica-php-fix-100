@@ -16,9 +16,14 @@ test.describe('Brand tokens — CSS source (globals.css)', () => {
     })
   }
 
-  test('--color-primary je teal #35C79A', () => {
+  test('--color-primary je AA-safe green #166534', () => {
     const value = getCssVarFromSource(css, '--color-primary')
     expect(value?.toUpperCase()).toBe(BRAND_COLORS.primary)
+  })
+
+  test('--color-primary-bright je brand teal #35C79A', () => {
+    const value = getCssVarFromSource(css, '--color-primary-bright')
+    expect(value?.toUpperCase()).toBe(BRAND_COLORS.primaryBright)
   })
 
   test('--color-footer-bg je charcoal #101615', () => {

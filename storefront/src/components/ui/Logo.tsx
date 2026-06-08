@@ -49,21 +49,23 @@ export default function Logo({
   iconSize = 36,
   className = '',
 }: LogoProps) {
-  const growColor = variant === 'dark' ? '#FFFFFF' : '#101615'
-  const medicaColor = '#1f7a5a'
-  const skColor = variant === 'dark' ? '#D1D5DB' : '#6B7280'
-
   return (
-    <div className={cn('storefront-logo flex items-center gap-2.5', className)}>
+    <div
+      className={cn(
+        'storefront-logo flex items-center gap-2.5',
+        variant === 'dark' ? 'storefront-logo--dark' : 'storefront-logo--light',
+        className,
+      )}
+    >
       <LogoIcon size={iconSize} />
       <span
         className="storefront-logo__wordmark text-lg sm:text-xl font-extrabold tracking-tight whitespace-nowrap leading-none"
         style={{ fontFamily: 'Montserrat, sans-serif' }}
         aria-label={BRAND_COPY.siteName}
       >
-        <span style={{ color: growColor }}>Grow</span>
-        <span className="storefront-logo__accent" style={{ color: medicaColor }}>Medica</span>
-        <span style={{ color: skColor }}>.sk</span>
+        <span className="storefront-logo__grow">Grow</span>
+        <span className="storefront-logo__accent">Medica</span>
+        <span className="storefront-logo__tld">.sk</span>
       </span>
     </div>
   )

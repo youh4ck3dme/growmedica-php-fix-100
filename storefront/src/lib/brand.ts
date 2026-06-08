@@ -1,8 +1,9 @@
 /** GrowMedica.sk — single source of truth for brand copy and tokens */
 
 export const BRAND_COLORS = {
-  primary: '#35C79A',
-  primaryDark: '#2AA882',
+  primary: '#166534',
+  primaryBright: '#35C79A',
+  primaryDark: '#14532d',
   primaryLight: '#E7F8F2',
   text: '#101615',
   footerBg: '#101615',
@@ -82,6 +83,7 @@ export const BRAND_ASSETS = [
 
 export const REQUIRED_CSS_VARS = [
   '--color-primary',
+  '--color-primary-bright',
   '--color-primary-light',
   '--color-text',
   '--color-footer-bg',

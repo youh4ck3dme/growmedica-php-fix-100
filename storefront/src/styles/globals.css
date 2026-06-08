@@ -21,9 +21,10 @@
 
 @layer base {
   :root {
-    /* Brand — Teal primary */
-    --color-primary: #35C79A;
-    --color-primary-dark: #2AA882;
+    /* Brand — Teal primary (AA-safe interactive + bright accent) */
+    --color-primary: #166534;
+    --color-primary-dark: #14532d;
+    --color-primary-bright: #35C79A;
     --color-primary-light: #E7F8F2;
 
     /* Accent */
@@ -41,7 +42,7 @@
     /* Text */
     --color-text: #101615;
     --color-text-muted: #4B5563;
-    --color-text-light: #9CA3AF;
+    --color-text-light: #6B7280;
 
     /* Borders */
     --color-border: #E5E7EB;
@@ -146,12 +147,15 @@
 
   /* Classic theme — always light/white (ignore system dark mode) */
   [data-storefront-theme="classic"] {
+    --color-primary: #166534;
+    --color-primary-dark: #14532d;
+    --color-primary-bright: #35C79A;
     --color-bg: #FFFFFF;
     --color-surface: #FFFFFF;
     --color-surface-2: #F9FAFB;
     --color-text: #101615;
     --color-text-muted: #4B5563;
-    --color-text-light: #9CA3AF;
+    --color-text-light: #6B7280;
     --color-border: #E5E7EB;
     --color-primary-light: #E7F8F2;
     --header-shadow: 0 1px 0 var(--color-border);
@@ -471,8 +475,32 @@
     opacity: 0.85;
   }
 
-  .storefront-logo__accent {
-    color: #1f7a5a;
+  .storefront-logo--light .storefront-logo__grow {
+    color: #101615;
+  }
+
+  .storefront-logo--light .storefront-logo__accent {
+    color: var(--color-primary);
+  }
+
+  .storefront-logo--light .storefront-logo__tld {
+    color: #6B7280;
+  }
+
+  .storefront-logo--dark .storefront-logo__grow {
+    color: #ffffff;
+  }
+
+  .storefront-logo--dark .storefront-logo__accent {
+    color: #4ade80;
+  }
+
+  .storefront-logo--dark .storefront-logo__tld {
+    color: #d1d5db;
+  }
+
+  .site-footer {
+    background-color: #101615;
   }
 
   [data-storefront-theme="noor"] .storefront-logo__accent {
@@ -1256,7 +1284,7 @@
     font-weight: 600;
     line-height: 1.55;
     letter-spacing: 0.02em;
-    color: var(--color-primary);
+    color: #4ade80;
   }
 
   .footer-brand-description {
