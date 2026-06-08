@@ -37,7 +37,7 @@ export default function CollectionHero({
               fill
               priority
               sizes="(min-width: 1024px) 1120px, 100vw"
-              className="collection-hero-image object-cover object-center"
+              className="collection-hero-image object-cover"
             />
             <div className="collection-hero-overlay absolute inset-0" aria-hidden="true" />
           </>

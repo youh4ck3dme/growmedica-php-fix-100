@@ -476,6 +476,11 @@
     color: var(--color-text-muted);
   }
 
+  .collection-card-banner-image,
+  .collection-hero-image {
+    object-position: right center;
+  }
+
   .collection-hero-overlay {
     background: linear-gradient(
       90deg,
