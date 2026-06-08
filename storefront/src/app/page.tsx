@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Container } from '@/components/ui/Container'
 import { ProductGrid } from '@/components/product/ProductGrid'
+import { SupplementFinder } from '@/components/ai/SupplementFinder'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
 import { getHomepageCategories } from '@/lib/category-map'
@@ -200,6 +201,14 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* AI supplement finder */}
+      <div className="bg-white border-y border-(--color-border)">
+        <Container>
+          <SupplementFinder />
+        </Container>
+      </div>
+
       <section
         className="py-12 lg:py-16 bg-(--color-surface-2)"
         aria-labelledby="featured-heading"
