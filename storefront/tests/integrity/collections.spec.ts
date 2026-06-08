@@ -13,14 +13,15 @@ test.describe('Collections — catalog navigation', () => {
     expect(html).toContain('/kolekcie/specialna-vyziva')
   })
 
-  test('/kolekcie renderuje WebP bannery pre kategórie', async ({ request }) => {
+  test('/kolekcie nezobrazuje bannerové fotky v kartách', async ({ request }) => {
     const response = await request.get('/kolekcie')
     expect(response.status()).toBe(200)
     const html = await response.text()
 
-    for (const handle of ['vitaminy-mineraly', 'regeneracia', 'specialna-vyziva']) {
-      expect(html).toContain(`data-banner-src="/images/mega-menu/${handle}.webp"`)
-    }
+    expect(html).not.toContain('collection-card-banner-image')
+    expect(html).not.toMatch(/data-banner-src="\/images\/mega-menu\/[^"]+\.webp"/)
+    expect(html).toContain('data-collection-handle="vitaminy-mineraly"')
+    expect(html).toContain('Kolekcia')
   })
 
   test('/kolekcie/vitaminy-mineraly zobrazí produkty z katalógu', async ({ request }) => {

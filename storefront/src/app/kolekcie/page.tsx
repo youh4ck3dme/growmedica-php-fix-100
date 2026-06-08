@@ -1,11 +1,9 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { BRAND_COPY } from '@/lib/brand'
 import { buildPageMetadata } from '@/lib/seo'
-import { getMegaMenuBannerSrc } from '@/lib/mega-menu-banners'
 
 export const revalidate = 3600
 
@@ -54,75 +52,43 @@ export default async function KolekciePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {collections.map((collection) => {
-              const bannerSrc = getMegaMenuBannerSrc(collection.handle)
-
-              return (
-                <Link
-                  key={collection.handle}
-                  href={collection.href}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-(--color-border) bg-white shadow-sm transition-all hover:border-(--color-primary-light) hover:shadow-md"
-                  data-collection-handle={collection.handle}
-                  data-banner-src={bannerSrc ?? undefined}
-                >
-                  <div className="relative h-40 overflow-hidden bg-(--color-primary-light)">
-                    {bannerSrc ? (
-                      <>
-                        <Image
-                          src={bannerSrc}
-                          alt=""
-                          fill
-                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                          className="collection-card-banner-image object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                        />
-                        <div
-                          className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent"
-                          aria-hidden="true"
-                        />
-                      </>
-                    ) : (
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          background:
-                            'linear-gradient(135deg, var(--color-primary-light) 0%, #C8EFE0 100%)',
-                        }}
-                        aria-hidden="true"
-                      />
-                    )}
-                    <span className="absolute left-4 top-4 badge badge-brand text-xs uppercase tracking-wide">
+            {collections.map((collection) => (
+              <Link
+                key={collection.handle}
+                href={collection.href}
+                className="group flex h-full flex-col rounded-xl border border-(--color-border) bg-white p-6 shadow-sm transition-all hover:border-(--color-primary-light) hover:shadow-md"
+                data-collection-handle={collection.handle}
+              >
+                <div className="flex flex-1 flex-col justify-between">
+                  <div>
+                    <span className="mb-4 inline-block badge badge-brand text-xs uppercase tracking-wide">
                       Kolekcia
                     </span>
-                  </div>
-
-                  <div className="flex flex-1 flex-col justify-between p-6">
-                    <div>
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <h2 className="text-xl font-bold text-(--color-text) transition-colors group-hover:text-(--color-primary)">
-                          {collection.title}
-                        </h2>
-                        <span className="shrink-0 text-(--color-primary) opacity-0 transition-opacity group-hover:opacity-100 font-semibold">
-                          →
-                        </span>
-                      </div>
-                      {collection.description && (
-                        <p className="text-sm text-(--color-text-muted) line-clamp-3 leading-relaxed">
-                          {collection.description}
-                        </p>
-                      )}
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <h2 className="text-xl font-bold text-(--color-text) transition-colors group-hover:text-(--color-primary)">
+                        {collection.title}
+                      </h2>
+                      <span className="shrink-0 text-(--color-primary) opacity-0 transition-opacity group-hover:opacity-100 font-semibold">
+                        →
+                      </span>
                     </div>
-                    <p className="mt-5 text-xs text-(--color-text-light)">
-                      {collection.productCount}{' '}
-                      {collection.productCount === 1
-                        ? 'produkt'
-                        : collection.productCount < 5
-                          ? 'produkty'
-                          : 'produktov'}
-                    </p>
+                    {collection.description && (
+                      <p className="text-sm text-(--color-text-muted) line-clamp-3 leading-relaxed">
+                        {collection.description}
+                      </p>
+                    )}
                   </div>
-                </Link>
-              )
-            })}
+                  <p className="mt-5 text-xs text-(--color-text-light)">
+                    {collection.productCount}{' '}
+                    {collection.productCount === 1
+                      ? 'produkt'
+                      : collection.productCount < 5
+                        ? 'produkty'
+                        : 'produktov'}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         )}
       </Container>
