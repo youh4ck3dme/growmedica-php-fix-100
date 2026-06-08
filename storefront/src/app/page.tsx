@@ -5,6 +5,8 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { SupplementFinder } from '@/components/ai/SupplementFinder'
 import { HeroSlider, type HeroSlide } from '@/components/sections/HeroSlider'
 import { TrustBadges } from '@/components/sections/TrustBadges'
+import { ScrollRevealSection } from '@/components/sections/ScrollRevealSection'
+import { CategoryGrid } from '@/components/collection/CategoryGrid'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
 import { getHomepageCategories } from '@/lib/category-map'
@@ -65,13 +67,18 @@ export default async function HomePage() {
       </div>
 
       {/* Hero slider */}
-      <HeroSlider slides={heroSlides} />
+      <ScrollRevealSection>
+        <HeroSlider slides={heroSlides} />
+      </ScrollRevealSection>
 
-      <TrustBadges />
+      <ScrollRevealSection>
+        <TrustBadges />
+      </ScrollRevealSection>
 
       {/* Categories */}
-      <section
-        className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-bg)"
+      <ScrollRevealSection
+        as="section"
+        className="theme-transition py-12 lg:py-16 bg-(--color-bg)"
         aria-labelledby="categories-heading"
       >
         <Container>
@@ -82,25 +89,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="noor-categories-grid grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {categories.map((cat) => (
-              <Link
-                key={cat.handle}
-                href={cat.href}
-                className="noor-card theme-transition group flex flex-col items-center text-center p-4 bg-(--color-surface) rounded-xl border border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-primary-light) hover:-translate-y-0.5 hover:shadow-md transition-all"
-              >
-                {cat.icon && (
-                  <span className="text-2xl mb-2" aria-hidden="true">{cat.icon}</span>
-                )}
-                <h3
-                  className="text-xs font-bold leading-tight text-(--color-text) group-hover:text-(--color-primary-dark)"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  {cat.title}
-                </h3>
-              </Link>
-            ))}
-          </div>
+          <CategoryGrid categories={categories} />
 
           <div className="mt-6 text-center">
             <Link
@@ -112,7 +101,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </Container>
-      </section>
+      </ScrollRevealSection>
 
       {/* AI supplement finder */}
       <div className="noor-reveal noor-glass theme-transition bg-(--color-surface) border-y border-(--color-border)">

@@ -681,6 +681,69 @@
   [data-storefront-theme="noor"] .trust-badges.usp-bar {
     background: var(--color-bg);
   }
+
+  .category-grid-premium__card {
+    min-height: 7.5rem;
+    padding: 1.25rem 1rem;
+    border-radius: 1.25rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    text-decoration: none;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      background-color var(--transition-base);
+  }
+
+  .category-grid-premium__card:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 32%, var(--glass-border));
+    box-shadow:
+      var(--glass-shadow),
+      0 0 24px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  }
+
+  .category-grid-premium__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.625rem;
+    font-size: 1.625rem;
+    line-height: 1;
+    filter: saturate(0.95);
+    transition: transform var(--transition-base);
+  }
+
+  .category-grid-premium__card:hover .category-grid-premium__icon {
+    transform: scale(1.08);
+  }
+
+  .category-grid-premium__title {
+    margin: 0;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: color var(--transition-fast);
+  }
+
+  .category-grid-premium__card:hover .category-grid-premium__title {
+    color: var(--color-primary-dark);
+  }
+
+  [data-storefront-theme="noor"] .category-grid-premium__card {
+    border-radius: 1.5rem;
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 @layer utilities {

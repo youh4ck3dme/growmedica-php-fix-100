@@ -41,23 +41,20 @@ export function TrustBadges() {
   return (
     <section className="usp-bar trust-badges theme-transition" aria-label="Benefity">
       <Container>
-        <div className="noor-stagger grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {TRUST_BADGES.map((item, badgeIndex) => {
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          {TRUST_BADGES.map((item) => {
             const Icon = item.icon
 
             return (
               <motion.article
                 key={item.title}
                 className={cn('trust-badge-glass theme-transition')}
-                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.45,
-                  delay: reduceMotion ? 0 : badgeIndex * 0.08,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
                 whileHover={reduceMotion ? undefined : { y: -4, scale: 1.02 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 420,
+                  damping: 28,
+                }}
               >
                 <div className="trust-badge-glass__icon" aria-hidden="true">
                   <Icon className="h-7 w-7" strokeWidth={1.5} />
