@@ -7,6 +7,7 @@ import ProductGallery from '@/components/product/ProductGallery'
 import ProductPurchasePanel from '@/components/product/ProductPurchasePanel'
 import ProductTabs from '@/components/product/ProductTabs'
 import { ProductGrid } from '@/components/product/ProductGrid'
+import { ProductFitBox } from '@/components/ai/ProductFitBox'
 import {
   getProductByHandle,
   getRelatedProducts,
@@ -140,6 +141,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   ))}
                 </div>
               )}
+
+              <ProductFitBox handle={p.handle} productTitle={p.title} />
             </div>
           </div>
 

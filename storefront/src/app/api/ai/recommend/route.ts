@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { callMistral } from '@/lib/ai/client'
 import { buildProductSummaries, getRecommendContext } from '@/lib/ai/context'
 import { SAFE_DISCLAIMER } from '@/lib/ai/compliance'
+import { AiError } from '@/lib/ai/errors'
 import { getClientIp } from '@/lib/ai/request'
 import { recommendSchema } from '@/lib/ai/schemas'
 
@@ -73,7 +74,8 @@ Používateľov vstup: ${JSON.stringify(userInput)}
     console.error('[AI Recommend] Error:', error)
     const message =
       error instanceof Error ? error.message : 'Nepodarilo sa vygenerovať odporúčania.'
-    const status = error instanceof z.ZodError ? 400 : 500
+    const status =
+      error instanceof AiError ? error.status : error instanceof z.ZodError ? 400 : 500
     return NextResponse.json({ error: message }, { status })
   }
 }

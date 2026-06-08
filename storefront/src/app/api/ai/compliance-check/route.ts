@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { callMistral } from '@/lib/ai/client'
+import { AiError } from '@/lib/ai/errors'
 import { getClientIp } from '@/lib/ai/request'
 import { complianceCheckSchema } from '@/lib/ai/schemas'
 
@@ -35,12 +36,13 @@ ${COMPLIANCE_PROMPT_SCHEMA}
 Text na kontrolu: ${JSON.stringify(text)}
 `
 
-    const output = await callMistral(prompt, complianceCheckSchema, { ip, userInput: text })
+    const output = await callMistral(prompt, complianceCheckSchema, { ip })
     return NextResponse.json(output)
   } catch (error) {
     console.error('[AI Compliance] Error:', error)
     const message = error instanceof Error ? error.message : 'Nepodarilo sa skontrolovať text.'
-    const status = error instanceof z.ZodError ? 400 : 500
+    const status =
+      error instanceof AiError ? error.status : error instanceof z.ZodError ? 400 : 500
     return NextResponse.json({ error: message }, { status })
   }
 }

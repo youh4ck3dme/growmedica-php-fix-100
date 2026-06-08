@@ -2,6 +2,7 @@ import { Mistral } from '@mistralai/mistralai'
 import type { z } from 'zod'
 import { checkCompliance } from '@/lib/ai/compliance'
 import { getMistralEnv } from '@/lib/ai/env'
+import { AiError } from '@/lib/ai/errors'
 import { checkRateLimit } from '@/lib/ai/rateLimit'
 
 const MAX_RETRIES = 3
@@ -51,14 +52,14 @@ export async function callMistral<T>(
     const complianceIssues = checkCompliance(opts.userInput)
     if (complianceIssues.length > 0) {
       console.warn('[Mistral] Input compliance issues:', complianceIssues)
-      throw new Error('Vstup obsahuje zakázané tvrdenia. Skúste to formulovať inak.')
+      throw new AiError('Vstup obsahuje zakázané tvrdenia. Skúste to formulovať inak.', 422)
     }
   }
 
   const rateLimit = await checkRateLimit(ip)
   if (!rateLimit.allowed) {
     console.warn(`[Mistral] Rate limit exceeded for IP: ${ip}`)
-    throw new Error('Príliš veľa požiadaviek. Skúste to prosím neskôr.')
+    throw new AiError('Príliš veľa požiadaviek. Skúste to prosím neskôr.', 429)
   }
 
   const client = new Mistral({ apiKey: MISTRAL_API_KEY })
@@ -113,5 +114,5 @@ export async function callMistral<T>(
   }
 
   console.error('[Mistral] Failed after retries:', lastError?.message)
-  throw new Error('Služba AI je dočasne nedostupná. Skúste to prosím neskôr.')
+  throw new AiError('Služba AI je dočasne nedostupná. Skúste to prosím neskôr.', 503)
 }

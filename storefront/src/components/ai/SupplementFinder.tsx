@@ -1,18 +1,35 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import type { AiProductSummary, RecommendApiResponse } from '@/lib/ai/schemas'
-import { cn, getProductUrl } from '@/lib/utils'
+import { getProductUrl } from '@/lib/utils'
 
 export function SupplementFinder() {
   const [input, setInput] = useState('')
   const [recommendations, setRecommendations] = useState<RecommendApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [placeholder, setPlaceholder] = useState('Popíšte svoje potreby (napr. viac energie na tréning)')
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 640) {
+        setPlaceholder('Popíšte svoje potreby ...')
+      } else {
+        setPlaceholder('Popíšte svoje potreby (napr. viac energie na tréning)')
+      }
+    }
+
+    // Nastaviť hneď pri mountnutí na klientovi
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -44,37 +61,83 @@ export function SupplementFinder() {
   return (
     <section className="py-12">
       <div className="max-w-3xl mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-2 text-(--color-text)">Nájdite vhodný doplnok</h2>
-        <p className="text-sm text-(--color-text-muted) mb-6">
-          AI asistent vám pomôže nájsť produkty z našej ponuky. Nie je to lekárska rada.
-        </p>
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes spin-gradient {
+            0% { left: 0%; top: 0%; }
+            45.9% { left: 100%; top: 0%; }
+            50% { left: 100%; top: 100%; }
+            95.9% { left: 0%; top: 100%; }
+            100% { left: 0%; top: 0%; }
+          }
+          .animate-spin-gradient {
+            position: absolute;
+            animation: spin-gradient 6s linear infinite normal;
+            transform: translate(-50%, -50%);
+          }
+        `}} />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Popíšte svoje potreby (napr. viac energie na tréning)"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            disabled={loading}
-            className={cn(
-              'w-full p-3 border border-(--color-border) rounded-lg',
-              'text-(--color-text) bg-(--color-surface)',
-              'placeholder:text-(--color-text-muted)',
-              'focus:outline-none focus:ring-2 focus:ring-(--color-primary)',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-            )}
-            aria-label="Popíšte svoje potreby pre hľadanie doplnkov"
-          />
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            isLoading={loading}
-            disabled={!input.trim()}
-            fullWidth
-          >
-            {loading ? 'Vyhľadávam…' : 'Nájsť doplnky'}
-          </Button>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-extrabold mb-2 tracking-tight text-(--color-text)" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            Nájdite vhodný doplnok
+          </h2>
+          <p className="text-sm text-(--color-text-muted) max-w-lg mx-auto">
+            AI asistent vám pomôže vybrať produkty na mieru z našej ponuky. Nie je to lekárska rada.
+          </p>
+        </div>
+
+        {/* Hlavný prémiový vyhľadávač v štýle Google/Gemini s animovaným dúhovým okrajom */}
+        <form onSubmit={handleSubmit} className="relative group max-w-2xl mx-auto mb-10">
+          
+          {/* Pulzujúci glow efekt na pozadí pre neonový feeling */}
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-400 to-blue-500 opacity-20 blur-xl group-hover:opacity-35 group-focus-within:opacity-45 transition duration-500" />
+          
+          {/* Obal s rotujúcim dúhovým hadíkom */}
+          <div className="relative p-[2px] overflow-hidden rounded-2xl bg-(--color-border)">
+            
+            {/* Traveling neon beam */}
+            <div className="w-[108px] h-[108px] rounded-full bg-gradient-to-r from-[#35C79A] via-[#4f46e5] to-[#ec4899] blur-sm opacity-90 animate-spin-gradient" />
+            
+            {/* Vnútorná maska (stred riadku), ktorá prekrýva gradient a vytvára tenký okraj */}
+            <div className="relative flex items-center p-1.5 rounded-[14px] bg-white dark:bg-(--color-surface-2)">
+              
+              {/* Ikona AI / Sparkles */}
+              <div className="pl-3 pr-1 text-(--color-primary) shrink-0 flex items-center justify-center">
+                <svg className="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904ZM19.071 5.929L18.5 9L17.929 5.929L15 5.358L17.929 4.787L18.5 1.714L19.071 4.787L22 5.358L19.071 5.929Z" />
+                </svg>
+              </div>
+              
+              {/* Input pole */}
+              <input
+                type="text"
+                placeholder={placeholder}
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                disabled={loading}
+                className="w-full py-3 px-2 text-sm sm:text-base text-(--color-text) bg-transparent border-0 focus:outline-none focus:ring-0 placeholder:text-xs sm:placeholder:text-base placeholder:text-(--color-text-muted) disabled:opacity-50"
+                aria-label="Popíšte svoje potreby pre hľadanie doplnkov"
+              />
+              
+              {/* Prémiové tlačidlo vo vnútri */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                isLoading={loading}
+                disabled={!input.trim()}
+                className="rounded-xl shadow-md shrink-0 px-6 font-bold tracking-wide transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white border-0 flex items-center gap-1.5"
+              >
+                {!loading && (
+                  <>
+                    <span>Nájsť doplnky</span>
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </form>
 
         {loading && (

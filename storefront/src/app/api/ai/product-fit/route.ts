@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { callMistral } from '@/lib/ai/client'
 import { SAFE_DISCLAIMER } from '@/lib/ai/compliance'
+import { AiError } from '@/lib/ai/errors'
 import { getClientIp } from '@/lib/ai/request'
 import { productFitSchema } from '@/lib/ai/schemas'
 import { getProductByHandle } from '@/lib/shopify/products'
@@ -58,7 +59,8 @@ Používateľov kontext: ${JSON.stringify(userContext)}
     console.error('[AI Product-Fit] Error:', error)
     const message =
       error instanceof Error ? error.message : 'Nepodarilo sa posúdiť vhodnosť produktu.'
-    const status = error instanceof z.ZodError ? 400 : 500
+    const status =
+      error instanceof AiError ? error.status : error instanceof z.ZodError ? 400 : 500
     return NextResponse.json({ error: message }, { status })
   }
 }
