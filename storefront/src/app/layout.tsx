@@ -12,7 +12,7 @@ import CookieBanner from '@/components/ui/CookieBanner'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
 import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
 import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
-import { getDefaultTheme } from '@/lib/theme/storefront-theme'
+import { getDefaultTheme, getThemeBootstrapScript } from '@/lib/theme/storefront-theme'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -83,20 +83,7 @@ export default function RootLayout({
           id="storefront-theme-bootstrap"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function () {
-  try {
-    var key = 'growmedica-storefront-theme';
-    var defaultTheme = '${defaultTheme}';
-    var t = localStorage.getItem(key);
-    if (t === 'noor' || t === 'classic') {
-      document.documentElement.setAttribute('data-storefront-theme', t);
-    } else {
-      document.documentElement.setAttribute('data-storefront-theme', defaultTheme);
-    }
-  } catch (e) {
-    document.documentElement.setAttribute('data-storefront-theme', '${defaultTheme}');
-  }
-})();`,
+            __html: getThemeBootstrapScript(),
           }}
         />
         <script

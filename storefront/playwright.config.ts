@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isPwaProductionTest = !!process.env.PWA_PRODUCTION_TEST;
-const shopifyTestEnv = {
+const isNoorDemoTest = process.env.NOOR_DEMO_TEST === '1';
+
+const shopifyTestEnv: Record<string, string> = {
   SHOPIFY_MOCK_MODE: process.env.SHOPIFY_MOCK_MODE ?? '1',
   SHOPIFY_STORE_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN ?? 'mock-store.myshopify.com',
   SHOPIFY_STOREFRONT_ACCESS_TOKEN:
@@ -11,6 +13,11 @@ const shopifyTestEnv = {
   MISTRAL_API_KEY: process.env.MISTRAL_API_KEY ?? 'mock-mistral-api-key',
   MISTRAL_MODEL: process.env.MISTRAL_MODEL ?? 'mistral-large-latest',
 };
+
+if (isNoorDemoTest) {
+  shopifyTestEnv.NEXT_PUBLIC_DEFAULT_THEME = 'noor';
+  shopifyTestEnv.NEXT_PUBLIC_HIDE_THEME_SWITCHER = '1';
+}
 
 export default defineConfig({
   testDir: './tests',

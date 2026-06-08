@@ -13,6 +13,7 @@ import {
   applyThemeToDocument,
   DEFAULT_THEME,
   getDocumentTheme,
+  isLockedNoorDemo,
   STORAGE_KEY,
   THEME_CHANGED_EVENT,
   type StorefrontTheme,
@@ -58,7 +59,12 @@ export function StorefrontThemeProvider({ children }: { children: ReactNode }) {
     const current = getDocumentTheme()
     setTheme(current)
 
-    if (current === 'noor') {
+    if (isLockedNoorDemo() && current !== DEFAULT_THEME) {
+      applyThemeToDocument(DEFAULT_THEME)
+      setTheme(DEFAULT_THEME)
+    }
+
+    if (current === 'noor' || (isLockedNoorDemo() && DEFAULT_THEME === 'noor')) {
       requestAnimationFrame(() => {
         document.documentElement.classList.add('theme-reveal-play')
       })
@@ -71,6 +77,7 @@ export function StorefrontThemeProvider({ children }: { children: ReactNode }) {
 
   const switchTheme = useCallback(
     (next: StorefrontTheme) => {
+      if (isLockedNoorDemo()) return
       if (next === theme || isSwitching) return
 
       clearTimers()
