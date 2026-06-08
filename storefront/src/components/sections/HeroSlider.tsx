@@ -23,6 +23,12 @@ interface HeroSliderProps {
 
 const AUTOPLAY_MS = 6000
 
+/** Caps Next.js image optimizer width — hero is full-bleed at all breakpoints. */
+const HERO_IMAGE_SIZES = '(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1600px'
+
+const HERO_LCP_QUALITY = 75
+const HERO_SLIDE_QUALITY = 70
+
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: 'fallback-1',
@@ -57,6 +63,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
 
   const active = items[index]
   const hasImage = Boolean(active.imageUrl)
+  const isLcpSlide = index === 0
 
   return (
     <section
@@ -78,10 +85,12 @@ export function HeroSlider({ slides }: HeroSliderProps) {
                 src={active.imageUrl}
                 alt={active.alt}
                 fill
-                priority={index === 0}
-                sizes="100vw"
+                priority={isLcpSlide}
+                fetchPriority={isLcpSlide ? 'high' : 'auto'}
+                loading={isLcpSlide ? 'eager' : 'lazy'}
+                sizes={HERO_IMAGE_SIZES}
                 className="object-cover object-center"
-                quality={85}
+                quality={isLcpSlide ? HERO_LCP_QUALITY : HERO_SLIDE_QUALITY}
               />
             ) : (
               <div
