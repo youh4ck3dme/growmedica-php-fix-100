@@ -14,6 +14,19 @@ Izolovaný NOOR skin pre GrowMedica — samostatný Vercel projekt a branch, bez
 
 Deploy z **koreňa repozitára** (nie zo `storefront/`), inak Vercel hľadá `storefront/storefront`.
 
+## Preview vs. production — častá chyba vo Verceli
+
+Push na `feat/noor-production-demo` spustí **dva** deploye:
+
+| Čo vidíš vo Verceli | Projekt | Prostredie | URL pattern | Používať? |
+|---|---|---|---|---|
+| `growmedicanextjs-git-feat-noor-production-demo-…` | `growmedicanextjs` | **Preview** | `growmedicanextjs-*-h4ck3d.vercel.app` | ❌ Nie — môže byť **Stale**, SSO (401), bez NOOR env |
+| `growmedica-noor-demo.vercel.app` | `growmedica-noor-demo` | **Production** | fixná demo URL | ✅ Áno — skutočný NOOR demo deploy |
+
+**Stale** na preview znamená len to, že existuje novší deploy na tom istom branchi (napr. starý commit `f382f37` vs. novší `0177fee`). **Neovplyvňuje** produkciu `growmedicanextjs.vercel.app` (tam ide len branch `main`).
+
+Voliteľne v **Vercel → growmedicanextjs → Settings → Git → Ignored Build Step** môžeš pre preview projekt ignorovať build pre branch `feat/noor-production-demo` (demo sa deployuje výhradne cez projekt `growmedica-noor-demo`).
+
 ## Env premenné
 
 ### Main produkcia (`growmedicanextjs`)
