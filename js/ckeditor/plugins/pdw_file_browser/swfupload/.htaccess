@@ -1,7 +1,0 @@
-<Files *.php>
-allow from all
-</Files>
-
-<Files upload.php>
-allow from all
-</Files>
