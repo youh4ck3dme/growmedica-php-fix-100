@@ -135,6 +135,10 @@ export const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
     metafields(identifiers: [
       { namespace: "custom", key: "composition" }
       { namespace: "custom", key: "zlozenie" }
+      { namespace: "custom", key: "usage" }
+      { namespace: "custom", key: "davkovanie" }
+      { namespace: "custom", key: "navod_pouzitia" }
+      { namespace: "custom", key: "navod" }
     ]) {
       namespace
       key

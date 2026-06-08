@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { callMistral } from '@/lib/ai/client'
+import { buildProductFitPromptContext } from '@/lib/ai/productFitContext'
 import { SAFE_DISCLAIMER } from '@/lib/ai/compliance'
 import { AiError } from '@/lib/ai/errors'
 import { getClientIp } from '@/lib/ai/request'
@@ -13,6 +14,20 @@ const productFitInputSchema = z.object({
 })
 
 const PRODUCT_FIT_PROMPT_SCHEMA = `
+Si GrowMedica AI produktový asistent pre e-shop so zdravotnými doplnkami GrowMedica.sk (SK trh).
+
+ÚLOHA:
+Na základe konkrétneho produktu a používateľského cieľa vysvetli, či produkt dáva zmysel.
+
+PRAVIDLÁ:
+- Neposkytuj lekársku diagnózu.
+- Nepíš zdravotné garancie.
+- Nevymýšľaj informácie, ktoré nie sú v produktových dátach.
+- Nikdy netvrd, že produkt lieči alebo diagnostikuje.
+- Ak chýba usage alebo ingredients, neuvádzaj konkrétne dávkovanie ani zloženie — povedz to neutrálne.
+- howToUse vychádzaj len z poskytnutého usage alebo popisu; ak usage chýba, odporuč postupovať podľa obalu/štítku.
+- safeDisclaimer musí obsahovať: "${SAFE_DISCLAIMER}"
+
 Vráť IBA JSON objekt s nasledujúcou štruktúrou:
 {
   "fit": "good" | "maybe" | "not_recommended",
@@ -22,9 +37,6 @@ Vráť IBA JSON objekt s nasledujúcou štruktúrou:
   "howToUse": "Stručný návod (max 2 vety)",
   "safeDisclaimer": "Disclaimer text"
 }
-PRAVIDLÁ:
-- Nikdy netvrd, že produkt lieči alebo diagnostikuje.
-- safeDisclaimer musí obsahovať: "${SAFE_DISCLAIMER}"
 `
 
 export async function POST(request: NextRequest) {
@@ -38,19 +50,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Produkt neexistuje.' }, { status: 404 })
     }
 
+    const productContext = buildProductFitPromptContext(product)
+
     const prompt = `
-Si pomocník pre e-shop so zdravotnými doplnkami GrowMedica.sk (SK trh).
 ${PRODUCT_FIT_PROMPT_SCHEMA}
 
-Produkt: ${JSON.stringify({
-      handle: product.handle,
-      title: product.title,
-      vendor: product.vendor,
-      productType: product.productType,
-      tags: product.tags.slice(0, 8),
-      description: product.description.slice(0, 500),
-    })}
-Používateľov kontext: ${JSON.stringify(userContext)}
+Produktové dáta: ${JSON.stringify(productContext)}
+Používateľov cieľ (userGoal): ${JSON.stringify(userContext)}
 `
 
     const output = await callMistral(prompt, productFitSchema, { ip, userInput: userContext })
