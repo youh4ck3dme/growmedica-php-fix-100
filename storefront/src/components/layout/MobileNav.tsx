@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 import Logo from '@/components/ui/Logo'
+import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
 
 interface MobileNavProps {
   isOpen: boolean
@@ -32,7 +33,7 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
 
       <nav
         id="mobile-nav"
-        className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white shadow-xl"
+        className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-(--color-surface) shadow-xl"
         aria-label="Mobilná navigácia"
         role="dialog"
         aria-modal="true"
@@ -68,7 +69,8 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
           ))}
         </ul>
 
-        <div className="border-t border-(--color-border) p-4">
+        <div className="border-t border-(--color-border) p-4 space-y-3">
+          <StorefrontThemeSwitcher compact />
           <p className="text-xs text-(--color-text-light)">© {new Date().getFullYear()} GrowMedica.sk</p>
         </div>
       </nav>

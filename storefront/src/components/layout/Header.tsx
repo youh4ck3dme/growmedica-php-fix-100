@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import Logo from '@/components/ui/Logo'
 import MobileNav from './MobileNav'
 import HeaderMegaMenu, { type MegaMenuCategory } from './HeaderMegaMenu'
+import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
 
 const BASE_NAV_LINKS = [
   { href: '/produkty', label: 'Produkty' },
@@ -71,7 +72,8 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
   return (
     <>
       <header
-        className="sticky top-0 z-30 w-full bg-white transition-shadow duration-200"
+        data-site-header
+        className="site-header sticky top-0 z-30 w-full bg-(--color-surface) transition-shadow duration-200"
         style={{
           boxShadow: scrolled ? '0 1px 12px rgba(16, 22, 21, 0.08)' : '0 1px 0 var(--color-border)',
         }}
@@ -116,6 +118,7 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
             </nav>
 
             <div className="flex items-center gap-1 shrink-0">
+              <StorefrontThemeSwitcher />
               <Link
                 href="/vyhladavanie"
                 id="search-button"

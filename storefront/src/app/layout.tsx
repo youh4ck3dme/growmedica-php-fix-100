@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import { Montserrat, Inter } from 'next/font/google'
 import '@/styles/globals.css'
 import { DEFAULT_METADATA, getOrganizationJsonLd } from '@/lib/seo'
@@ -9,6 +10,7 @@ import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
+import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -57,21 +59,48 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="sk" className={`${montserrat.variable} ${inter.variable}`}>
+    <html
+      lang="sk"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      data-storefront-theme="classic"
+      className={`${montserrat.variable} ${inter.variable}`}
+    >
       <body className="font-(--font-inter) antialiased">
+        <Script
+          id="storefront-theme-bootstrap"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function () {
+  try {
+    var key = 'growmedica-storefront-theme';
+    var t = localStorage.getItem(key);
+    if (t === 'noor' || t === 'classic') {
+      document.documentElement.setAttribute('data-storefront-theme', t);
+    } else {
+      document.documentElement.setAttribute('data-storefront-theme', 'classic');
+    }
+  } catch (e) {
+    document.documentElement.setAttribute('data-storefront-theme', 'classic');
+  }
+})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
         />
-        <div className="flex min-h-dvh flex-col">
-          <AnnouncementBar />
-          <HeaderShell />
-          <TrustStrip />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CookieBanner />
-          <PwaInstallBanner />
-        </div>
+        <StorefrontThemeProvider>
+          <div className="flex min-h-dvh flex-col">
+            <AnnouncementBar />
+            <HeaderShell />
+            <TrustStrip />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CookieBanner />
+            <PwaInstallBanner />
+          </div>
+        </StorefrontThemeProvider>
       </body>
     </html>
   )

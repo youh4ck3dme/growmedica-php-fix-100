@@ -75,7 +75,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* Search bar — mobile-first */}
-      <div className="border-b border-(--color-border) bg-white py-3 lg:hidden">
+      <div className="theme-transition noor-reveal border-b border-(--color-border) bg-(--color-surface) py-3 lg:hidden">
         <Container>
           <Link href="/vyhladavanie" className="search-pill no-underline">
             <svg className="h-5 w-5 shrink-0 text-(--color-primary)" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -88,7 +88,7 @@ export default async function HomePage() {
 
       {/* Hero */}
       <section
-        className="relative overflow-hidden py-12 lg:py-20 bg-white"
+        className="theme-transition noor-reveal noor-premium-bg relative overflow-hidden py-12 lg:py-20 bg-(--color-surface)"
         aria-labelledby="hero-heading"
       >
         <div
@@ -120,14 +120,17 @@ export default async function HomePage() {
             {/* Hero visual placeholder */}
             <div
               className="relative hidden sm:flex items-center justify-center rounded-2xl overflow-hidden aspect-4/3 lg:aspect-square"
-              style={{ background: 'linear-gradient(135deg, #E7F8F2 0%, #FFFFFF 60%)' }}
+              style={{
+                background:
+                  'linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-surface) 60%)',
+              }}
               aria-hidden="true"
             >
               <div className="flex gap-4 items-end p-8">
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="w-16 lg:w-20 rounded-xl bg-white shadow-md flex flex-col items-center justify-end pb-3 pt-6 border border-(--color-border)"
+                    className="noor-card theme-transition w-16 lg:w-20 flex flex-col items-center justify-end pb-3 pt-6"
                     style={{ height: `${120 + i * 24}px` }}
                   >
                     <div className="w-8 h-8 rounded-full mb-2" style={{ background: 'var(--color-primary-light)' }} />
@@ -141,11 +144,11 @@ export default async function HomePage() {
       </section>
 
       {/* Value props */}
-      <section className="usp-bar" aria-label="Benefity">
+      <section className="usp-bar theme-transition" aria-label="Benefity">
         <Container>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div className="noor-stagger grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
             {VALUE_PROPS.map((item) => (
-              <div key={item.title} className="usp-card">
+              <div key={item.title} className="usp-card noor-card theme-transition">
                 <div className="text-(--color-primary)">{item.icon}</div>
                 <p className="font-bold text-xs tracking-wide text-(--color-text)" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {item.title}
@@ -159,7 +162,7 @@ export default async function HomePage() {
 
       {/* Categories */}
       <section
-        className="py-12 lg:py-16 bg-(--color-bg)"
+        className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-bg)"
         aria-labelledby="categories-heading"
       >
         <Container>
@@ -175,7 +178,7 @@ export default async function HomePage() {
               <Link
                 key={cat.handle}
                 href={cat.href}
-                className="group flex flex-col items-center text-center p-4 bg-white rounded-xl border border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-primary-light) hover:-translate-y-0.5 hover:shadow-md transition-all"
+                className="noor-card theme-transition group flex flex-col items-center text-center p-4 bg-(--color-surface) rounded-xl border border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-primary-light) hover:-translate-y-0.5 hover:shadow-md transition-all"
               >
                 {cat.icon && (
                   <span className="text-2xl mb-2" aria-hidden="true">{cat.icon}</span>
@@ -203,14 +206,14 @@ export default async function HomePage() {
       </section>
 
       {/* AI supplement finder */}
-      <div className="bg-white border-y border-(--color-border)">
+      <div className="noor-reveal noor-glass theme-transition bg-(--color-surface) border-y border-(--color-border)">
         <Container>
           <SupplementFinder />
         </Container>
       </div>
 
       <section
-        className="py-12 lg:py-16 bg-(--color-surface-2)"
+        className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-surface-2)"
         aria-labelledby="featured-heading"
       >
         <Container>
@@ -230,7 +233,9 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <ProductGrid products={featuredProducts} />
+          <div className="noor-stagger">
+            <ProductGrid products={featuredProducts} />
+          </div>
 
           <div className="mt-8 text-center sm:hidden">
             <Link href="/produkty" className="btn btn-primary">
@@ -241,7 +246,7 @@ export default async function HomePage() {
       </section>
 
       {/* About / SEO */}
-      <section className="py-12 lg:py-16 bg-white" aria-label="O Growmedica">
+      <section className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-surface)" aria-label="O Growmedica">
         <Container>
           <div className="max-w-3xl mx-auto text-center">
             <p className="section-label" style={{ textAlign: 'center' }}>{BRAND_COPY.aboutLabel}</p>

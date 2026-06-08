@@ -879,3 +879,243 @@
     border-color: rgba(53, 199, 154, 0.45);
   }
 }
+
+/* ─── NOOR theme skin (extracted from NOOR_GROWM_FINNAL.zip) ─────────────── */
+
+@layer base {
+  [data-storefront-theme="noor"] {
+    /* Mapped from ZIP --gm-* tokens to GrowMedica --color-* bridge */
+    --color-bg: #FDFBF7;
+    --color-surface: #FFFFFF;
+    --color-surface-2: #F5F2EB;
+    --color-primary: #E8A88B;
+    --color-primary-dark: #D99679;
+    --color-primary-light: #E5DCC3;
+    --color-text: #2C2A28;
+    --color-text-muted: #7A756D;
+    --color-border: #EAE5D9;
+    --color-accent-green: #E8A88B;
+    --color-border-focus: #D99679;
+    --color-footer-bg: #17120D;
+
+    /* Raw NOOR tokens preserved from ZIP globals.css-token-block.css */
+    --gm-glass: rgba(255, 255, 255, 0.85);
+    --gm-glass-border: rgba(255, 255, 255, 0.2);
+    --gm-shadow-soft: 0 10px 40px -10px rgba(232, 168, 139, 0.08);
+    --gm-shadow-card: 0 10px 40px -10px rgba(232, 168, 139, 0.08);
+    --gm-radius-sm: 0.25rem;
+    --gm-radius-md: 0.5rem;
+    --gm-radius-lg: 1rem;
+    --gm-radius-xl: 1.5rem;
+    --gm-radius-2xl: 1.5rem;
+
+    --shadow-card: var(--gm-shadow-card);
+    --shadow-hover: var(--gm-shadow-soft);
+    --radius-card: var(--gm-radius-lg);
+  }
+
+  [data-storefront-theme="noor"] .site-header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+@layer utilities {
+  .theme-transition {
+    transition:
+      background-color var(--transition-base),
+      color var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      transform var(--transition-base);
+  }
+
+  [data-storefront-theme="noor"] .noor-glass {
+    background: var(--gm-glass);
+    backdrop-filter: blur(12px);
+    border-color: var(--gm-glass-border);
+    box-shadow: var(--gm-shadow-soft);
+  }
+
+  [data-storefront-theme="noor"] .noor-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--gm-radius-lg);
+    box-shadow: var(--gm-shadow-soft);
+  }
+
+  [data-storefront-theme="noor"] .noor-premium-bg {
+    background: linear-gradient(
+      180deg,
+      var(--color-bg) 0%,
+      var(--color-surface-2) 100%
+    );
+  }
+
+  @keyframes noor-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-reveal {
+    animation: noor-fade-in 0.5s ease-out both;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > * {
+    animation: noor-fade-in 0.5s ease-out both;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(4) {
+    animation-delay: 240ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(5) {
+    animation-delay: 320ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(6) {
+    animation-delay: 400ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(7) {
+    animation-delay: 480ms;
+  }
+
+  html[data-storefront-theme="noor"].theme-reveal-play .noor-stagger > *:nth-child(8) {
+    animation-delay: 560ms;
+  }
+
+  /* Theme switcher — adapted from ZIP .gm-liquid-button outline/secondary pattern */
+  .noor-theme-switch {
+    align-items: center;
+    gap: 0;
+    padding: 0.125rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--gm-radius-md, 0.5rem);
+    background: var(--color-surface);
+  }
+
+  .noor-theme-switch--compact {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .noor-theme-switch__btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.375rem 0.75rem;
+    border: 0;
+    border-radius: calc(var(--gm-radius-md, 0.5rem) - 2px);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition:
+      background-color 300ms ease-out,
+      color 300ms ease-out,
+      box-shadow 300ms ease-out;
+    cursor: pointer;
+  }
+
+  .noor-theme-switch--compact .noor-theme-switch__btn {
+    flex: 1;
+  }
+
+  .noor-theme-switch__btn:hover:not(:disabled) {
+    color: var(--color-primary-dark);
+    background: var(--color-surface-2);
+  }
+
+  .noor-theme-switch__btn--active {
+    background: var(--color-primary);
+    color: #ffffff;
+    box-shadow: var(--gm-shadow-soft, var(--shadow-card));
+  }
+
+  .noor-theme-switch__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Overlay — minimal adaptation using ZIP gm-glass-panel + gm-bg (no loader in ZIP) */
+  .theme-switch-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(253, 251, 247, 0.92);
+    backdrop-filter: blur(12px);
+  }
+
+  .theme-switch-overlay__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--gm-glass-border, rgba(255, 255, 255, 0.2));
+    border-radius: var(--gm-radius-xl, 1.5rem);
+    background: var(--gm-glass, rgba(255, 255, 255, 0.85));
+    box-shadow: var(--gm-shadow-soft, var(--shadow-card));
+  }
+
+  .theme-switch-overlay__spinner {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 9999px;
+    animation: theme-switch-spin 0.8s linear infinite;
+  }
+
+  .theme-switch-overlay__text {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  @keyframes theme-switch-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .noor-reveal,
+    .noor-stagger > *,
+    .theme-transition {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .theme-switch-overlay__spinner {
+      animation: none;
+      border-top-color: var(--color-primary);
+    }
+  }
+}
