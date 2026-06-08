@@ -17,6 +17,42 @@ type MistralOptions = {
   userInput?: string
 }
 
+function getMockMistralOutput<T>(prompt: string, schema: z.ZodSchema<T>): T {
+  if (prompt.includes('"approved"') && prompt.includes('"riskLevel"')) {
+    const blocked = /vylieči|rakovinu|nahradí|lekára|liek/i.test(prompt)
+    return schema.parse({
+      approved: !blocked,
+      riskLevel: blocked ? 'high' : 'low',
+      blockedClaims: blocked ? ['liečebné tvrdenie'] : [],
+      rewrite: blocked
+        ? 'Produkt je výživový doplnok a nenahrádza odbornú zdravotnú starostlivosť.'
+        : 'Text je vhodný pre bežnú produktovú komunikáciu.',
+      notes: blocked ? ['Vyhnite sa tvrdeniam o liečbe.'] : [],
+    })
+  }
+
+  if (prompt.includes('"fit"') && prompt.includes('"shortAnswer"')) {
+    return schema.parse({
+      fit: 'maybe',
+      shortAnswer: 'Produkt môže byť vhodný podľa vašich cieľov, no berte ho ako doplnok stravy.',
+      bestFor: ['aktívny životný štýl', 'bežné doplnenie stravy'],
+      notIdealFor: ['tehotné ženy bez konzultácie', 'ľudia s liečbou bez odporúčania odborníka'],
+      howToUse: 'Dodržujte odporúčané dávkovanie na obale produktu.',
+      safeDisclaimer: 'Toto odporúčanie nenahrádza konzultáciu s lekárom ani odborníkom.',
+    })
+  }
+
+  return schema.parse({
+    summary: 'Na základe popisu odporúčame začať jemne a sledovať individuálnu toleranciu.',
+    recommendedHandles: ['vitaminy-mineraly-mock-1', 'regeneracia-mock-1'],
+    recommendedCategories: ['vitaminy-mineraly', 'regeneracia'],
+    reasoningForUser:
+      'Vybrané doplnky zodpovedajú všeobecnému cieľu podpory vitality. Odporúčanie nenahrádza konzultáciu s lekárom ani odborníkom.',
+    warnings: [],
+    bundleSuggestion: null,
+  })
+}
+
 function extractMessageContent(content: unknown): string {
   if (typeof content === 'string') return content
   if (Array.isArray(content)) {
@@ -43,9 +79,6 @@ export async function callMistral<T>(
   schema: z.ZodSchema<T>,
   opts?: MistralOptions,
 ): Promise<T> {
-  const { MISTRAL_API_KEY, MISTRAL_MODEL } = getMistralEnv()
-  const model = opts?.model ?? MISTRAL_MODEL
-  const temperature = opts?.temperature ?? 0.7
   const ip = opts?.ip ?? 'unknown'
 
   if (opts?.userInput) {
@@ -61,6 +94,14 @@ export async function callMistral<T>(
     console.warn(`[Mistral] Rate limit exceeded for IP: ${ip}`)
     throw new AiError('Príliš veľa požiadaviek. Skúste to prosím neskôr.', 429)
   }
+
+  if (process.env.MISTRAL_MOCK_MODE === '1') {
+    return getMockMistralOutput(prompt, schema)
+  }
+
+  const { MISTRAL_API_KEY, MISTRAL_MODEL } = getMistralEnv()
+  const model = opts?.model ?? MISTRAL_MODEL
+  const temperature = opts?.temperature ?? 0.7
 
   const client = new Mistral({ apiKey: MISTRAL_API_KEY })
   let lastError: Error | undefined

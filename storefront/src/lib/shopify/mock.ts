@@ -84,10 +84,50 @@ function productListItem(slug: MainCategory, index: number): ProductListItem {
   }
 }
 
+function cordycepsProduct(): ProductListItem {
+  const price = {
+    amount: '16.20',
+    currencyCode: 'EUR',
+  }
+
+  return {
+    id: 'gid://shopify/Product/mock-cordyceps',
+    handle: 'mycomedica-cordyceps-50-90-rastlinnych-kapsul',
+    title: 'MycoMedica Cordyceps 50% 90 rastlinných kapsúl',
+    vendor: 'MycoMedica',
+    productType: 'Regeneračné doplnky',
+    tags: ['Regeneračné doplnky', 'Cordyceps', 'Energia'],
+    availableForSale: true,
+    priceRange: {
+      minVariantPrice: price,
+      maxVariantPrice: price,
+    },
+    compareAtPriceRange: {
+      minVariantPrice: price,
+      maxVariantPrice: price,
+    },
+    featuredImage: null,
+    variants: {
+      edges: [
+        {
+          node: {
+            id: 'gid://shopify/ProductVariant/mock-cordyceps-default',
+            title: 'Default Title',
+            availableForSale: true,
+            selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+            price,
+            compareAtPrice: null,
+          },
+        },
+      ],
+    },
+  }
+}
+
 const MOCK_PRODUCTS = getNavCategories().flatMap((category) => [
   productListItem(category.slug, 1),
   productListItem(category.slug, 2),
-])
+]).concat(cordycepsProduct())
 
 const MOCK_COLLECTIONS: Collection[] = getNavCategories().map((category) => ({
   id: `gid://shopify/Collection/mock-${category.slug}`,
