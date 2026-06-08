@@ -62,6 +62,7 @@ export default function RootLayout({
     <html
       lang="sk"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       data-storefront-theme="classic"
       className={`${montserrat.variable} ${inter.variable}`}
     >
