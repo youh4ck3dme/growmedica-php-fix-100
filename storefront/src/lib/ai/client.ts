@@ -74,6 +74,52 @@ function isRetryableError(error: Error): boolean {
   return /429|50[0-4]/.test(error.message)
 }
 
+function isAuthError(error: Error): boolean {
+  return /401|403|unauthorized|forbidden|invalid api key/i.test(error.message)
+}
+
+async function completeWithMistralKey<T>(
+  apiKey: string,
+  prompt: string,
+  schema: z.ZodSchema<T>,
+  model: string,
+  temperature: number,
+): Promise<T> {
+  const client = new Mistral({ apiKey })
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS)
+
+  try {
+    const response = await client.chat.complete(
+      {
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature,
+        responseFormat: { type: 'json_object' },
+      },
+      { signal: controller.signal },
+    )
+
+    const rawContent = response.choices?.[0]?.message?.content
+    if (rawContent == null) {
+      throw new Error('Mistral API: No content in response')
+    }
+
+    const content = extractMessageContent(rawContent)
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(content)
+    } catch {
+      console.error('[Mistral] Invalid JSON:', content.slice(0, 500))
+      throw new Error('Mistral API: Invalid JSON response')
+    }
+
+    return schema.parse(parsed)
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
 export async function callMistral<T>(
   prompt: string,
   schema: z.ZodSchema<T>,
@@ -99,58 +145,41 @@ export async function callMistral<T>(
     return getMockMistralOutput(prompt, schema)
   }
 
-  const { MISTRAL_API_KEY, MISTRAL_MODEL } = getMistralEnv()
+  const { MISTRAL_API_KEY, MISTRAL_API_KEY_BACKUP, MISTRAL_MODEL } = getMistralEnv()
   const model = opts?.model ?? MISTRAL_MODEL
   const temperature = opts?.temperature ?? 0.7
+  const apiKeys = [MISTRAL_API_KEY, MISTRAL_API_KEY_BACKUP].filter(
+    (key, index, keys): key is string => Boolean(key) && keys.indexOf(key) === index,
+  )
 
-  const client = new Mistral({ apiKey: MISTRAL_API_KEY })
   let lastError: Error | undefined
 
-  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS)
-
-    try {
-      const response = await client.chat.complete(
-        {
-          model,
-          messages: [{ role: 'user', content: prompt }],
-          temperature,
-          responseFormat: { type: 'json_object' },
-        },
-        { signal: controller.signal },
-      )
-
-      clearTimeout(timeoutId)
-
-      const rawContent = response.choices?.[0]?.message?.content
-      if (rawContent == null) {
-        throw new Error('Mistral API: No content in response')
-      }
-
-      const content = extractMessageContent(rawContent)
-      let parsed: unknown
+  for (const apiKey of apiKeys) {
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       try {
-        parsed = JSON.parse(content)
-      } catch {
-        console.error('[Mistral] Invalid JSON:', content.slice(0, 500))
-        throw new Error('Mistral API: Invalid JSON response')
+        return await completeWithMistralKey(apiKey, prompt, schema, model, temperature)
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error))
+
+        if (isAuthError(lastError) && apiKey !== apiKeys[apiKeys.length - 1]) {
+          console.warn('[Mistral] Primary API key failed auth, trying backup key')
+          break
+        }
+
+        if (!isRetryableError(lastError) || attempt === MAX_RETRIES - 1) {
+          break
+        }
+
+        const delay = BASE_DELAY_MS * 2 ** attempt
+        console.warn(
+          `[Mistral] Retry ${attempt + 1}/${MAX_RETRIES} after ${delay}ms: ${lastError.message}`,
+        )
+        await new Promise((resolve) => setTimeout(resolve, delay))
       }
+    }
 
-      return schema.parse(parsed)
-    } catch (error) {
-      clearTimeout(timeoutId)
-      lastError = error instanceof Error ? error : new Error(String(error))
-
-      if (!isRetryableError(lastError) || attempt === MAX_RETRIES - 1) {
-        break
-      }
-
-      const delay = BASE_DELAY_MS * 2 ** attempt
-      console.warn(
-        `[Mistral] Retry ${attempt + 1}/${MAX_RETRIES} after ${delay}ms: ${lastError.message}`,
-      )
-      await new Promise((resolve) => setTimeout(resolve, delay))
+    if (lastError && !isAuthError(lastError)) {
+      break
     }
   }
 
