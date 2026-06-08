@@ -365,9 +365,9 @@
   .collection-hero-overlay {
     background: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.94) 0%,
-      rgba(255, 255, 255, 0.72) 45%,
-      rgba(255, 255, 255, 0.15) 100%
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.68) 42%,
+      rgba(255, 255, 255, 0.08) 100%
     );
   }
 

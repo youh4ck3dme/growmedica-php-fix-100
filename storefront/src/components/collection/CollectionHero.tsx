@@ -23,8 +23,12 @@ export default function CollectionHero({
         : `${productCount} produktov`
 
   return (
-    <header className="collection-hero mb-8 overflow-hidden rounded-xl border border-(--color-border)">
-      <div className="relative min-h-[140px] lg:min-h-[180px]">
+    <header
+      className={`collection-hero mb-8 overflow-hidden rounded-xl border border-(--color-border) shadow-sm${bannerSrc ? ' collection-hero--has-banner' : ''}`}
+      data-collection-handle={handle}
+      data-banner-src={bannerSrc ?? undefined}
+    >
+      <div className="relative min-h-[220px] sm:min-h-[260px] lg:min-h-[320px]">
         {bannerSrc ? (
           <>
             <Image
@@ -32,7 +36,7 @@ export default function CollectionHero({
               alt=""
               fill
               priority
-              sizes="(min-width: 1024px) 896px, 100vw"
+              sizes="(min-width: 1024px) 1120px, 100vw"
               className="collection-hero-image object-cover object-center"
             />
             <div className="collection-hero-overlay absolute inset-0" aria-hidden="true" />
@@ -47,13 +51,13 @@ export default function CollectionHero({
             aria-hidden="true"
           />
         )}
-        <div className="relative z-10 flex h-full min-h-[140px] flex-col justify-center p-6 lg:min-h-[180px] lg:p-8">
-          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-(--color-primary-dark)">
+        <div className="relative z-10 flex h-full min-h-[220px] flex-col justify-center p-6 sm:min-h-[260px] lg:min-h-[320px] lg:p-10">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-(--color-primary-dark)">
             {countLabel}
           </p>
-          <h1 className="text-2xl font-bold text-(--color-text) lg:text-3xl">{title}</h1>
+          <h1 className="max-w-3xl text-3xl font-bold text-(--color-text) lg:text-5xl">{title}</h1>
           {description && (
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-(--color-text-muted) lg:text-base">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-(--color-text-muted) lg:text-base">
               {description}
             </p>
           )}
