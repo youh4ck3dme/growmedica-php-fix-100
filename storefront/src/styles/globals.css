@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* ─── Tailwind v4 theme bridge (glass + AMOLED premium tokens) ──────────── */
+
+@theme {
+  --color-glass: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-highlight: var(--glass-highlight);
+  --color-amoled: var(--amoled-bg);
+  --color-amoled-surface: var(--amoled-surface);
+  --color-amoled-elevated: var(--amoled-elevated);
+  --color-amoled-text: var(--amoled-text);
+  --color-amoled-muted: var(--amoled-text-muted);
+  --blur-glass: var(--glass-blur);
+  --blur-glass-heavy: var(--glass-blur-heavy);
+  --radius-glass: var(--glass-radius);
+  --shadow-glass: var(--glass-shadow);
+}
+
 /* ─── Design Tokens — GrowMedica.sk Brand Board ─────────────────────────── */
 
 @layer base {
@@ -57,6 +74,50 @@
     /* Radius */
     --radius-card: 12px;
     --radius-btn: 8px;
+
+    /* Liquid glass — premium header / overlay surfaces */
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --glass-highlight: rgba(255, 255, 255, 0.85);
+    --glass-blur: 20px;
+    --glass-blur-heavy: 32px;
+    --glass-saturate: 180%;
+    --glass-radius: 0;
+    --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 8px 32px rgba(16, 22, 21, 0.06);
+    --glass-shadow-scrolled: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 12px 40px rgba(16, 22, 21, 0.1);
+
+    /* AMOLED premium dark palette (classic theme + system dark) */
+    --amoled-bg: #000000;
+    --amoled-surface: #0a0a0a;
+    --amoled-elevated: #141414;
+    --amoled-text: #f5f5f5;
+    --amoled-text-muted: #a3a3a3;
+    --amoled-border: rgba(255, 255, 255, 0.08);
+    --amoled-glass-bg: rgba(10, 10, 10, 0.78);
+    --amoled-glass-border: rgba(255, 255, 255, 0.1);
+    --amoled-glass-highlight: rgba(255, 255, 255, 0.06);
+    --amoled-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-storefront-theme="noor"]) {
+      --color-bg: var(--amoled-bg);
+      --color-surface: var(--amoled-surface);
+      --color-surface-2: var(--amoled-elevated);
+      --color-text: var(--amoled-text);
+      --color-text-muted: var(--amoled-text-muted);
+      --color-border: var(--amoled-border);
+      --color-primary-light: rgba(53, 199, 154, 0.12);
+      --header-shadow: 0 1px 0 var(--amoled-border);
+      --header-shadow-scrolled: 0 1px 24px rgba(0, 0, 0, 0.5);
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 8px 24px rgba(53, 199, 154, 0.08), 0 2px 6px rgba(0, 0, 0, 0.35);
+      --glass-bg: var(--amoled-glass-bg);
+      --glass-border: var(--amoled-glass-border);
+      --glass-highlight: var(--amoled-glass-highlight);
+      --glass-shadow: var(--amoled-glass-shadow);
+      --glass-shadow-scrolled: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 16px 48px rgba(0, 0, 0, 0.55);
+    }
   }
 
   html {
@@ -404,6 +465,221 @@
   .search-pill:focus-within {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(53, 199, 154, 0.15);
+  }
+
+  /* Premium liquid glass surfaces */
+  .liquid-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .liquid-glass--heavy {
+    backdrop-filter: blur(var(--glass-blur-heavy)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy)) saturate(var(--glass-saturate));
+  }
+
+  .glass-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    transition:
+      background-color var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .glass-navbar--scrolled {
+    box-shadow: var(--glass-shadow-scrolled);
+  }
+
+  .glass-navbar__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: var(--radius-btn);
+    color: var(--color-text-muted);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .glass-navbar__action:hover {
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--glass-highlight) 65%, transparent);
+  }
+
+  .glass-navbar__action:active {
+    transform: scale(0.96);
+  }
+
+  /* Hero slider — fixed stage height prevents CLS */
+  .hero-slider__stage {
+    isolation: isolate;
+  }
+
+  .hero-slider__overlay {
+    background: linear-gradient(
+      105deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.72) 38%,
+      rgba(16, 22, 21, 0.35) 100%
+    );
+  }
+
+  [data-storefront-theme="noor"] .hero-slider__overlay {
+    background: linear-gradient(
+      105deg,
+      rgba(253, 251, 247, 0.92) 0%,
+      rgba(253, 251, 247, 0.55) 40%,
+      rgba(23, 18, 13, 0.42) 100%
+    );
+  }
+
+  .hero-slider__copy {
+    border-radius: 1.5rem;
+  }
+
+  .hero-slider__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--glass-border);
+    background: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+    color: var(--color-text);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    transform: translateY(-50%);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .hero-slider__nav:hover {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent),
+      0 12px 32px color-mix(in srgb, var(--color-primary) 18%, transparent);
+    transform: translateY(-50%) scale(1.04);
+  }
+
+  .hero-slider__nav--prev {
+    left: 1rem;
+  }
+
+  .hero-slider__nav--next {
+    right: 1rem;
+  }
+
+  .hero-slider__dot {
+    width: 2rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    border: 0;
+    background: color-mix(in srgb, var(--color-text) 18%, transparent);
+    transition:
+      width var(--transition-base),
+      background-color var(--transition-base),
+      box-shadow var(--transition-base);
+    cursor: pointer;
+  }
+
+  .hero-slider__dot--active {
+    width: 2.75rem;
+    background: var(--color-primary);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+
+  /* Trust badges — glassmorphism strip */
+  .trust-badges {
+    padding: 1.5rem 0 2rem;
+    background: transparent;
+  }
+
+  .trust-badge-glass {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1.125rem 0.875rem;
+    border-radius: 1.25rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
+  }
+
+  .trust-badge-glass::before {
+    content: '';
+    position: absolute;
+    inset: -40% -20% auto;
+    height: 70%;
+    background: radial-gradient(
+      circle at 50% 0%,
+      color-mix(in srgb, var(--color-primary) 22%, transparent) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    pointer-events: none;
+  }
+
+  .trust-badge-glass:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 35%, var(--glass-border));
+    box-shadow:
+      var(--glass-shadow),
+      0 0 28px color-mix(in srgb, var(--color-primary) 16%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-primary) 12%, transparent);
+  }
+
+  .trust-badge-glass:hover::before {
+    opacity: 1;
+  }
+
+  .trust-badge-glass__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: var(--color-primary-dark);
+    background: color-mix(in srgb, var(--color-primary-light) 75%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .trust-badge-glass:hover .trust-badge-glass__icon {
+    transform: scale(1.06);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+
+  [data-storefront-theme="noor"] .trust-badges.usp-bar {
+    background: var(--color-bg);
   }
 }
 
@@ -921,6 +1197,18 @@
   [data-storefront-theme="noor"] .site-header {
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: none !important;
+  }
+
+  [data-storefront-theme="noor"] .glass-navbar {
+    --glass-bg: rgba(255, 255, 255, 0.96);
+    --glass-border: var(--color-border);
+    --glass-shadow: none;
+    --glass-shadow-scrolled: none;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border);
     box-shadow: none !important;
   }
