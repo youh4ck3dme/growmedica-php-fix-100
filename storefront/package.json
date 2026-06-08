@@ -30,6 +30,12 @@
     "serwist": "^9.5.11",
     "zod": "^3.23.8"
   },
+  "browserslist": [
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 111",
+    "safari >= 16.4"
+  ],
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@shopify/cli": "^4.1.0",

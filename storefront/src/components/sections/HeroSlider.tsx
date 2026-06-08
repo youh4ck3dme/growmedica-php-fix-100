@@ -3,10 +3,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, m, useReducedMotion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { BRAND_COPY } from '@/lib/brand'
+import {
+  HERO_IMAGE_SIZES,
+  HERO_LCP_QUALITY,
+  HERO_SLIDE_QUALITY,
+} from '@/lib/hero-image'
 import { cn } from '@/lib/utils'
 
 export interface HeroSlide {
@@ -22,12 +27,6 @@ interface HeroSliderProps {
 }
 
 const AUTOPLAY_MS = 6000
-
-/** Caps Next.js image optimizer width — hero is full-bleed at all breakpoints. */
-const HERO_IMAGE_SIZES = '(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1600px'
-
-const HERO_LCP_QUALITY = 75
-const HERO_SLIDE_QUALITY = 70
 
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
@@ -72,10 +71,10 @@ export function HeroSlider({ slides }: HeroSliderProps) {
     >
       <div className="hero-slider__stage relative w-full min-h-[28rem] sm:min-h-[32rem] lg:min-h-[36rem]">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+          <m.div
             key={active.id}
             className="absolute inset-0"
-            initial={reduceMotion ? false : { opacity: 0, scale: 1.03 }}
+            initial={reduceMotion || isLcpSlide ? false : { opacity: 0, scale: 1.03 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, scale: 1.01 }}
             transition={{ duration: reduceMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
@@ -104,11 +103,11 @@ export function HeroSlider({ slides }: HeroSliderProps) {
             )}
 
             <div className="hero-slider__overlay absolute inset-0" aria-hidden="true" />
-          </motion.div>
+          </m.div>
         </AnimatePresence>
 
         <Container className="relative z-10 flex h-full min-h-[inherit] items-center py-10 lg:py-16">
-          <motion.div
+          <m.div
             className="hero-slider__copy liquid-glass liquid-glass--heavy max-w-xl rounded-3xl p-6 sm:p-8 lg:p-10"
             initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -132,7 +131,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
             >
               {BRAND_COPY.heroCta}
             </Link>
-          </motion.div>
+          </m.div>
         </Container>
 
         {items.length > 1 && (

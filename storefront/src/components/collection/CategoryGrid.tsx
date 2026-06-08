@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import type { NavCollectionItem } from '@/lib/shopify/collection-nav'
 import { cn } from '@/lib/utils'
 
@@ -26,7 +26,7 @@ export function CategoryGrid({ categories, className }: CategoryGridProps) {
       role="list"
     >
       {categories.map((category) => (
-        <motion.div
+        <m.div
           key={category.handle}
           role="listitem"
           className="h-full"
@@ -35,7 +35,6 @@ export function CategoryGrid({ categories, className }: CategoryGridProps) {
               ? undefined
               : {
                   scale: 1.03,
-                  filter: 'brightness(1.06)',
                 }
           }
           transition={{
@@ -55,7 +54,7 @@ export function CategoryGrid({ categories, className }: CategoryGridProps) {
             ) : null}
             <h3 className="category-grid-premium__title">{category.title}</h3>
           </Link>
-        </motion.div>
+        </m.div>
       ))}
     </div>
   )

@@ -1,17 +1,39 @@
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import type { Metadata } from 'next'
+import { getImageProps } from 'next/image'
+import { preload } from 'react-dom'
 import { Container } from '@/components/ui/Container'
 import { ProductGrid } from '@/components/product/ProductGrid'
-import { SupplementFinder } from '@/components/ai/SupplementFinder'
 import { HeroSlider, type HeroSlide } from '@/components/sections/HeroSlider'
 import { TrustBadges } from '@/components/sections/TrustBadges'
 import { ScrollRevealSection } from '@/components/sections/ScrollRevealSection'
-import { CategoryGrid } from '@/components/collection/CategoryGrid'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
 import { getHomepageCategories } from '@/lib/category-map'
 import { BRAND_COPY } from '@/lib/brand'
+import { HERO_IMAGE_SIZES, HERO_LCP_QUALITY } from '@/lib/hero-image'
 import type { ProductListItem } from '@/lib/shopify/types'
+
+const SupplementFinder = dynamic(
+  () =>
+    import('@/components/ai/SupplementFinder').then((mod) => ({
+      default: mod.SupplementFinder,
+    })),
+  {
+    loading: () => <div className="min-h-48" aria-hidden="true" />,
+  },
+)
+
+const CategoryGrid = dynamic(
+  () =>
+    import('@/components/collection/CategoryGrid').then((mod) => ({
+      default: mod.CategoryGrid,
+    })),
+  {
+    loading: () => <div className="min-h-40" aria-hidden="true" />,
+  },
+)
 
 export const revalidate = 3600
 
@@ -33,6 +55,26 @@ function buildHeroSlides(products: ProductListItem[]): HeroSlide[] {
     }))
 }
 
+function preloadHeroLcpImage(slide: HeroSlide): void {
+  const {
+    props: { src, srcSet, sizes },
+  } = getImageProps({
+    alt: slide.alt,
+    src: slide.imageUrl,
+    fill: true,
+    sizes: HERO_IMAGE_SIZES,
+    quality: HERO_LCP_QUALITY,
+    priority: true,
+  })
+
+  preload(src, {
+    as: 'image',
+    imageSrcSet: srcSet,
+    imageSizes: sizes,
+    fetchPriority: 'high',
+  })
+}
+
 export default async function HomePage() {
   let featuredProducts: Awaited<ReturnType<typeof getFeaturedProducts>> = []
   let allCategories: Awaited<ReturnType<typeof getNavCollectionItems>> = []
@@ -51,6 +93,11 @@ export default async function HomePage() {
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
 
   const heroSlides = buildHeroSlides(featuredProducts)
+  const lcpSlide = heroSlides[0]
+
+  if (lcpSlide?.imageUrl) {
+    preloadHeroLcpImage(lcpSlide)
+  }
 
   return (
     <div>
@@ -66,10 +113,8 @@ export default async function HomePage() {
         </Container>
       </div>
 
-      {/* Hero slider */}
-      <ScrollRevealSection>
-        <HeroSlider slides={heroSlides} />
-      </ScrollRevealSection>
+      {/* Hero slider — no scroll-reveal wrapper; LCP image must paint immediately */}
+      <HeroSlider slides={heroSlides} />
 
       <ScrollRevealSection>
         <TrustBadges />

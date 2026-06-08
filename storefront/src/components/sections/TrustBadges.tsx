@@ -2,7 +2,7 @@
 
 import type { LucideIcon } from 'lucide-react'
 import { Headphones, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
 import { cn } from '@/lib/utils'
 
@@ -46,7 +46,7 @@ export function TrustBadges() {
             const Icon = item.icon
 
             return (
-              <motion.article
+              <m.article
                 key={item.title}
                 className={cn('trust-badge-glass theme-transition')}
                 whileHover={reduceMotion ? undefined : { y: -4, scale: 1.02 }}
@@ -66,7 +66,7 @@ export function TrustBadges() {
                   {item.title}
                 </p>
                 <p className="text-xs text-(--color-text-muted)">{item.subtitle}</p>
-              </motion.article>
+              </m.article>
             )
           })}
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 
 const REVEAL_EASE = [0.22, 1, 0.36, 1] as const
 
@@ -43,8 +43,8 @@ export function ScrollRevealSection({
   }
 
   if (as === 'section') {
-    return <motion.section {...motionProps}>{children}</motion.section>
+    return <m.section {...motionProps}>{children}</m.section>
   }
 
-  return <motion.div {...motionProps}>{children}</motion.div>
+  return <m.div {...motionProps}>{children}</m.div>
 }
