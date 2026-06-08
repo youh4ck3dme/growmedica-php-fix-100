@@ -17,6 +17,15 @@ const serwist = new Serwist({
   navigationPreload: true,
   runtimeCaching: [
     {
+      matcher: ({ request, sameOrigin }) => sameOrigin && request.mode === 'navigate',
+      handler: new NetworkOnly(),
+    },
+    {
+      matcher: ({ request, url: { pathname }, sameOrigin }) =>
+        sameOrigin && request.headers.get('RSC') === '1' && !pathname.startsWith('/api/'),
+      handler: new NetworkOnly(),
+    },
+    {
       matcher: ({ url }) => url.pathname.startsWith('/api/'),
       handler: new NetworkOnly(),
     },

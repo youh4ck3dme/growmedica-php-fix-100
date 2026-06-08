@@ -175,11 +175,19 @@ yarn setup:env
 ```bash
 cd storefront
 yarn type-check
-yarn test:integrity    # 47 testov
+yarn test:integrity    # 67 testov, Shopify mock mode pre Playwright webServer
+SHOPIFY_MOCK_MODE=1 \
+SHOPIFY_STORE_DOMAIN=mock-store.myshopify.com \
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=mock-storefront-token \
 yarn build
 ```
 
 Build by nemal padať na env validácii ani hlásiť Shopify `401` v sitemap (pri platnom Storefront tokene).
+
+`yarn test:integrity` už nepotrebuje reálne Shopify secrets. Playwright nastaví
+pre Next.js test webServer bezpečné mock hodnoty a `SHOPIFY_MOCK_MODE=1`, takže
+integrity suite používa deterministické fixture odpovede zo
+`src/lib/shopify/mock.ts`.
 
 ---
 
@@ -246,6 +254,31 @@ curl -i -X POST "https://growmedicanextjs.vercel.app/api/revalidate" \
 ```
 
 Očakávané: `401` (zlý secret) alebo `200` (platný secret). `302` z Apache = testuješ nesprávny host.
+
+### Aktuálna smoke diagnostika
+
+Posledná diagnostika (2026-06-08) kontrolovala:
+
+- `/`, `/kolekcie`, `/kolekcie/vitaminy-mineraly`, `/produkty`, `/vyhladavanie?q=vitamin`, `/kontakt`
+- header, footer, homepage hero
+- mega menu otvorenie a 14 kategórií
+- 14/14 WebP banner kariet na `/kolekcie`
+- popisy kolekcií
+- hero banner na detaile kolekcie
+- produktový grid
+- browser page errors
+
+Výsledky:
+
+```text
+PR branch smoke: 18/18 PASS
+Production smoke pred merge/deploy PR #14: 17/18 PASS
+```
+
+Produkčný fail bol očakávaný: produkcia ešte nemala nové popisy kolekcií z PR #14.
+Po merge/deploy PR #14 očakávaj `18/18 PASS`.
+
+Viac detailov: `storefront/docs/DIAGNOSTICS.md`.
 
 ---
 

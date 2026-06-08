@@ -13,6 +13,15 @@ test.describe('Category icons — category-map', () => {
     }
   })
 
+  test('všetky nav kategórie majú popis pre kolekcie', () => {
+    const categories = getNavCategories()
+
+    for (const def of categories) {
+      expect(def.description, `${def.slug} missing description`).toBeTruthy()
+      expect(def.description!.trim().length, `${def.slug} description too short`).toBeGreaterThan(30)
+    }
+  })
+
   test('ikony nav kategórií sú unikátne', () => {
     const categories = getNavCategories()
     const icons = categories.map((c) => c.icon)

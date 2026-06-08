@@ -8,12 +8,12 @@ import type { Money } from './shopify/types'
 
 export function formatMoney(money: Money): string {
   const amount = parseFloat(money.amount)
-  return new Intl.NumberFormat('sk-SK', {
-    style: 'currency',
-    currency: money.currencyCode,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
+  const formattedAmount = amount.toFixed(2).replace('.', ',')
+  const currency = money.currencyCode === 'EUR' ? '€' : money.currencyCode
+
+  // Keep price text deterministic across Node and browsers to avoid hydration
+  // mismatches from locale-specific non-breaking spaces or currency placement.
+  return `${formattedAmount} ${currency}`
 }
 
 export function formatPrice(amount: string, currencyCode: string): string {

@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import type { ProductListItem } from '@/lib/shopify/types'
 import { getProductUrl } from '@/lib/utils'
@@ -33,13 +32,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       >
         <div className="relative aspect-square overflow-hidden bg-white">
           {image ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={image.url}
               alt={image.altText ?? product.title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
-              className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
-              priority={priority}
+              loading={priority ? 'eager' : 'lazy'}
+              decoding="async"
+              className="h-full w-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-(--color-surface-2)">
