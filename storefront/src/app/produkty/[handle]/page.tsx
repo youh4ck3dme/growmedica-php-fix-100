@@ -12,12 +12,23 @@ import {
   getProductByHandle,
   getRelatedProducts,
   getProductCompositionHtml,
+  getAllProductHandlesForSitemap,
 } from '@/lib/shopify/products'
 import { getProductMetadata, getProductJsonLd, getBreadcrumbJsonLd } from '@/lib/seo'
 import { getCollectionUrl } from '@/lib/utils'
 import { getCategoryDefinition, resolveCategory } from '@/lib/category-map'
 
 export const revalidate = 3600
+
+export async function generateStaticParams() {
+  try {
+    const products = await getAllProductHandlesForSitemap()
+    return products.map(({ handle }) => ({ handle }))
+  } catch (error) {
+    console.error('[ProductPage] generateStaticParams failed:', error)
+    return []
+  }
+}
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>
