@@ -24,7 +24,7 @@ GrowMedica uses **Serwist** (`@serwist/next`) for offline-first PWA with:
 
 | Content Type | Strategy | Details |
 |--------------|----------|---------|
-| **HTML (routes)** | Network-first | Fetch from network; fallback to cache; nav fallback → `/offline` |
+| **HTML (routes)** | Network-first | Fetch from network (5s timeout); fallback to cache; nav fallback → `/offline` |
 | **CSS/JS/fonts** | Cache-first | Serve from cache; if missing, fetch network |
 | **API calls** | NetworkOnly + 5s timeout | Try network; timeout after 5s; fallback to cache or error response |
 | **Images** | Cache-first | Serve from cache; if missing, fetch network |
@@ -57,7 +57,7 @@ yarn start
 # Tests: manifest validation, offline route, sw.js presence
 yarn test:pwa
 
-# Expected: 5/5 tests pass
+# Expected: 7/7 tests pass
 ```
 
 ## Testing PWA Features

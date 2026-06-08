@@ -1,4 +1,8 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { test, expect } from '@playwright/test'
+
+const swSourcePath = path.join(process.cwd(), 'src/app/sw.ts')
 
 test.describe('PWA — manifest & offline', () => {
   test('manifest.webmanifest obsahuje id, scope a kategórie', async ({ request }) => {
@@ -44,5 +48,28 @@ test.describe('PWA — manifest & offline', () => {
     expect(response.status()).toBe(200)
     const contentType = response.headers()['content-type'] ?? ''
     expect(contentType).toMatch(/javascript/)
+  })
+
+  test('sw.ts používa NetworkFirst pre navigáciu a vypnutý navigationPreload', () => {
+    const source = readFileSync(swSourcePath, 'utf-8')
+    expect(source).toContain('navigationPreload: false')
+    expect(source).toMatch(
+      /matcher: \(\{ request, sameOrigin \}\) => sameOrigin && request\.mode === 'navigate',\s*handler: new NetworkFirst/,
+    )
+    expect(source).toContain("url: '/offline.html'")
+    expect(source).toContain('setCatchHandler')
+  })
+
+  test('sw.js build nemá navigationPreload a navigate používa NetworkFirst', async ({
+    request,
+  }) => {
+    const response = await request.get('/sw.js')
+    test.skip(
+      response.status() === 404,
+      'Service worker je v development vypnutý — over cez yarn test:pwa',
+    )
+    const content = await response.text()
+    expect(content).not.toContain('navigationPreload:!0')
+    expect(content).toMatch(/"navigate"===e\.mode,handler:new X/)
   })
 })
