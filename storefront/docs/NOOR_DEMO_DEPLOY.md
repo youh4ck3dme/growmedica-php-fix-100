@@ -23,9 +23,57 @@ Push na `feat/noor-production-demo` spustí **dva** deploye:
 | `growmedicanextjs-git-feat-noor-production-demo-…` | `growmedicanextjs` | **Preview** | `growmedicanextjs-*-h4ck3d.vercel.app` | ❌ Nie — môže byť **Stale**, SSO (401), bez NOOR env |
 | `growmedica-noor-demo.vercel.app` | `growmedica-noor-demo` | **Production** | fixná demo URL | ✅ Áno — skutočný NOOR demo deploy |
 
-**Stale** na preview znamená len to, že existuje novší deploy na tom istom branchi (napr. starý commit `f382f37` vs. novší `0177fee`). **Neovplyvňuje** produkciu `growmedicanextjs.vercel.app` (tam ide len branch `main`).
+**Stale** na preview znamená len to, že existuje novší deploy na tom istom branchi. **Neovplyvňuje** produkciu `growmedicanextjs.vercel.app` (tam ide len branch `main`).
 
-Voliteľne v **Vercel → growmedicanextjs → Settings → Git → Ignored Build Step** môžeš pre preview projekt ignorovať build pre branch `feat/noor-production-demo` (demo sa deployuje výhradne cez projekt `growmedica-noor-demo`).
+### Ignored Build Step (growmedicanextjs only)
+
+Na projekte **`growmedicanextjs`** nastav **Settings → Git → Ignored Build Step**, aby branch `feat/noor-production-demo` **nespúšťal Preview deploye** na hlavnom projekte.
+
+**Nenastavuj** toto na **`growmedica-noor-demo`** — tam musí branch `feat/noor-production-demo` naďalej buildovať.
+
+**Prečo nie v `vercel.json`?** Oba Vercel projekty čítajú rovnaký `storefront/vercel.json`. Ak by sme vypli branch v repo configu, prestalo by deployovať aj demo produkcia.
+
+#### Manuálne (Vercel dashboard)
+
+Skopíruj do **Ignored Build Step** na projekte `growmedicanextjs`:
+
+```bash
+if [ "$VERCEL_GIT_COMMIT_REF" = "feat/noor-production-demo" ]; then
+  echo "Skipping NOOR demo branch on main Vercel project"
+  exit 0
+fi
+
+exit 1
+```
+
+Semantika Vercel: **exit 0 = preskočiť build**, **exit 1 = pokračovať**.
+
+#### Cez CLI (odporúčané — script v repozitári)
+
+Rovnaká logika je v `scripts/vercel-skip-noor-demo-on-main-project.sh`. Dashboard môže volať:
+
+```bash
+bash scripts/vercel-skip-noor-demo-on-main-project.sh
+```
+
+Nastavenie cez API (len `growmedicanextjs`):
+
+```bash
+cd storefront
+VERCEL_TOKEN=xxx ./scripts/set-growmedicanextjs-ignore-noor-demo-branch.sh
+```
+
+Alebo po `vercel login`:
+
+```bash
+cd storefront
+yarn vercel:ignore-noor-demo-on-main
+```
+
+**Nezmenené:**
+- env na `growmedicanextjs` (žiadne `NEXT_PUBLIC_DEFAULT_THEME=noor`)
+- NOOR locked env iba na `growmedica-noor-demo`
+- branch `feat/noor-production-demo` sa nemaže a nemerguje do `main` kvôli preview deployu
 
 ## Env premenné
 
