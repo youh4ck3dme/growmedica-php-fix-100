@@ -214,15 +214,15 @@ test.describe('4. Vyhľadávanie', () => {
     await expect(page.locator('input[type="search"]')).toBeVisible();
   });
 
-  test('25. Mal by vyhľadať reálny produkt (napr. "BIO" alebo "Coriolus") a zobraziť výsledok', async ({ page }) => {
+  test('25. Mal by vyhľadať reálny produkt (napr. "Cordyceps") a zobraziť výsledok', async ({ page }) => {
     await page.goto('/vyhladavanie');
     await acceptCookies(page);
     
     const searchInput = page.locator('input[type="search"]');
-    await searchInput.fill('BIO');
+    await searchInput.fill('Cordyceps');
     await searchInput.press('Enter');
     
-    await expect(page).toHaveURL(/\/vyhladavanie\?q=BIO/);
+    await expect(page).toHaveURL(/\/vyhladavanie\?q=Cordyceps/);
     const productCard = page.locator('article.product-card').first();
     await expect(productCard).toBeVisible({ timeout: 10000 });
   });
