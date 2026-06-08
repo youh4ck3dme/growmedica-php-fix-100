@@ -23,14 +23,14 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     : 0
 
   return (
-    <article className="product-card group" aria-label={product.title}>
+    <article className="product-card noor-product-card group" aria-label={product.title}>
       <Link
         href={getProductUrl(product.handle)}
         className="block relative"
         tabIndex={-1}
         aria-hidden="true"
       >
-        <div className="relative aspect-square overflow-hidden bg-white">
+        <div className="relative aspect-square noor-product-media overflow-hidden bg-white">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
-import { Montserrat, Inter } from 'next/font/google'
+import { Montserrat, Inter, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
 import { DEFAULT_METADATA, getOrganizationJsonLd } from '@/lib/seo'
 import { BRAND_COPY } from '@/lib/brand'
@@ -11,6 +11,8 @@ import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
 import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
+import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
+import { getDefaultTheme } from '@/lib/theme/storefront-theme'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -23,6 +25,14 @@ const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
+})
+
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
 })
 
 export const metadata: Metadata = {
@@ -58,13 +68,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const defaultTheme = getDefaultTheme()
+
   return (
     <html
       lang="sk"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      data-storefront-theme="classic"
-      className={`${montserrat.variable} ${inter.variable}`}
+      data-storefront-theme={defaultTheme}
+      className={`${montserrat.variable} ${inter.variable} ${playfair.variable}`}
     >
       <body className="font-(--font-inter) antialiased">
         <Script
@@ -74,14 +86,15 @@ export default function RootLayout({
             __html: `(function () {
   try {
     var key = 'growmedica-storefront-theme';
+    var defaultTheme = '${defaultTheme}';
     var t = localStorage.getItem(key);
     if (t === 'noor' || t === 'classic') {
       document.documentElement.setAttribute('data-storefront-theme', t);
     } else {
-      document.documentElement.setAttribute('data-storefront-theme', 'classic');
+      document.documentElement.setAttribute('data-storefront-theme', defaultTheme);
     }
   } catch (e) {
-    document.documentElement.setAttribute('data-storefront-theme', 'classic');
+    document.documentElement.setAttribute('data-storefront-theme', '${defaultTheme}');
   }
 })();`,
           }}
@@ -91,6 +104,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
         />
         <StorefrontThemeProvider>
+          <NoorThemeChrome />
           <div className="flex min-h-dvh flex-col">
             <AnnouncementBar />
             <HeaderShell />

@@ -26,7 +26,7 @@ export function ProductGrid({
   }
 
   return (
-    <div className="product-grid" role="list" aria-label="Zoznam produktov">
+    <div className="noor-featured-rail product-grid" role="list" aria-label="Zoznam produktov">
       {products.map((product, index) => (
         <div key={product.id} role="listitem">
           <ProductCard product={product} priority={index < 4} />

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import Logo from '@/components/ui/Logo'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
+import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
 
 interface MobileNavProps {
   isOpen: boolean
@@ -70,7 +71,7 @@ export default function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
         </ul>
 
         <div className="border-t border-(--color-border) p-4 space-y-3">
-          <StorefrontThemeSwitcher compact />
+          {!shouldHideThemeSwitcher() && <StorefrontThemeSwitcher compact />}
           <p className="text-xs text-(--color-text-light)">© {new Date().getFullYear()} GrowMedica.sk</p>
         </div>
       </nav>

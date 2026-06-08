@@ -7,6 +7,7 @@ import Logo from '@/components/ui/Logo'
 import MobileNav from './MobileNav'
 import HeaderMegaMenu, { type MegaMenuCategory } from './HeaderMegaMenu'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
+import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
 
 const BASE_NAV_LINKS = [
   { href: '/produkty', label: 'Produkty' },
@@ -69,39 +70,43 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
   const navLinkClass =
     'px-3 py-2 text-sm font-semibold text-(--color-text-muted) hover:text-(--color-primary) transition-colors uppercase tracking-wider relative group whitespace-nowrap'
 
+  const showThemeSwitcher = !shouldHideThemeSwitcher()
+
   return (
     <>
       <header
         data-site-header
-        className="site-header sticky top-0 z-30 w-full bg-(--color-surface) transition-shadow duration-200"
+        className="site-header sticky top-0 z-30 w-full bg-(--color-surface) transition-shadow duration-200 noor-header-shell"
         style={{
-          boxShadow: scrolled ? '0 1px 12px rgba(16, 22, 21, 0.08)' : '0 1px 0 var(--color-border)',
+          boxShadow: scrolled ? 'var(--header-shadow-scrolled, 0 1px 12px rgba(16, 22, 21, 0.08))' : 'var(--header-shadow, 0 1px 0 var(--color-border))',
         }}
       >
         <Container>
-          <div className="flex h-[60px] items-center justify-between gap-4">
-            <button
-              id="mobile-nav-toggle"
-              className="p-2 lg:hidden text-(--color-text) hover:text-(--color-primary) transition-colors"
-              onClick={() => setMobileOpen(true)}
-              aria-label="Otvoriť menu"
-              aria-expanded={mobileOpen}
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+          <div className="noor-header-grid flex h-[60px] items-center justify-between gap-4">
+            <div className="noor-header-left flex items-center min-w-0">
+              <button
+                id="mobile-nav-toggle"
+                className="p-2 lg:hidden text-(--color-text) hover:text-(--color-primary) transition-colors"
+                onClick={() => setMobileOpen(true)}
+                aria-label="Otvoriť menu"
+                aria-expanded={mobileOpen}
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7h16M4 12h16M4 17h16" />
+                </svg>
+              </button>
+            </div>
 
             <Link
               href="/"
               id="site-logo"
-              className="shrink-0"
+              className="noor-header-center shrink-0 site-logo-mark"
               aria-label="GrowMedica.sk — domov"
             >
               <Logo iconSize={32} />
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-0 min-w-0 flex-1 justify-center" aria-label="Hlavná navigácia">
+            <nav className="noor-header-nav hidden lg:flex items-center gap-0 min-w-0 flex-1 justify-center" aria-label="Hlavná navigácia">
               <HeaderMegaMenu categories={megaMenuCategories} />
 
               {BASE_NAV_LINKS.map((link) => (
@@ -117,8 +122,8 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
               ))}
             </nav>
 
-            <div className="flex items-center gap-1 shrink-0">
-              <StorefrontThemeSwitcher />
+            <div className="noor-header-right flex items-center gap-1 shrink-0">
+              {showThemeSwitcher && <StorefrontThemeSwitcher />}
               <Link
                 href="/vyhladavanie"
                 id="search-button"
@@ -126,7 +131,7 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
                 aria-label="Vyhľadávanie"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </Link>
 
@@ -137,7 +142,7 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
                 aria-label={`Košík${cartCount > 0 ? `, ${cartCount} položiek` : ''}`}
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z" />
                 </svg>
                 {cartCount > 0 && (
                   <span

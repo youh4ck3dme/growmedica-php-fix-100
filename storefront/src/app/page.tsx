@@ -75,7 +75,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* Search bar — mobile-first */}
-      <div className="theme-transition noor-reveal border-b border-(--color-border) bg-(--color-surface) py-3 lg:hidden">
+      <div className="theme-transition noor-reveal noor-mobile-search border-b border-(--color-border) bg-(--color-surface) py-3 lg:hidden">
         <Container>
           <Link href="/vyhladavanie" className="search-pill no-underline">
             <svg className="h-5 w-5 shrink-0 text-(--color-primary)" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -88,23 +88,22 @@ export default async function HomePage() {
 
       {/* Hero */}
       <section
-        className="theme-transition noor-reveal noor-premium-bg relative overflow-hidden py-12 lg:py-20 bg-(--color-surface)"
+        className="theme-transition noor-reveal noor-hero-section noor-premium-bg relative overflow-hidden py-8 lg:py-16 bg-(--color-surface)"
         aria-labelledby="hero-heading"
       >
         <div
-          className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full opacity-30 blur-3xl"
+          className="noor-hero-glow pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full opacity-30 blur-3xl"
           style={{ background: 'var(--color-primary-light)' }}
           aria-hidden="true"
         />
 
         <Container>
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
-            <div>
+          <div className="noor-hero-stack grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+            <div className="noor-hero-copy order-2 lg:order-1">
               <p className="section-label mb-3">{BRAND_COPY.heroEyebrow}</p>
               <h1
                 id="hero-heading"
-                className="text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight text-balance mb-4 text-(--color-text)"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="noor-display-heading text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight text-balance mb-4 text-(--color-text)"
               >
                 {BRAND_COPY.heroTitle}
               </h1>
@@ -112,14 +111,14 @@ export default async function HomePage() {
                 <span className="sm:hidden">{BRAND_COPY.heroSubtitleShort}</span>
                 <span className="hidden sm:inline">{BRAND_COPY.heroSubtitle}</span>
               </p>
-              <Link href="/produkty" id="hero-cta-primary" className="btn btn-primary btn-lg w-full sm:w-auto">
+              <Link href="/produkty" id="hero-cta-primary" className="btn btn-primary btn-lg noor-pill-cta w-full sm:w-auto">
                 {BRAND_COPY.heroCta}
               </Link>
             </div>
 
             {/* Hero visual placeholder */}
             <div
-              className="relative hidden sm:flex items-center justify-center rounded-2xl overflow-hidden aspect-4/3 lg:aspect-square"
+              className="noor-hero-visual relative order-1 lg:order-2 flex items-center justify-center rounded-3xl overflow-hidden aspect-4/3 lg:aspect-square"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-surface) 60%)',
@@ -173,7 +172,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="noor-categories-grid grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {categories.map((cat) => (
               <Link
                 key={cat.handle}
@@ -213,14 +212,14 @@ export default async function HomePage() {
       </div>
 
       <section
-        className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-surface-2)"
+        className="noor-reveal noor-featured-section theme-transition py-12 lg:py-16 bg-(--color-surface-2)"
         aria-labelledby="featured-heading"
       >
         <Container>
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="section-label">Obľúbené produkty</p>
-              <h2 id="featured-heading" className="section-heading">
+              <h2 id="featured-heading" className="section-heading noor-display-heading">
                 {BRAND_COPY.featuredHeading}
               </h2>
             </div>
@@ -233,8 +232,11 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="noor-stagger">
+          <div className="noor-stagger noor-featured-rail">
             <ProductGrid products={featuredProducts} />
+          </div>
+          <div className="noor-carousel-track mt-4 lg:hidden" aria-hidden="true">
+            <div className="noor-carousel-track__fill" />
           </div>
 
           <div className="mt-8 text-center sm:hidden">
@@ -246,11 +248,11 @@ export default async function HomePage() {
       </section>
 
       {/* About / SEO */}
-      <section className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-surface)" aria-label="O Growmedica">
+      <section className="noor-reveal noor-about-block theme-transition py-12 lg:py-16 bg-(--color-surface)" aria-label="O Growmedica">
         <Container>
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="noor-about-inner max-w-3xl mx-auto text-center">
             <p className="section-label" style={{ textAlign: 'center' }}>{BRAND_COPY.aboutLabel}</p>
-            <h2 className="section-heading mb-4" style={{ textAlign: 'center' }}>
+            <h2 className="section-heading noor-display-heading mb-4" style={{ textAlign: 'center' }}>
               {BRAND_COPY.aboutHeading}
             </h2>
             <p className="leading-relaxed text-(--color-text-muted)">

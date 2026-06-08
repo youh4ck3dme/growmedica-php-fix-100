@@ -49,3 +49,4 @@ public/swe-worker*
 # alternate package managers (project uses yarn)
 pnpm-lock.yaml
 pnpm-workspace.yaml
+.vercel

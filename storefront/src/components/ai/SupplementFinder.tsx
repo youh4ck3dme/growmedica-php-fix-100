@@ -86,11 +86,7 @@ export function SupplementFinder() {
         </div>
 
         {/* Hlavný prémiový vyhľadávač v štýle Google/Gemini s animovaným dúhovým okrajom */}
-        <form onSubmit={handleSubmit} className="relative group max-w-2xl mx-auto mb-10">
-          
-          {/* Pulzujúci glow efekt na pozadí pre neonový feeling */}
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-400 to-blue-500 opacity-20 blur-xl group-hover:opacity-35 group-focus-within:opacity-45 transition duration-500" />
-          
+        <form onSubmit={handleSubmit} className="relative max-w-2xl mx-auto mb-10">
           {/* Obal s rotujúcim dúhovým hadíkom */}
           <div className="relative p-[2px] overflow-hidden rounded-2xl bg-(--color-border)">
             
@@ -125,7 +121,7 @@ export function SupplementFinder() {
                 size="md"
                 isLoading={loading}
                 disabled={!input.trim()}
-                className="rounded-xl shadow-md shrink-0 px-6 font-bold tracking-wide transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white border-0 flex items-center gap-1.5"
+                className="supplement-finder-submit rounded-xl shrink-0 px-6 font-bold tracking-wide transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white border-0 shadow-none flex items-center gap-1.5"
               >
                 {!loading && (
                   <>

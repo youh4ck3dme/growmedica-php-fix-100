@@ -1,8 +1,17 @@
 export type StorefrontTheme = 'classic' | 'noor'
 
 export const STORAGE_KEY = 'growmedica-storefront-theme'
-export const DEFAULT_THEME: StorefrontTheme = 'classic'
 export const THEME_CHANGED_EVENT = 'storefront-theme-changed'
+
+export function getDefaultTheme(): StorefrontTheme {
+  return process.env.NEXT_PUBLIC_DEFAULT_THEME === 'noor' ? 'noor' : 'classic'
+}
+
+export const DEFAULT_THEME: StorefrontTheme = getDefaultTheme()
+
+export function shouldHideThemeSwitcher(): boolean {
+  return process.env.NEXT_PUBLIC_HIDE_THEME_SWITCHER === '1'
+}
 
 export function isStorefrontTheme(value: unknown): value is StorefrontTheme {
   return value === 'classic' || value === 'noor'
