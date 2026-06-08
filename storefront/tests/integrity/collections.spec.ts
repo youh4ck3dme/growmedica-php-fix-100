@@ -13,6 +13,16 @@ test.describe('Collections — catalog navigation', () => {
     expect(html).toContain('/kolekcie/specialna-vyziva')
   })
 
+  test('/kolekcie renderuje WebP bannery pre kategórie', async ({ request }) => {
+    const response = await request.get('/kolekcie')
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+
+    for (const handle of ['vitaminy-mineraly', 'regeneracia', 'specialna-vyziva']) {
+      expect(html).toContain(`data-banner-src="/images/mega-menu/${handle}.webp"`)
+    }
+  })
+
   test('/kolekcie/vitaminy-mineraly zobrazí produkty z katalógu', async ({ request }) => {
     const response = await request.get('/kolekcie/vitaminy-mineraly')
     expect(response.status()).toBe(200)
@@ -20,6 +30,7 @@ test.describe('Collections — catalog navigation', () => {
 
     expect(html).toContain('Vitamíny a minerály')
     expect(html).toContain('product-card')
+    expect(html).toContain('data-banner-src="/images/mega-menu/vitaminy-mineraly.webp"')
   })
 
   test('/kolekcie/regeneracia zobrazí produkty', async ({ request }) => {
@@ -29,6 +40,7 @@ test.describe('Collections — catalog navigation', () => {
 
     expect(html).toContain('Regeneračné doplnky')
     expect(html).toContain('product-card')
+    expect(html).toContain('data-banner-src="/images/mega-menu/regeneracia.webp"')
   })
 
   test('/kolekcie/frontpage vracia 404', async ({ request }) => {
