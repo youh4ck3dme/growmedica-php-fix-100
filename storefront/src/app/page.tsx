@@ -1,13 +1,39 @@
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import type { Metadata } from 'next'
+import { getImageProps } from 'next/image'
+import { preload } from 'react-dom'
 import { Container } from '@/components/ui/Container'
-import { ThemeSearch } from '@/components/ui/ThemeSearch'
 import { ProductGrid } from '@/components/product/ProductGrid'
-import { SupplementFinder } from '@/components/ai/SupplementFinder'
+import { HeroSlider, type HeroSlide } from '@/components/sections/HeroSlider'
+import { TrustBadges } from '@/components/sections/TrustBadges'
+import { ScrollRevealSection } from '@/components/sections/ScrollRevealSection'
 import { getNavCollectionItems } from '@/lib/shopify/collection-nav'
 import { getFeaturedProducts } from '@/lib/shopify/products'
 import { getHomepageCategories } from '@/lib/category-map'
 import { BRAND_COPY } from '@/lib/brand'
+import { HERO_IMAGE_SIZES, HERO_LCP_QUALITY } from '@/lib/hero-image'
+import type { ProductListItem } from '@/lib/shopify/types'
+
+const SupplementFinder = dynamic(
+  () =>
+    import('@/components/ai/SupplementFinder').then((mod) => ({
+      default: mod.SupplementFinder,
+    })),
+  {
+    loading: () => <div className="min-h-48" aria-hidden="true" />,
+  },
+)
+
+const CategoryGrid = dynamic(
+  () =>
+    import('@/components/collection/CategoryGrid').then((mod) => ({
+      default: mod.CategoryGrid,
+    })),
+  {
+    loading: () => <div className="min-h-40" aria-hidden="true" />,
+  },
+)
 
 export const revalidate = 3600
 
@@ -16,45 +42,38 @@ export const metadata: Metadata = {
   description: BRAND_COPY.siteDescription,
 }
 
-const VALUE_PROPS = [
-  {
-    title: 'DÔVERYHODNOSŤ',
-    subtitle: 'Bezpečný nákup',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'KVALITA',
-    subtitle: 'Overené produkty',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'RAST',
-    subtitle: 'Rastúca značka v regióne',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
-    ),
-  },
-  {
-    title: 'PODPORA',
-    subtitle: 'Sme tu pre vás',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-      </svg>
-    ),
-  },
-]
+function buildHeroSlides(products: ProductListItem[]): HeroSlide[] {
+  return products
+    .filter((product) => product.featuredImage?.url)
+    .slice(0, 5)
+    .map((product) => ({
+      id: product.id,
+      imageUrl: product.featuredImage!.url,
+      alt: product.featuredImage!.altText ?? product.title,
+      width: product.featuredImage!.width ?? 1600,
+      height: product.featuredImage!.height ?? 900,
+    }))
+}
 
+function preloadHeroLcpImage(slide: HeroSlide): void {
+  const {
+    props: { src, srcSet, sizes },
+  } = getImageProps({
+    alt: slide.alt,
+    src: slide.imageUrl,
+    fill: true,
+    sizes: HERO_IMAGE_SIZES,
+    quality: HERO_LCP_QUALITY,
+    priority: true,
+  })
+
+  preload(src, {
+    as: 'image',
+    imageSrcSet: srcSet,
+    imageSizes: sizes,
+    fetchPriority: 'high',
+  })
+}
 
 export default async function HomePage() {
   let featuredProducts: Awaited<ReturnType<typeof getFeaturedProducts>> = []
@@ -73,91 +92,38 @@ export default async function HomePage() {
     .map((def) => categoriesByHandle.get(def.slug))
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
 
+  const heroSlides = buildHeroSlides(featuredProducts)
+  const lcpSlide = heroSlides[0]
+
+  if (lcpSlide?.imageUrl) {
+    preloadHeroLcpImage(lcpSlide)
+  }
+
   return (
     <div>
       {/* Search bar — mobile-first */}
       <div className="theme-transition noor-reveal noor-mobile-search border-b border-(--color-border) bg-(--color-surface) py-3 lg:hidden">
         <Container>
-          <ThemeSearch variant="pill" aria-label="Hľadať produkty" />
+          <Link href="/vyhladavanie" className="search-pill no-underline">
+            <svg className="h-5 w-5 shrink-0 text-(--color-primary)" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Hľadať produkty...</span>
+          </Link>
         </Container>
       </div>
 
-      {/* Hero */}
-      <section
-        className="theme-transition noor-reveal noor-hero-section noor-premium-bg relative overflow-hidden py-8 lg:py-16 bg-(--color-surface)"
-        aria-labelledby="hero-heading"
-      >
-        <div
-          className="noor-hero-glow pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full opacity-30 blur-3xl"
-          style={{ background: 'var(--color-primary-light)' }}
-          aria-hidden="true"
-        />
+      {/* Hero slider — no scroll-reveal wrapper; LCP image must paint immediately */}
+      <HeroSlider slides={heroSlides} />
 
-        <Container>
-          <div className="noor-hero-stack grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
-            <div className="noor-hero-copy order-2 lg:order-1">
-              <p className="section-label mb-3">{BRAND_COPY.heroEyebrow}</p>
-              <h1
-                id="hero-heading"
-                className="noor-display-heading text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight text-balance mb-4 text-(--color-text)"
-              >
-                {BRAND_COPY.heroTitle}
-              </h1>
-              <p className="text-base lg:text-lg leading-relaxed mb-8 text-(--color-text-muted) max-w-xl">
-                <span className="sm:hidden">{BRAND_COPY.heroSubtitleShort}</span>
-                <span className="hidden sm:inline">{BRAND_COPY.heroSubtitle}</span>
-              </p>
-              <Link href="/produkty" id="hero-cta-primary" className="btn btn-primary btn-lg noor-pill-cta w-full sm:w-auto">
-                {BRAND_COPY.heroCta}
-              </Link>
-            </div>
-
-            {/* Hero visual placeholder */}
-            <div
-              className="noor-hero-visual relative order-1 lg:order-2 flex items-center justify-center rounded-3xl overflow-hidden aspect-4/3 lg:aspect-square"
-              style={{
-                background:
-                  'linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-surface) 60%)',
-              }}
-              aria-hidden="true"
-            >
-              <div className="flex gap-4 items-end p-8">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="noor-card theme-transition w-16 lg:w-20 flex flex-col items-center justify-end pb-3 pt-6"
-                    style={{ height: `${120 + i * 24}px` }}
-                  >
-                    <div className="w-8 h-8 rounded-full mb-2" style={{ background: 'var(--color-primary-light)' }} />
-                    <div className="w-10 h-1 rounded bg-(--color-primary) opacity-40" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Value props */}
-      <section className="usp-bar theme-transition" aria-label="Benefity">
-        <Container>
-          <div className="noor-stagger grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-            {VALUE_PROPS.map((item) => (
-              <div key={item.title} className="usp-card noor-card theme-transition">
-                <div className="text-(--color-primary)">{item.icon}</div>
-                <p className="font-bold text-xs tracking-wide text-(--color-text)" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  {item.title}
-                </p>
-                <p className="text-xs text-(--color-text-muted)">{item.subtitle}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <ScrollRevealSection>
+        <TrustBadges />
+      </ScrollRevealSection>
 
       {/* Categories */}
-      <section
-        className="noor-reveal theme-transition py-12 lg:py-16 bg-(--color-bg)"
+      <ScrollRevealSection
+        as="section"
+        className="theme-transition py-12 lg:py-16 bg-(--color-bg)"
         aria-labelledby="categories-heading"
       >
         <Container>
@@ -168,25 +134,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="noor-categories-grid grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {categories.map((cat) => (
-              <Link
-                key={cat.handle}
-                href={cat.href}
-                className="noor-card theme-transition group flex flex-col items-center text-center p-4 bg-(--color-surface) rounded-xl border border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-primary-light) hover:-translate-y-0.5 hover:shadow-md transition-all"
-              >
-                {cat.icon && (
-                  <span className="text-2xl mb-2" aria-hidden="true">{cat.icon}</span>
-                )}
-                <h3
-                  className="text-xs font-bold leading-tight text-(--color-text) group-hover:text-(--color-primary-dark)"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  {cat.title}
-                </h3>
-              </Link>
-            ))}
-          </div>
+          <CategoryGrid categories={categories} />
 
           <div className="mt-6 text-center">
             <Link
@@ -198,7 +146,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </Container>
-      </section>
+      </ScrollRevealSection>
 
       {/* AI supplement finder */}
       <div className="noor-reveal noor-glass theme-transition bg-(--color-surface) border-y border-(--color-border)">

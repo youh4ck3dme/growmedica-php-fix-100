@@ -23,23 +23,31 @@
   "dependencies": {
     "@mistralai/mistralai": "^2.2.5",
     "@serwist/next": "^9.5.11",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.17.0",
     "next": "^15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "serwist": "^9.5.11",
     "zod": "^3.23.8"
   },
+  "browserslist": [
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 111",
+    "safari >= 16.4"
+  ],
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@shopify/cli": "^4.1.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^22",
-    "@types/react": "^19",
+    "@types/node": "20.17.6",
+    "@types/react": "19.2.17",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.3.4",
     "prettier": "^3.3.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "5.8.2"
   }
 }

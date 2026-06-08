@@ -2,21 +2,21 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { Menu, Search, ShoppingBag } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import Logo from '@/components/ui/Logo'
-import MobileNav from './MobileNav'
-import HeaderMegaMenu, { type MegaMenuCategory } from './HeaderMegaMenu'
+import MobileNav from '@/components/layout/MobileNav'
+import HeaderMegaMenu, { type MegaMenuCategory } from '@/components/layout/HeaderMegaMenu'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
-import { ThemeSearch } from '@/components/ui/ThemeSearch'
-import { useStorefrontTheme } from '@/components/theme/StorefrontThemeProvider'
 import { PRIMARY_NAV_LINKS } from '@/lib/navigation/primary-nav'
 import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
+import { cn } from '@/lib/utils'
 
-interface HeaderProps {
+interface GlassNavbarProps {
   megaMenuCategories?: MegaMenuCategory[]
 }
 
-export default function Header({ megaMenuCategories = [] }: HeaderProps) {
+export default function GlassNavbar({ megaMenuCategories = [] }: GlassNavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
   const [scrolled, setScrolled] = useState(false)
@@ -49,6 +49,7 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
       setScrolled(window.scrollY > 8)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
 
     return () => {
       window.removeEventListener('cart-count-updated', handleCartCountUpdate)
@@ -60,32 +61,28 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
     'px-2.5 xl:px-3 py-2 text-sm font-semibold text-(--color-text) hover:text-(--color-primary) transition-colors uppercase tracking-wider relative group whitespace-nowrap'
 
   const showThemeSwitcher = !shouldHideThemeSwitcher()
-  const { theme } = useStorefrontTheme()
-  const searchButtonClass =
-    'p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center'
 
   return (
     <>
       <header
         data-site-header
-        className="site-header sticky top-0 z-30 w-full bg-(--color-surface) transition-shadow duration-200 noor-header-shell"
-        style={{
-          boxShadow: scrolled ? 'var(--header-shadow-scrolled, 0 1px 12px rgba(16, 22, 21, 0.08))' : 'var(--header-shadow, 0 1px 0 var(--color-border))',
-        }}
+        className={cn(
+          'glass-navbar site-header w-full noor-header-shell theme-transition',
+          scrolled && 'glass-navbar--scrolled',
+        )}
       >
         <Container>
           <div className="noor-header-grid flex h-[60px] items-center justify-between gap-4">
             <div className="noor-header-left flex items-center min-w-0">
               <button
                 id="mobile-nav-toggle"
-                className="p-2 lg:hidden text-(--color-text) hover:text-(--color-primary) transition-colors"
+                type="button"
+                className="glass-navbar__action lg:hidden text-(--color-text)"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Otvoriť menu"
                 aria-expanded={mobileOpen}
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
+                <Menu className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
               </button>
             </div>
 
@@ -98,7 +95,10 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
               <Logo iconSize={32} />
             </Link>
 
-            <nav className="noor-header-nav hidden lg:flex items-center gap-0 min-w-0 flex-1 justify-center flex-wrap" aria-label="Hlavná navigácia">
+            <nav
+              className="noor-header-nav hidden lg:flex items-center gap-0 min-w-0 flex-1 justify-center flex-wrap"
+              aria-label="Hlavná navigácia"
+            >
               {PRIMARY_NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -116,21 +116,24 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
               )}
             </nav>
 
-            <div className="noor-header-right flex items-center gap-1 shrink-0">
+            <div className="noor-header-right flex items-center gap-0.5 shrink-0">
               {showThemeSwitcher && <StorefrontThemeSwitcher />}
-              <ThemeSearch
-                className={`${searchButtonClass}${theme === 'noor' ? '' : ' lg:hidden'}`}
-              />
+              <Link
+                href="/vyhladavanie"
+                id="search-button"
+                className="glass-navbar__action lg:hidden"
+                aria-label="Vyhľadávanie"
+              >
+                <Search className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+              </Link>
 
               <Link
                 href="/kosik"
                 id="cart-button"
-                className="p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg relative"
+                className="glass-navbar__action relative"
                 aria-label={`Košík${cartCount > 0 ? `, ${cartCount} položiek` : ''}`}
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z" />
-                </svg>
+                <ShoppingBag className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
                 {cartCount > 0 && (
                   <span
                     className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white bg-(--color-primary)"

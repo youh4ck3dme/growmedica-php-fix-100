@@ -18,6 +18,8 @@ test.describe('Collections — catalog navigation', () => {
     expect(response.status()).toBe(200)
     const html = await response.text()
 
+    expect(html).toContain('collection-card-banner-image')
+    expect(html).toMatch(/object-right|object-position:\s*right/)
     for (const handle of ['vitaminy-mineraly', 'regeneracia', 'specialna-vyziva']) {
       expect(html).toContain(`data-banner-src="/images/mega-menu/${handle}.webp"`)
       expect(html).toContain('collection-card--has-banner')

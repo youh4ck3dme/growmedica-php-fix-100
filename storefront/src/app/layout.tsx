@@ -11,6 +11,8 @@ import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
+import { DeferredLayoutBanners } from '@/components/layout/DeferredLayoutBanners'
+import { MotionProvider } from '@/components/motion/MotionProvider'
 import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
 import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
 import { NoorUiProviders } from '@/components/noor/providers/NoorUiProviders'
@@ -84,7 +86,7 @@ export default async function RootLayout({
       data-storefront-theme={ssrTheme}
       className={`${montserrat.variable} ${inter.variable} ${playfair.variable}`}
     >
-      <body className="font-(--font-inter) antialiased">
+      <body className="font-(--font-inter) antialiased" suppressHydrationWarning>
         <Script
           id="storefront-theme-bootstrap"
           strategy="beforeInteractive"
@@ -98,16 +100,19 @@ export default async function RootLayout({
         />
         <StorefrontThemeProvider>
           <NoorUiProviders>
-            <NoorThemeChrome />
-            <div className="flex min-h-dvh flex-col">
-              <AnnouncementBar />
-              <HeaderShell />
-              <TrustStrip />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <CookieBanner />
-              <PwaInstallBanner />
-            </div>
+            <MotionProvider>
+              <NoorThemeChrome />
+              <div className="flex min-h-dvh flex-col">
+                <AnnouncementBar />
+                <HeaderShell />
+                <TrustStrip />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <DeferredLayoutBanners />
+                <CookieBanner />
+                <PwaInstallBanner />
+              </div>
+            </MotionProvider>
           </NoorUiProviders>
         </StorefrontThemeProvider>
       </body>

@@ -13,14 +13,14 @@ export function SupplementFinder() {
   const [recommendations, setRecommendations] = useState<RecommendApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [placeholder, setPlaceholder] = useState('Popíšte svoje potreby (napr. viac energie na tréning)')
+  const [placeholder, setPlaceholder] = useState('Popíšte svoje potreby ...')
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 640) {
-        setPlaceholder('Popíšte svoje potreby ...')
-      } else {
+      if (window.innerWidth >= 640) {
         setPlaceholder('Popíšte svoje potreby (napr. viac energie na tréning)')
+      } else {
+        setPlaceholder('Popíšte svoje potreby ...')
       }
     }
 

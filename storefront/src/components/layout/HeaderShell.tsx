@@ -1,4 +1,4 @@
-import Header from '@/components/layout/Header'
+import GlassNavbar from '@/components/layout/GlassNavbar'
 import type { MegaMenuCategory } from '@/components/layout/HeaderMegaMenu'
 import {
   getCategoryFeaturedProducts,
@@ -21,5 +21,5 @@ export default async function HeaderShell() {
     // Shopify not configured — header still renders without mega menu categories
   }
 
-  return <Header megaMenuCategories={megaMenuCategories} />
+  return <GlassNavbar megaMenuCategories={megaMenuCategories} />
 }
