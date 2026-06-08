@@ -25,10 +25,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files — NEVER commit real tokens
+# local env files — NEVER commit real tokens or signature secrets
 .env
 .env.*
 !.env.example
+.env.local
+.env.local.*
+!.env.local.example
 
 # Vercel CLI link metadata (projectId/orgId — never commit)
 .vercel/
