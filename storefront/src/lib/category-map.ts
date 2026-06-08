@@ -64,6 +64,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '💪',
     navPriority: 13,
     showInHeader: false,
+    description: 'Proteínové doplnky na podporu rastu a udržania svalovej hmoty.',
     rules: [
       { kind: 'productType', value: 'Proteíny' },
       { kind: 'tag', value: 'Proteíny', match: 'ci' },
@@ -77,6 +78,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '⚡',
     navPriority: 14,
     showInHeader: false,
+    description: 'Esenciálne aminokyseliny a BCAA pre výkon, regeneráciu a svalovú výživu.',
     rules: [{ kind: 'tag', value: 'Aminokyseliny', match: 'ci' }],
   },
   {
@@ -127,6 +129,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '🦴',
     navPriority: 5,
     showInHeader: false,
+    description: 'Výživa pre kĺby, šľachy a pohybový aparát pre aktívny život bez obmedzení.',
     rules: [
       { kind: 'tag', value: 'kĺby a svaly', match: 'ci' },
       { kind: 'tag', value: 'Kĺby', match: 'ci' },
@@ -140,6 +143,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '🛡️',
     navPriority: 6,
     showInHeader: true,
+    description: 'Vitamíny, minerály a prírodné doplnky na podporu obranyschopnosti.',
     rules: [
       { kind: 'tag', value: 'Imunita', match: 'ci' },
       { kind: 'productType', value: 'Imunita' },
@@ -152,6 +156,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '🫄',
     navPriority: 7,
     showInHeader: true,
+    description: 'Podpora trávenia, črevnej rovnováhy a komfortu po jedle.',
     rules: [{ kind: 'tag', value: 'Trávenie', match: 'ci' }],
   },
   {
@@ -161,6 +166,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '❤️',
     navPriority: 8,
     showInHeader: false,
+    description: 'Doplnky na podporu srdca, ciev a zdravého krvného obehu.',
     rules: [
       { kind: 'tag', value: 'Srdce a Pečeň', match: 'ci' },
       { kind: 'tag', value: 'Srdce', match: 'ci' },
@@ -173,6 +179,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '😴',
     navPriority: 9,
     showInHeader: false,
+    description: 'Prírodná podpora spánku, psychickej pohody a zvládania stresu.',
     rules: [
       { kind: 'productType', value: 'Stres / Spánok / Nervy' },
       { kind: 'productType', value: 'Psychická pohoda' },
@@ -187,6 +194,7 @@ const RESOLVE_ORDER: CategoryDefinition[] = [
     icon: '🧹',
     navPriority: 10,
     showInHeader: false,
+    description: 'Prípravky na podporu pečene, detoxikácie a prirodzeného čistenia organizmu.',
     rules: [
       { kind: 'tag', value: 'Detox', match: 'ci' },
       { kind: 'tag', value: 'Pečeň', match: 'ci' },

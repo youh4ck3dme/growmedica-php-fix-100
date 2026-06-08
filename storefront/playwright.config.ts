@@ -1,6 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isPwaProductionTest = !!process.env.PWA_PRODUCTION_TEST;
+const shopifyTestEnv = {
+  SHOPIFY_MOCK_MODE: process.env.SHOPIFY_MOCK_MODE ?? '1',
+  SHOPIFY_STORE_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN ?? 'mock-store.myshopify.com',
+  SHOPIFY_STOREFRONT_ACCESS_TOKEN:
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ?? 'mock-storefront-token',
+  SHOPIFY_API_VERSION: process.env.SHOPIFY_API_VERSION ?? '2025-01',
+};
 
 export default defineConfig({
   testDir: './tests',
@@ -15,12 +22,14 @@ export default defineConfig({
         url: 'http://localhost:5556',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
+        env: shopifyTestEnv,
       }
     : {
         command: 'yarn dev',
         url: 'http://localhost:5555',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
+        env: shopifyTestEnv,
       },
   use: {
     baseURL: isPwaProductionTest

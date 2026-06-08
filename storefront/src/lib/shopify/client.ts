@@ -9,6 +9,7 @@
  */
 
 import { env } from '@/lib/env'
+import { getMockShopifyResponse, isShopifyMockMode } from './mock'
 import type { ShopifyResponse } from './types'
 
 const SHOPIFY_GRAPHQL_URL = `https://${env.SHOPIFY_STORE_DOMAIN}/api/${env.SHOPIFY_API_VERSION}/graphql.json`
@@ -28,6 +29,10 @@ export async function shopifyFetch<T>({
   revalidate = 3600,
   tags,
 }: ShopifyFetchOptions): Promise<T> {
+  if (isShopifyMockMode()) {
+    return getMockShopifyResponse<T>(query, variables)
+  }
+
   const nextOptions: RequestInit['next'] = {}
 
   if (revalidate !== false) {
