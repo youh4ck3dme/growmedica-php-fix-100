@@ -13,6 +13,7 @@ import CookieBanner from '@/components/ui/CookieBanner'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
 import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
 import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
+import { NoorUiProviders } from '@/components/noor/providers/NoorUiProviders'
 import { getThemeBootstrapScript, isStorefrontTheme, resolveInitialTheme, STORAGE_KEY } from '@/lib/theme/storefront-theme'
 
 const montserrat = Montserrat({
@@ -96,16 +97,18 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
         />
         <StorefrontThemeProvider>
-          <NoorThemeChrome />
-          <div className="flex min-h-dvh flex-col">
-            <AnnouncementBar />
-            <HeaderShell />
-            <TrustStrip />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <CookieBanner />
-            <PwaInstallBanner />
-          </div>
+          <NoorUiProviders>
+            <NoorThemeChrome />
+            <div className="flex min-h-dvh flex-col">
+              <AnnouncementBar />
+              <HeaderShell />
+              <TrustStrip />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <CookieBanner />
+              <PwaInstallBanner />
+            </div>
+          </NoorUiProviders>
         </StorefrontThemeProvider>
       </body>
     </html>

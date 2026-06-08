@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useThemeToast } from '@/components/ui/ThemeToast'
 
 const COOKIE_KEY = 'gm_cookie_consent'
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false)
+  const { toast } = useThemeToast()
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_KEY)
@@ -18,6 +20,11 @@ export default function CookieBanner() {
   function accept() {
     localStorage.setItem(COOKIE_KEY, 'accepted')
     setVisible(false)
+    toast({
+      title: 'Cookies prijaté',
+      description: 'Ďakujeme, nastavenia boli uložené.',
+      variant: 'success',
+    })
   }
 
   function decline() {
