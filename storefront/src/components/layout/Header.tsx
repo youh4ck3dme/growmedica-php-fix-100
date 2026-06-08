@@ -63,7 +63,7 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
     <>
       <header
         data-site-header
-        className="site-header sticky top-0 z-30 w-full bg-(--color-surface) transition-shadow duration-200 noor-header-shell"
+        className="site-header sticky top-0 z-30 w-full bg-white transition-shadow duration-200 noor-header-shell"
         style={{
           boxShadow: scrolled ? 'var(--header-shadow-scrolled, 0 1px 12px rgba(16, 22, 21, 0.08))' : 'var(--header-shadow, 0 1px 0 var(--color-border))',
         }}
