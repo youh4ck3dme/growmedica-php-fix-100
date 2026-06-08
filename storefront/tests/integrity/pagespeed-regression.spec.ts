@@ -35,4 +35,30 @@ test.describe('PageSpeed regression guards', () => {
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(36)
     }
   })
+
+  test('homepage passes Lighthouse color-contrast audit', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    const results = await page.evaluate(async () => {
+      // @ts-expect-error axe injected below
+      if (!window.axe) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.3/axe.min.js'
+          script.onload = () => resolve()
+          script.onerror = () => reject(new Error('Failed to load axe-core'))
+          document.head.appendChild(script)
+        })
+      }
+
+      // @ts-expect-error axe global
+      return window.axe.run(document, {
+        runOnly: { type: 'rule', values: ['color-contrast'] },
+      })
+    })
+
+    const violations = results.violations.filter((v: { id: string }) => v.id === 'color-contrast')
+    expect(violations).toEqual([])
+  })
 })

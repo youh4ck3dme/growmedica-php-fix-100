@@ -22,7 +22,48 @@ test.describe('Collections — catalog navigation', () => {
     expect(html).toMatch(/object-right|object-position:\s*right/)
     for (const handle of ['vitaminy-mineraly', 'regeneracia', 'specialna-vyziva']) {
       expect(html).toContain(`data-banner-src="/images/mega-menu/${handle}.webp"`)
+      expect(html).toContain('collection-card--has-banner')
     }
+    expect(html).toContain('collection-card-banner-image')
+    expect(html).toMatch(/object-right|object-position:\s*right/)
+    expect(html).toContain('data-collection-handle="vitaminy-mineraly"')
+    expect(html).toContain('Kolekcia')
+  })
+
+  test('/kolekcie zobrazí načítané banner obrázky v kartách', async ({ page }) => {
+    await page.goto('/kolekcie')
+
+    const cards = page.locator('[data-collection-handle="vitaminy-mineraly"]')
+    await expect(cards).toBeVisible()
+    await expect(cards).toHaveClass(/collection-card--has-banner/)
+
+    const image = cards.locator('.collection-card-banner-image')
+    await expect(image).toBeVisible()
+
+    await expect
+      .poll(async () =>
+        image.evaluate((img: HTMLImageElement) => ({
+          complete: img.complete,
+          width: img.naturalWidth,
+        })),
+      )
+      .toEqual(expect.objectContaining({ complete: true, width: expect.any(Number) }))
+
+    const metrics = await image.evaluate((img: HTMLImageElement) => img.naturalWidth)
+    expect(metrics).toBeGreaterThan(0)
+  })
+
+  test('/kolekcie/regeneracia hero banner je viditeľný', async ({ page }) => {
+    await page.goto('/kolekcie/regeneracia')
+
+    const hero = page.locator('.collection-hero--has-banner')
+    await expect(hero).toBeVisible()
+
+    const image = hero.locator('.collection-hero-image')
+    await expect(image).toBeVisible()
+
+    const width = await image.evaluate((img: HTMLImageElement) => img.naturalWidth)
+    expect(width).toBeGreaterThan(0)
   })
 
   test('/kolekcie/vitaminy-mineraly zobrazí produkty z katalógu', async ({ request }) => {

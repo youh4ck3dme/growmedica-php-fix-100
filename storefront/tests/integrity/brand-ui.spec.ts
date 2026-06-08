@@ -18,7 +18,7 @@ test.describe('Brand UI — layout markup (SSR HTML)', () => {
   })
 
   test('footer používa brand footer token', () => {
-    expect(html).toContain('var(--color-footer-bg)')
+    expect(html).toMatch(/class="[^"]*\bsite-footer\b/)
   })
 
   test('logo a navigácia majú stabilné selektory', () => {
@@ -52,7 +52,7 @@ test.describe('Brand UI — homepage copy & structure', () => {
   })
 
   test('USP panel obsahuje všetky 4 value props', () => {
-    expect(html).toContain('class="usp-bar"')
+    expect(html).toMatch(/class="[^"]*\busp-bar\b/)
     for (const label of BRAND_COPY.valueProps) {
       expect(html).toContain(label)
     }

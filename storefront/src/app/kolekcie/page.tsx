@@ -61,7 +61,7 @@ export default async function KolekciePage() {
                 <Link
                   key={collection.handle}
                   href={collection.href}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-(--color-border) bg-white shadow-sm transition-all hover:border-(--color-primary-light) hover:shadow-md"
+                  className={`group flex h-full flex-col overflow-hidden rounded-xl border border-(--color-border) bg-white shadow-sm transition-all hover:border-(--color-primary-light) hover:shadow-md${bannerSrc ? ' collection-card--has-banner' : ''}`}
                   data-collection-handle={collection.handle}
                   data-banner-src={bannerSrc ?? undefined}
                 >
@@ -70,13 +70,13 @@ export default async function KolekciePage() {
                       <>
                         <Image
                           src={bannerSrc}
-                          alt=""
+                          alt={collection.title}
                           fill
                           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                           className="collection-card-banner-image object-cover object-right transition-transform duration-300 group-hover:scale-105"
                         />
                         <div
-                          className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent"
+                          className="collection-card-banner-overlay absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent"
                           aria-hidden="true"
                         />
                       </>

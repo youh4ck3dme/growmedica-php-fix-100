@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { ProductVariant } from '@/lib/shopify/types'
 import { Button } from '@/components/ui/Button'
+import { useThemeToast } from '@/components/ui/ThemeToast'
 
 interface AddToCartButtonProps {
   variants: ProductVariant[]
@@ -18,6 +19,7 @@ export default function AddToCartButton({
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { toast } = useThemeToast()
 
   const variantId = selectedVariantId ?? variants[0]?.id
   const selectedVariant = variants.find((v) => v.id === variantId)
@@ -48,6 +50,11 @@ export default function AddToCartButton({
       }
 
       setSuccess(true)
+      toast({
+        title: 'Pridané do košíka',
+        description: 'Produkt bol úspešne pridaný.',
+        variant: 'success',
+      })
       setTimeout(() => setSuccess(false), 2500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Nastala chyba')

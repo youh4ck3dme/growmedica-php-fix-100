@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Container } from '@/components/ui/Container'
 import BrandPageHeader from '@/components/ui/BrandPageHeader'
+import { FaqList } from '@/components/faq/FaqList'
 import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = buildPageMetadata('Často kladené otázky')
@@ -35,17 +36,7 @@ export default function FAQ() {
           />
 
           <div className="bg-white p-8 md:p-12 rounded-2xl shadow-(--shadow-card) border border-(--color-border)">
-            <div className="space-y-6">
-              {faqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className="p-6 rounded-xl border border-(--color-border) bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
-                  <h3 className="text-lg font-bold text-(--color-text) mb-3">{faq.q}</h3>
-                  <p className="text-(--color-text-muted) leading-relaxed">{faq.a}</p>
-                </div>
-              ))}
-            </div>
+            <FaqList items={faqs} />
 
             <div className="mt-12 text-center pt-8 border-t border-(--color-border)">
               <p className="text-(--color-text-muted) mb-4">Nenašli ste odpoveď na svoju otázku?</p>

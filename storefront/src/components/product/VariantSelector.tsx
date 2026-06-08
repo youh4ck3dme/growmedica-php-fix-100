@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import type { Product, ProductVariant } from '@/lib/shopify/types'
 import { cn } from '@/lib/utils'
+import { useStorefrontTheme } from '@/components/theme/StorefrontThemeProvider'
 
 interface VariantSelectorProps {
   product: Product
@@ -31,6 +32,8 @@ export default function VariantSelector({ product, onVariantChange }: VariantSel
   useEffect(() => {
     onVariantChange?.(selectedVariant ?? null)
   }, [selectedVariant, onVariantChange])
+
+  const { theme } = useStorefrontTheme()
 
   if (options.length === 0) return null
 
@@ -82,9 +85,11 @@ export default function VariantSelector({ product, onVariantChange }: VariantSel
                   disabled={!available}
                   onClick={() => handleSelect(option.name, value)}
                   className={cn(
-                    'px-3 py-2 rounded-lg text-sm font-medium border transition-all',
+                    'px-3 py-2 rounded-lg text-sm font-medium border transition-all min-h-[44px]',
                     selected
-                      ? 'border-(--color-primary) bg-(--color-primary) text-white'
+                      ? theme === 'noor'
+                        ? 'border-(--noor-ink) bg-(--noor-ink) text-white'
+                        : 'border-(--color-primary) bg-(--color-primary) text-white'
                       : available
                       ? 'border-(--color-border) text-(--color-text) hover:border-(--color-primary) hover:text-(--color-primary)'
                       : 'border-(--color-border) text-(--color-text-light) opacity-50 cursor-not-allowed line-through'

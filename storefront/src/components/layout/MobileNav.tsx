@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import Logo from '@/components/ui/Logo'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
+import { ThemeSearch } from '@/components/ui/ThemeSearch'
 import type { NavLinkItem } from '@/lib/navigation/primary-nav'
 import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
 
@@ -70,6 +71,13 @@ export default function MobileNav({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
+          <div className="mb-4">
+            <ThemeSearch
+              variant="pill"
+              pillClassName="search-pill w-full text-left"
+              aria-label="Vyhľadávanie produktov"
+            />
+          </div>
           <ul className="space-y-1" data-testid="mobile-nav-primary">
             {primaryLinks.map((link) => (
               <li key={link.href}>

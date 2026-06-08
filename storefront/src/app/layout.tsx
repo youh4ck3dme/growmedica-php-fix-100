@@ -9,17 +9,20 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar'
 import HeaderShell from '@/components/layout/HeaderShell'
 import TrustStrip from '@/components/layout/TrustStrip'
 import Footer from '@/components/layout/Footer'
+import CookieBanner from '@/components/ui/CookieBanner'
+import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
 import { DeferredLayoutBanners } from '@/components/layout/DeferredLayoutBanners'
 import { MotionProvider } from '@/components/motion/MotionProvider'
 import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvider'
 import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
+import { NoorUiProviders } from '@/components/noor/providers/NoorUiProviders'
 import { getThemeBootstrapScript, isStorefrontTheme, resolveInitialTheme, STORAGE_KEY } from '@/lib/theme/storefront-theme'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 const inter = Inter({
@@ -32,7 +35,8 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['600', '700'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
 })
 
 export const metadata: Metadata = {
@@ -95,17 +99,21 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationJsonLd()) }}
         />
         <StorefrontThemeProvider>
-          <MotionProvider>
-            <NoorThemeChrome />
-            <div className="flex min-h-dvh flex-col">
-              <AnnouncementBar />
-              <HeaderShell />
-              <TrustStrip />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <DeferredLayoutBanners />
-            </div>
-          </MotionProvider>
+          <NoorUiProviders>
+            <MotionProvider>
+              <NoorThemeChrome />
+              <div className="flex min-h-dvh flex-col">
+                <AnnouncementBar />
+                <HeaderShell />
+                <TrustStrip />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <DeferredLayoutBanners />
+                <CookieBanner />
+                <PwaInstallBanner />
+              </div>
+            </MotionProvider>
+          </NoorUiProviders>
         </StorefrontThemeProvider>
       </body>
     </html>

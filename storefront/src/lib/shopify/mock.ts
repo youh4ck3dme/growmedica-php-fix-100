@@ -1,5 +1,5 @@
 import { getCategoryDefinition, getNavCategories, type MainCategory } from '@/lib/category-map'
-import type { Collection, Connection, Product, ProductListItem, ShopifyImage } from './types'
+import type { Cart, CartLine, Collection, Connection, Product, ProductListItem, ShopifyImage } from './types'
 
 type Variables = Record<string, unknown>
 
@@ -171,7 +171,106 @@ function productsForQuery(query: unknown, first: unknown): ProductListItem[] {
       .some((token) => haystack.includes(token))
   })
 
-  return (matched.length > 0 ? matched : MOCK_PRODUCTS).slice(0, limit)
+  return matched.slice(0, limit)
+}
+
+interface MockCartEntry {
+  lines: Array<{ id: string; merchandiseId: string; quantity: number }>
+}
+
+const mockCarts = new Map<string, MockCartEntry>()
+let mockCartCounter = 0
+let mockLineCounter = 0
+
+function findVariantById(variantId: string) {
+  for (const product of MOCK_PRODUCTS) {
+    for (const edge of product.variants.edges) {
+      if (edge.node.id === variantId) {
+        return { product, variant: edge.node }
+      }
+    }
+  }
+  return null
+}
+
+function buildMockCartLine(
+  lineId: string,
+  merchandiseId: string,
+  quantity: number,
+): CartLine | null {
+  const match = findVariantById(merchandiseId)
+  if (!match) return null
+
+  const { product, variant } = match
+  const unitAmount = variant.price.amount
+  const totalAmount = (parseFloat(unitAmount) * quantity).toFixed(2)
+
+  return {
+    id: lineId,
+    quantity,
+    merchandise: {
+      id: variant.id,
+      title: variant.title,
+      selectedOptions: variant.selectedOptions,
+      product: {
+        id: product.id,
+        handle: product.handle,
+        title: product.title,
+        featuredImage: product.featuredImage,
+      },
+    },
+    cost: {
+      totalAmount: { amount: totalAmount, currencyCode: variant.price.currencyCode },
+      subtotalAmount: { amount: totalAmount, currencyCode: variant.price.currencyCode },
+    },
+  }
+}
+
+function buildMockCart(cartId: string, entry: MockCartEntry): Cart {
+  const lines = entry.lines
+    .map((line) => buildMockCartLine(line.id, line.merchandiseId, line.quantity))
+    .filter((line): line is CartLine => line !== null)
+
+  const subtotal = lines.reduce(
+    (sum, line) => sum + parseFloat(line.cost.subtotalAmount.amount),
+    0,
+  )
+  const currencyCode = lines[0]?.cost.subtotalAmount.currencyCode ?? 'EUR'
+  const subtotalAmount = { amount: subtotal.toFixed(2), currencyCode }
+
+  return {
+    id: cartId,
+    checkoutUrl: 'https://checkout.shopify.com/mock-checkout',
+    totalQuantity: lines.reduce((sum, line) => sum + line.quantity, 0),
+    lines: connection(lines),
+    cost: {
+      subtotalAmount,
+      totalAmount: subtotalAmount,
+      totalTaxAmount: { amount: '0.00', currencyCode },
+    },
+  }
+}
+
+function mergeCartLines(
+  existing: MockCartEntry['lines'],
+  incoming: Array<{ merchandiseId: string; quantity: number }>,
+): MockCartEntry['lines'] {
+  const merged = existing.map((line) => ({ ...line }))
+
+  for (const line of incoming) {
+    const existingLine = merged.find((item) => item.merchandiseId === line.merchandiseId)
+    if (existingLine) {
+      existingLine.quantity += line.quantity
+    } else {
+      merged.push({
+        id: `gid://shopify/CartLine/mock-${++mockLineCounter}`,
+        merchandiseId: line.merchandiseId,
+        quantity: line.quantity,
+      })
+    }
+  }
+
+  return merged
 }
 
 function productDetail(handle: string): Product | null {
@@ -270,6 +369,97 @@ export function getMockShopifyResponse<T>(query: string, variables: Variables = 
         handle: collection.handle,
         updatedAt: collection.updatedAt,
       }))),
+    } as T
+  }
+
+  if (query.includes('query GetCart')) {
+    const cartId = String(variables.cartId ?? '')
+    const entry = mockCarts.get(cartId)
+    return {
+      cart: entry ? buildMockCart(cartId, entry) : null,
+    } as T
+  }
+
+  if (query.includes('mutation CreateCart')) {
+    const lines = (variables.lines ?? []) as Array<{ merchandiseId: string; quantity: number }>
+    const cartId = `gid://shopify/Cart/mock-${++mockCartCounter}`
+    const entry = { lines: mergeCartLines([], lines) }
+    mockCarts.set(cartId, entry)
+    return {
+      cartCreate: {
+        cart: buildMockCart(cartId, entry),
+        userErrors: [],
+      },
+    } as T
+  }
+
+  if (query.includes('mutation AddToCart')) {
+    const cartId = String(variables.cartId ?? '')
+    const lines = (variables.lines ?? []) as Array<{ merchandiseId: string; quantity: number }>
+    const entry = mockCarts.get(cartId)
+    if (!entry) {
+      return {
+        cartLinesAdd: {
+          cart: null,
+          userErrors: [{ field: ['cartId'], message: 'Cart not found' }],
+        },
+      } as T
+    }
+    entry.lines = mergeCartLines(entry.lines, lines)
+    mockCarts.set(cartId, entry)
+    return {
+      cartLinesAdd: {
+        cart: buildMockCart(cartId, entry),
+        userErrors: [],
+      },
+    } as T
+  }
+
+  if (query.includes('mutation UpdateCartLines')) {
+    const cartId = String(variables.cartId ?? '')
+    const lines = (variables.lines ?? []) as Array<{ id: string; quantity: number }>
+    const entry = mockCarts.get(cartId)
+    if (!entry) {
+      return {
+        cartLinesUpdate: {
+          cart: null,
+          userErrors: [{ field: ['cartId'], message: 'Cart not found' }],
+        },
+      } as T
+    }
+    for (const update of lines) {
+      const line = entry.lines.find((item) => item.id === update.id)
+      if (line) line.quantity = update.quantity
+    }
+    entry.lines = entry.lines.filter((line) => line.quantity > 0)
+    mockCarts.set(cartId, entry)
+    return {
+      cartLinesUpdate: {
+        cart: buildMockCart(cartId, entry),
+        userErrors: [],
+      },
+    } as T
+  }
+
+  if (query.includes('mutation RemoveCartLines')) {
+    const cartId = String(variables.cartId ?? '')
+    const lineIds = (variables.lineIds ?? []) as string[]
+    const entry = mockCarts.get(cartId)
+    if (!entry) {
+      return {
+        cartLinesRemove: {
+          cart: null,
+          userErrors: [{ field: ['cartId'], message: 'Cart not found' }],
+        },
+      } as T
+    }
+    entry.lines = entry.lines.filter((line) => !lineIds.includes(line.id))
+    mockCarts.set(cartId, entry)
+    return {
+      cartLinesRemove: {
+        cart: buildMockCart(cartId, entry),
+        userErrors: [],
+      },
     } as T
   }
 

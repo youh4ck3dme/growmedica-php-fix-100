@@ -33,7 +33,8 @@ test.describe('1. Domovská stránka (Homepage)', () => {
       const nav = page.locator('nav[aria-label="Hlavná navigácia"]');
       await expect(nav).toBeVisible();
       await expect(nav.locator('a[href="/produkty"]')).toBeVisible();
-      await expect(nav.locator('a[href="/kolekcie/vitaminy-mineraly"]').first()).toBeVisible();
+      await expect(nav.locator('a[href="/kolekcie"]')).toBeVisible();
+      await expect(page.locator('#category-mega-menu-trigger')).toBeVisible();
     }
   });
 
@@ -55,7 +56,8 @@ test.describe('1. Domovská stránka (Homepage)', () => {
     await page.goto('/');
     const aboutSection = page.locator('section[aria-label="O Growmedica"]');
     await expect(aboutSection).toBeVisible();
-    await expect(aboutSection.locator('h2')).toContainText('Cesta za zdravím');
+    await expect(aboutSection.locator('.section-label')).toContainText(BRAND_COPY.aboutLabel);
+    await expect(aboutSection.locator('h2')).toContainText(BRAND_COPY.aboutHeading);
   });
 
   test('8. Mal by obsahovať pätičku (Footer) s logami platobných možností', async ({ page }) => {
@@ -85,7 +87,7 @@ test.describe('2. Navigácia a Statické Podstránky', () => {
     await page.goto('/velkoobchod');
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText('Veľkoobchod');
+    await expect(heading).toContainText(/veľkoobchod/i);
   });
 
   test('12. Mal by úspešne načítať podstránku "Často kladené otázky (FAQ)"', async ({ page }) => {
@@ -193,12 +195,13 @@ test.describe('3. Produkty a Kolekcie', () => {
     await acceptCookies(page);
     await page.locator('article.product-card').first().locator('a.btn-primary').click();
     
-    const detailContainer = page.locator('div.space-y-6');
+    const detailContainer = page.locator('main').locator('div.space-y-6').first();
     await expect(detailContainer).toBeVisible();
     
     const badge = detailContainer.locator('.badge-success, .badge-error').first();
     await expect(badge).toBeVisible();
     await expect(badge).toHaveText(/(Skladom|Vypredané)/);
+    await expect(detailContainer.locator('p.uppercase').first()).toBeVisible();
   });
 });
 
@@ -211,15 +214,15 @@ test.describe('4. Vyhľadávanie', () => {
     await expect(page.locator('input[type="search"]')).toBeVisible();
   });
 
-  test('25. Mal by vyhľadať reálny produkt (napr. "BIO" alebo "Coriolus") a zobraziť výsledok', async ({ page }) => {
+  test('25. Mal by vyhľadať reálny produkt (napr. "Cordyceps") a zobraziť výsledok', async ({ page }) => {
     await page.goto('/vyhladavanie');
     await acceptCookies(page);
     
     const searchInput = page.locator('input[type="search"]');
-    await searchInput.fill('BIO');
+    await searchInput.fill('Cordyceps');
     await searchInput.press('Enter');
     
-    await expect(page).toHaveURL(/\/vyhladavanie\?q=BIO/);
+    await expect(page).toHaveURL(/\/vyhladavanie\?q=Cordyceps/);
     const productCard = page.locator('article.product-card').first();
     await expect(productCard).toBeVisible({ timeout: 10000 });
   });
@@ -260,11 +263,10 @@ test.describe('5. Košík a Nákupný Proces', () => {
     await page.locator('article.product-card').first().locator('a.btn-primary').click();
     
     const addToCartBtn = page.locator('#add-to-cart-btn');
-    if (await addToCartBtn.isEnabled()) {
-      await addToCartBtn.click();
-      const cartIcon = page.locator('#cart-button');
-      await expect(cartIcon).toContainText('1');
-    }
+    await expect(addToCartBtn).toBeEnabled();
+    await addToCartBtn.click();
+    const cartBadge = page.locator('#cart-button span[aria-hidden="true"]');
+    await expect(cartBadge).toHaveText('1');
   });
 
   test('30. Mal by pridať produkt do košíka, prejsť do košíka a zobraziť pridanú položku', async ({ page }) => {
@@ -276,18 +278,17 @@ test.describe('5. Košík a Nákupný Proces', () => {
     await firstProduct.locator('a.btn-primary').click();
     
     const addToCartBtn = page.locator('#add-to-cart-btn');
-    if (await addToCartBtn.isEnabled()) {
-      await addToCartBtn.click();
+    await expect(addToCartBtn).toBeEnabled();
+    await addToCartBtn.click();
+    
+    const cartBadge = page.locator('#cart-button span[aria-hidden="true"]');
+    await expect(cartBadge).toHaveText('1');
       
-      const cartIcon = page.locator('#cart-button');
-      await expect(cartIcon).toContainText('1');
+    await page.goto('/kosik');
       
-      await page.goto('/kosik');
-      
-      const cartItemTitle = page.locator('a[href^="/produkty/"]').first();
-      await expect(cartItemTitle).toBeVisible();
-      await expect(cartItemTitle).toContainText(productTitle.substring(0, 10));
-    }
+    const cartItemTitle = page.locator('a[href^="/produkty/"]').first();
+    await expect(cartItemTitle).toBeVisible();
+    await expect(cartItemTitle).toContainText(productTitle.substring(0, 10));
   });
 
   test('31. Mal by v košíku zobraziť súhrn objednávky a tlačidlo pre prechod k pokladni (checkout)', async ({ page }) => {
@@ -296,19 +297,18 @@ test.describe('5. Košík a Nákupný Proces', () => {
     await page.locator('article.product-card').first().locator('a.btn-primary').click();
     
     const addToCartBtn = page.locator('#add-to-cart-btn');
-    if (await addToCartBtn.isEnabled()) {
-      await addToCartBtn.click();
+    await expect(addToCartBtn).toBeEnabled();
+    await addToCartBtn.click();
+    
+    const cartBadge = page.locator('#cart-button span[aria-hidden="true"]');
+    await expect(cartBadge).toHaveText('1');
       
-      const cartIcon = page.locator('#cart-button');
-      await expect(cartIcon).toContainText('1');
+    await page.goto('/kosik');
       
-      await page.goto('/kosik');
+    const summaryHeading = page.locator('h2', { hasText: 'Súhrn objednávky' });
+    await expect(summaryHeading).toBeVisible();
       
-      const summaryHeading = page.locator('h2', { hasText: 'Súhrn objednávky' });
-      await expect(summaryHeading).toBeVisible();
-      
-      const checkoutBtn = page.locator('#checkout-btn');
-      await expect(checkoutBtn).toBeVisible();
-    }
+    const checkoutBtn = page.locator('#checkout-btn');
+    await expect(checkoutBtn).toBeVisible();
   });
 });

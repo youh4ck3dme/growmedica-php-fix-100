@@ -60,7 +60,7 @@ export default async function Footer() {
   }
 
   return (
-    <footer role="contentinfo" style={{ background: 'var(--color-footer-bg)' }}>
+    <footer role="contentinfo" className="site-footer">
       <Container>
         <div className="py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="footer-brand col-span-2 md:col-span-1">

@@ -7,6 +7,8 @@ import Logo from '@/components/ui/Logo'
 import MobileNav from './MobileNav'
 import HeaderMegaMenu, { type MegaMenuCategory } from './HeaderMegaMenu'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
+import { ThemeSearch } from '@/components/ui/ThemeSearch'
+import { useStorefrontTheme } from '@/components/theme/StorefrontThemeProvider'
 import { PRIMARY_NAV_LINKS } from '@/lib/navigation/primary-nav'
 import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
 
@@ -58,6 +60,9 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
     'px-2.5 xl:px-3 py-2 text-sm font-semibold text-(--color-text) hover:text-(--color-primary) transition-colors uppercase tracking-wider relative group whitespace-nowrap'
 
   const showThemeSwitcher = !shouldHideThemeSwitcher()
+  const { theme } = useStorefrontTheme()
+  const searchButtonClass =
+    'p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center'
 
   return (
     <>
@@ -113,16 +118,9 @@ export default function Header({ megaMenuCategories = [] }: HeaderProps) {
 
             <div className="noor-header-right flex items-center gap-1 shrink-0">
               {showThemeSwitcher && <StorefrontThemeSwitcher />}
-              <Link
-                href="/vyhladavanie"
-                id="search-button"
-                className="p-2 text-(--color-text-muted) hover:text-(--color-primary) transition-colors rounded-lg lg:hidden"
-                aria-label="Vyhľadávanie"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </Link>
+              <ThemeSearch
+                className={`${searchButtonClass}${theme === 'noor' ? '' : ' lg:hidden'}`}
+              />
 
               <Link
                 href="/kosik"
