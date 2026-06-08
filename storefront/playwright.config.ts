@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 const isPwaProductionTest = !!process.env.PWA_PRODUCTION_TEST;
 const isNoorDemoTest = process.env.NOOR_DEMO_TEST === '1';
+const playwrightDevPort = process.env.PLAYWRIGHT_DEV_PORT ?? '5557';
+const playwrightDevUrl = `http://127.0.0.1:${playwrightDevPort}`;
 
 const shopifyTestEnv: Record<string, string> = {
   SHOPIFY_MOCK_MODE: process.env.SHOPIFY_MOCK_MODE ?? '1',
@@ -29,22 +31,22 @@ export default defineConfig({
   webServer: isPwaProductionTest
     ? {
         command: 'yarn start --port 5556',
-        url: 'http://localhost:5556',
+        url: 'http://127.0.0.1:5556',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         env: shopifyTestEnv,
       }
     : {
-        command: 'yarn dev',
-        url: 'http://localhost:5555',
+        command: `node scripts/ensure-dev-port.mjs ${playwrightDevPort} && next dev --port ${playwrightDevPort}`,
+        url: playwrightDevUrl,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         env: shopifyTestEnv,
       },
   use: {
     baseURL: isPwaProductionTest
-      ? 'http://localhost:5556'
-      : process.env.BASE_URL || 'http://localhost:5555',
+      ? 'http://127.0.0.1:5556'
+      : process.env.BASE_URL || playwrightDevUrl,
     trace: 'on-first-retry',
   },
 
