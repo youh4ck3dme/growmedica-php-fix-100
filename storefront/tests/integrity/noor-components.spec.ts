@@ -10,7 +10,7 @@ test.describe('NOOR UI components', () => {
   })
 
   test('SearchDrawer opens from header search on NOOR theme', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.setViewportSize({ width: 390, height: 844 })
     await page.locator('#search-button').click()
     await expect(page.locator('.noor-search-drawer')).toBeVisible()
     await expect(page.locator('#noor-search-input')).toBeFocused()

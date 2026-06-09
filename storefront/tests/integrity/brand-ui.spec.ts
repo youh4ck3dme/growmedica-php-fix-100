@@ -12,8 +12,8 @@ test.describe('Brand UI — layout markup (SSR HTML)', () => {
     html = await response.text()
   })
 
-  test('header má biele pozadie (bg-white, nie navy)', () => {
-    expect(html).toMatch(/<header[^>]*class="[^"]*bg-white[^"]*"/)
+  test('header používa glass navbar (nie navy)', () => {
+    expect(html).toMatch(/<header[^>]*class="[^"]*glass-navbar[^"]*"/)
     expect(html).not.toMatch(/#1[Ee]3[Aa]5[Ff]/)
   })
 
