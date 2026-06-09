@@ -106,9 +106,9 @@ test.describe('AI Integration — Premium Frontend & Animations', () => {
     const animator = page.locator('.animate-spin-gradient')
     await expect(animator).toBeAttached()
 
-    // Overíme prítomnosť pulzujúceho glow efektu na pozadí
-    const glow = page.locator('.blur-xl')
-    await expect(glow).toBeAttached()
+    // Overíme neon beam s blur efektom na cestujúcom gradiente
+    const beam = page.locator('.animate-spin-gradient.blur-sm')
+    await expect(beam).toBeAttached()
   })
 
   test('2. Detail produktu by mal správne renderovať ProductFitBox', async ({ page }) => {

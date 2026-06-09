@@ -25,6 +25,41 @@ Next.js app beží v `storefront/`, nie v koreni repozitára (legacy PHP).
 | **Package Manager** | Yarn |
 | **Install Command** | `yarn install --frozen-lockfile` (z `vercel.json`) |
 
+### Ignored Build Step — NOOR demo branch (growmedicanextjs only)
+
+Branch `feat/noor-production-demo` deployuje NOOR demo výhradne cez projekt **`growmedica-noor-demo`**. Na **`growmedicanextjs`** by inak vznikali zbytočné Preview deploye (`growmedicanextjs-git-feat-noor-production-demo-…`).
+
+**Vercel → growmedicanextjs → Settings → Git → Ignored Build Step:**
+
+```bash
+if [ "$VERCEL_GIT_COMMIT_REF" = "feat/noor-production-demo" ]; then
+  echo "Skipping NOOR demo branch on main Vercel project"
+  exit 0
+fi
+
+exit 1
+```
+
+Alebo (sync s repozitárom):
+
+```bash
+bash scripts/vercel-skip-noor-demo-on-main-project.sh
+```
+
+Nastaviť cez CLI/API:
+
+```bash
+cd storefront
+yarn vercel:ignore-noor-demo-on-main   # po vercel login alebo s VERCEL_TOKEN
+```
+
+| Projekt | Ignored Build Step | Branch `feat/noor-production-demo` |
+|---------|-------------------|--------------------------------------|
+| `growmedicanextjs` | **áno** (skip preview) | Preview sa nespustí |
+| `growmedica-noor-demo` | **nie** | Production deploy beží normálne |
+
+Nepoužívame `vercel.json` → `git.deploymentEnabled`, lebo oba projekty zdieľajú ten istý súbor v `storefront/`.
+
 Bez **Root Directory = `storefront`** Vercel buildne koreň repa, nenájde `next` v `package.json` a zlyhá.
 
 ---

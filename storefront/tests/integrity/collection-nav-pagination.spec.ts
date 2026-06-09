@@ -68,6 +68,8 @@ function installShopifyFetchMock({
 }: ProductsConnectionOptions = {}) {
   const calls: ShopifyFetchCall[] = []
   const originalFetch = globalThis.fetch
+  const previousMockMode = process.env.SHOPIFY_MOCK_MODE
+  process.env.SHOPIFY_MOCK_MODE = '0'
 
   globalThis.fetch = async (_input, init) => {
     const body = JSON.parse(String(init?.body ?? '{}')) as {
@@ -139,6 +141,11 @@ function installShopifyFetchMock({
     calls,
     restore() {
       globalThis.fetch = originalFetch
+      if (previousMockMode === undefined) {
+        delete process.env.SHOPIFY_MOCK_MODE
+      } else {
+        process.env.SHOPIFY_MOCK_MODE = previousMockMode
+      }
     },
   }
 }

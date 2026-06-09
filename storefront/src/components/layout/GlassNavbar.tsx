@@ -8,6 +8,8 @@ import Logo from '@/components/ui/Logo'
 import MobileNav from '@/components/layout/MobileNav'
 import HeaderMegaMenu, { type MegaMenuCategory } from '@/components/layout/HeaderMegaMenu'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
+import { ThemeSearch } from '@/components/ui/ThemeSearch'
+import { useStorefrontTheme } from '@/components/theme/StorefrontThemeProvider'
 import { PRIMARY_NAV_LINKS } from '@/lib/navigation/primary-nav'
 import { shouldHideThemeSwitcher } from '@/lib/theme/storefront-theme'
 import { cn } from '@/lib/utils'
@@ -61,6 +63,7 @@ export default function GlassNavbar({ megaMenuCategories = [] }: GlassNavbarProp
     'px-2.5 xl:px-3 py-2 text-sm font-semibold text-(--color-text) hover:text-(--color-primary) transition-colors uppercase tracking-wider relative group whitespace-nowrap'
 
   const showThemeSwitcher = !shouldHideThemeSwitcher()
+  const { theme } = useStorefrontTheme()
 
   return (
     <>
@@ -118,14 +121,12 @@ export default function GlassNavbar({ megaMenuCategories = [] }: GlassNavbarProp
 
             <div className="noor-header-right flex items-center gap-0.5 shrink-0">
               {showThemeSwitcher && <StorefrontThemeSwitcher />}
-              <Link
-                href="/vyhladavanie"
-                id="search-button"
-                className="glass-navbar__action lg:hidden"
+              <ThemeSearch
+                className={`glass-navbar__action${theme === 'noor' ? '' : ' lg:hidden'}`}
                 aria-label="Vyhľadávanie"
               >
                 <Search className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
-              </Link>
+              </ThemeSearch>
 
               <Link
                 href="/kosik"
