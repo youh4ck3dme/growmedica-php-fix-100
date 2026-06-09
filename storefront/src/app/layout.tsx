@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import Script from 'next/script'
 import { Montserrat, Inter, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
@@ -15,6 +15,7 @@ import { StorefrontThemeProvider } from '@/components/theme/StorefrontThemeProvi
 import { NoorThemeChrome } from '@/components/theme/NoorThemeChrome'
 import { NoorUiProviders } from '@/components/noor/providers/NoorUiProviders'
 import { getThemeBootstrapScript, isStorefrontTheme, resolveInitialTheme, STORAGE_KEY } from '@/lib/theme/storefront-theme'
+import { DASHBOARD_ROUTE_HEADER, isDashboardRouteHeader } from '@/lib/dashboard'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -70,11 +71,28 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const isDashboardRoute = isDashboardRouteHeader(headersList.get(DASHBOARD_ROUTE_HEADER))
+
   const cookieStore = await cookies()
   const cookieTheme = cookieStore.get(STORAGE_KEY)?.value
   const ssrTheme = resolveInitialTheme(
     isStorefrontTheme(cookieTheme) ? cookieTheme : null,
   )
+
+  if (isDashboardRoute) {
+    return (
+      <html
+        lang="sk"
+        suppressHydrationWarning
+        className={`${montserrat.variable} ${inter.variable} ${playfair.variable}`}
+      >
+        <body className="font-(--font-inter) antialiased" suppressHydrationWarning>
+          {children}
+        </body>
+      </html>
+    )
+  }
 
   return (
     <html

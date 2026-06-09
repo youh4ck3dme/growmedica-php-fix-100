@@ -21,6 +21,11 @@ if (isNoorDemoTest) {
   shopifyTestEnv.NEXT_PUBLIC_HIDE_THEME_SWITCHER = '1';
 }
 
+const dashboardTestUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL?.trim();
+if (dashboardTestUrl) {
+  shopifyTestEnv.NEXT_PUBLIC_DASHBOARD_URL = dashboardTestUrl;
+}
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
