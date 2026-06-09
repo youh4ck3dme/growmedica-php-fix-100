@@ -42,6 +42,18 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 
+# Lighthouse audit exports (local only — huge JSON)
+.lighthouse/
+
+# Local docs binaries (canonical media lives in public/)
+docs/*.mp4
+docs/*.zip
+docs/komponents.zip
+
+# Firebase hosting experiments — commit only when intentionally adopted
+/firebase.json
+/apphosting.yaml
+
 # Serwist (generated at build)
 public/sw*
 public/swe-worker*
