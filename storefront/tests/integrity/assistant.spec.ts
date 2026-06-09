@@ -80,7 +80,7 @@ test.describe('Pharmacist Assistant — UI', () => {
 
   test('5. drawer sends mock reply from input', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('assistant-chat-trigger').first().click()
+    await page.getByTestId('assistant-fab-trigger').click()
 
     const drawer = page.getByTestId('pharmacist-assistant-drawer')
     await expect(drawer).toBeVisible()
@@ -95,6 +95,33 @@ test.describe('Pharmacist Assistant — UI', () => {
     await expect(
       drawer.locator('.assistant-drawer__bubble--assistant').last(),
     ).not.toHaveText('Som váš virtuálny lekárnik GrowMedica', { timeout: 15_000 })
+  })
+
+  test('5b. floating FAB is visible on homepage without scrolling', async ({ page }) => {
+    await page.goto('/')
+
+    const fab = page.getByTestId('assistant-fab-trigger')
+    await expect(fab).toBeVisible()
+    await expect(fab).toBeInViewport()
+  })
+
+  test('5c. floating FAB opens assistant drawer', async ({ page }) => {
+    await page.goto('/')
+
+    await page.getByTestId('assistant-fab-trigger').click()
+    await expect(page.getByTestId('pharmacist-assistant-drawer')).toBeVisible()
+    await expect(page.getByTestId('assistant-fab-trigger')).toBeHidden()
+  })
+
+  test('5d. mobile floating FAB opens assistant drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const fab = page.getByTestId('assistant-fab-trigger')
+    await expect(fab).toBeVisible()
+    await fab.click()
+
+    await expect(page.getByTestId('pharmacist-assistant-drawer')).toBeVisible()
   })
 
   test('6. footer exposes assistant chat trigger', async ({ page }) => {

@@ -18,12 +18,21 @@ const PharmacistAssistantDrawer = dynamic(
   { ssr: false },
 )
 
+const FloatingAssistantFab = dynamic(
+  () =>
+    import('@/components/ai/FloatingAssistantFab').then((mod) => ({
+      default: mod.FloatingAssistantFab,
+    })),
+  { ssr: false },
+)
+
 export function DeferredLayoutBanners() {
   return (
     <>
       <CookieBanner />
       <PwaInstallBanner />
       <PharmacistAssistantDrawer />
+      <FloatingAssistantFab />
     </>
   )
 }

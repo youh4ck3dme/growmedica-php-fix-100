@@ -2631,6 +2631,98 @@
     color: var(--color-error);
   }
 
+  .assistant-fab {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right, 0px));
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    z-index: 105;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    box-shadow: 0 4px 20px rgba(22, 101, 52, 0.35);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .assistant-fab:hover {
+    background: var(--color-primary-dark);
+    box-shadow: 0 6px 24px rgba(22, 101, 52, 0.42);
+  }
+
+  .assistant-fab:focus-visible {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+  }
+
+  body.assistant-drawer-open .assistant-fab {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .assistant-fab__icon {
+    flex-shrink: 0;
+  }
+
+  .assistant-fab__label-short {
+    display: none;
+  }
+
+  .assistant-fab--cookie-offset {
+    bottom: calc(max(1rem, env(safe-area-inset-bottom, 0px)) + 7.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .assistant-fab--cookie-offset {
+      bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .assistant-fab {
+      padding-inline: 0.75rem;
+    }
+
+    .assistant-fab__label {
+      display: none;
+    }
+
+    .assistant-fab__label-short {
+      display: inline;
+      font-size: 0.8125rem;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .assistant-fab__label-short {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+
   .assistant-footer-trigger {
     display: inline-flex;
     align-items: center;

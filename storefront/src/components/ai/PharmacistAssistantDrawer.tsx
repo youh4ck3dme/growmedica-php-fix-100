@@ -61,6 +61,13 @@ export function PharmacistAssistantDrawer() {
   }, [])
 
   useEffect(() => {
+    document.body.classList.toggle('assistant-drawer-open', open)
+    return () => {
+      document.body.classList.remove('assistant-drawer-open')
+    }
+  }, [open])
+
+  useEffect(() => {
     if (!open) return
 
     document.body.style.overflow = 'hidden'
@@ -235,18 +242,20 @@ export function AssistantChatTrigger({
   children,
   onOpen,
   'aria-label': ariaLabel = 'Otvoriť chat s lekárnikom',
+  'data-testid': dataTestId = 'assistant-chat-trigger',
 }: {
   className?: string
   children: ReactNode
   onOpen?: () => void
   'aria-label'?: string
+  'data-testid'?: string
 }) {
   return (
     <button
       type="button"
       className={className}
       aria-label={ariaLabel}
-      data-testid="assistant-chat-trigger"
+      data-testid={dataTestId}
       onClick={() => {
         openPharmacistAssistant()
         onOpen?.()
