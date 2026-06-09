@@ -2,7 +2,48 @@
 
 Katalóg **63 balíčkov** je v kóde: [`src/lib/bundles/catalog.ts`](../src/lib/bundles/catalog.ts).
 
-## Shopify Admin — rýchly postup
+## Shopify Admin — vytvorenie balíčkov (TOP 10)
+
+Potrebujete **Admin API token** (`shpat_...`) s právom `write_products`.  
+**Nikdy** ho necommitujte ani nedávajte do Vercel Preview env pre frontend.
+
+### 1) Vytvorenie tokenu
+
+```
+Shopify Admin → Settings → Apps and sales channels → Develop apps
+→ Create app → Configure Admin API scopes: read_products, write_products
+→ Install app → Reveal Admin API access token
+```
+
+Do `storefront/.env.local`:
+
+```env
+SHOPIFY_ADMIN_ACCESS_TOKEN=shpat_...
+```
+
+### 2) Spustenie skriptu
+
+```bash
+cd storefront
+yarn bundles:create:dry    # náhľad cien
+yarn bundles:create        # vytvorí 10 produktov
+```
+
+Skript: [`scripts/create-shopify-bundles.mjs`](../scripts/create-shopify-bundles.mjs)
+
+- handle: `balicek-{slug}`
+- tag: `balicek-zdravia`
+- compare-at: odhad 14,90 € × počet položiek
+- price: compare-at − zľava z katalógu
+
+Po vytvorení upravte ceny podľa reálnych SKU v Admin.
+
+### 3) Overenie na webe
+
+- `/balicky` — prvých 10 kariet má **cenu** a tlačidlo **Pridať do košíka**
+- Webhooky aktualizujú cache; prípadne redeploy
+
+---
 
 1. **Products → Add product** pre každý balíček (odporúčame rollout: 10 → 30 → 63).
 2. **Title:** `Balíček: {názov z katalógu}` (napr. `Balíček: Imunitný Štít Basic`).

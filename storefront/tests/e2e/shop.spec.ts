@@ -96,6 +96,8 @@ test.describe('2. Navigácia a Statické Podstránky', () => {
     await page.goto('/balicky');
     await expect(page.locator('h1')).toContainText(BRAND_COPY.bundlesHeading);
     await expect(page.locator('.bundle-grid .bundle-card')).toHaveCount(63);
+    await expect(page.locator('[data-has-shopify-product="true"]').first()).toBeVisible();
+    await expect(page.getByTestId('bundle-add-to-cart').first()).toBeVisible();
   });
 
   test('11. Mal by úspešne načítať podstránku "Veľkoobchod"', async ({ page }) => {

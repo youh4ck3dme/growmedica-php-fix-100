@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { acceptCookies } from '../helpers/cookies'
 import { HEALTH_BUNDLE_CATALOG, getBundleBySlug, getFeaturedBundles } from '@/lib/bundles/catalog'
 import { BRAND_COPY } from '@/lib/brand'
 
@@ -37,5 +38,23 @@ test.describe('Health bundle catalog', () => {
   test('7. brand copy includes about slogan and health lines', () => {
     expect(BRAND_COPY.aboutSlogan).toBeTruthy()
     expect(BRAND_COPY.aboutHealthLines.length).toBeGreaterThanOrEqual(5)
+  })
+
+  test('8. /balicky shows price and add-to-cart for Shopify-linked bundles', async ({ page }) => {
+    await page.goto('/balicky')
+    await acceptCookies(page)
+    const linked = page.locator('[data-has-shopify-product="true"]').first()
+    await expect(linked).toBeVisible()
+    await expect(linked.getByTestId('bundle-price')).toBeVisible()
+    await expect(linked.getByTestId('bundle-add-to-cart')).toBeVisible()
+  })
+
+  test('9. bundle add-to-cart updates cart badge', async ({ page }) => {
+    await page.goto('/balicky')
+    await acceptCookies(page)
+    await page.getByTestId('bundle-add-to-cart').first().click()
+    await expect(page.locator('#cart-button span[aria-hidden="true"]')).toHaveText('1', {
+      timeout: 10_000,
+    })
   })
 })

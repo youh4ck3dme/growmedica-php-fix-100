@@ -1,4 +1,10 @@
 import { getCategoryDefinition, getNavCategories, type MainCategory } from '@/lib/category-map'
+import {
+  BUNDLE_SHOPIFY_TAG,
+  getBundleProductHandle,
+  getFeaturedBundles,
+  type HealthBundle,
+} from '@/lib/bundles/catalog'
 import type { Cart, CartLine, Collection, Connection, Product, ProductListItem, ShopifyImage } from './types'
 
 type Variables = Record<string, unknown>
@@ -124,10 +130,61 @@ function cordycepsProduct(): ProductListItem {
   }
 }
 
-const MOCK_PRODUCTS = getNavCategories().flatMap((category) => [
-  productListItem(category.slug, 1),
-  productListItem(category.slug, 2),
-]).concat(cordycepsProduct())
+function bundleProductListItem(bundle: HealthBundle): ProductListItem {
+  const compareAtAmount = (bundle.items.length * 14.9).toFixed(2)
+  const priceAmount = (
+    parseFloat(compareAtAmount) *
+    (1 - bundle.discountPercent / 100)
+  ).toFixed(2)
+  const compareAt = { amount: compareAtAmount, currencyCode: 'EUR' }
+  const price = { amount: priceAmount, currencyCode: 'EUR' }
+  const handle = getBundleProductHandle(bundle.slug)
+
+  return {
+    id: `gid://shopify/Product/mock-${handle}`,
+    handle,
+    title: `Balíček: ${bundle.name}`,
+    vendor: 'GrowMedica',
+    productType: 'Balíček zdravia',
+    tags: [BUNDLE_SHOPIFY_TAG, BUNDLE_CATEGORY_TAG(bundle.category)],
+    availableForSale: true,
+    priceRange: {
+      minVariantPrice: price,
+      maxVariantPrice: price,
+    },
+    compareAtPriceRange: {
+      minVariantPrice: compareAt,
+      maxVariantPrice: compareAt,
+    },
+    featuredImage: MOCK_IMAGE,
+    variants: {
+      edges: [
+        {
+          node: {
+            id: `gid://shopify/ProductVariant/mock-${handle}`,
+            title: 'Default Title',
+            availableForSale: true,
+            selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+            price,
+            compareAtPrice: compareAt,
+          },
+        },
+      ],
+    },
+  }
+}
+
+function BUNDLE_CATEGORY_TAG(category: HealthBundle['category']): string {
+  if (category === 'sezonne') return 'Sezónne'
+  return getCategoryDefinition(category).title
+}
+
+const MOCK_BUNDLE_PRODUCTS = getFeaturedBundles(10).map(bundleProductListItem)
+
+const MOCK_PRODUCTS = getNavCategories()
+  .flatMap((category) => [productListItem(category.slug, 1), productListItem(category.slug, 2)])
+  .concat(cordycepsProduct())
+  .concat(MOCK_BUNDLE_PRODUCTS)
 
 const MOCK_COLLECTIONS: Collection[] = getNavCategories().map((category) => ({
   id: `gid://shopify/Collection/mock-${category.slug}`,
@@ -149,6 +206,10 @@ function productsForHandle(handle: string): ProductListItem[] {
 
 function productsForQuery(query: unknown, first: unknown): ProductListItem[] {
   const limit = typeof first === 'number' ? first : 24
+  if (typeof query === 'string' && query.includes('balicek-zdravia')) {
+    return MOCK_BUNDLE_PRODUCTS.slice(0, limit)
+  }
+
   if (typeof query !== 'string' || query.trim() === '') {
     return MOCK_PRODUCTS.slice(0, limit)
   }

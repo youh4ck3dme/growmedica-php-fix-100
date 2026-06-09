@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
   BUNDLE_CATEGORY_LABELS,
   getBundleProductHandle,
@@ -6,6 +5,7 @@ import {
 } from '@/lib/bundles/catalog'
 import { getProductUrl } from '@/lib/utils'
 import type { ProductListItem } from '@/lib/shopify/types'
+import { BundleAddToCart } from '@/components/bundle/BundleAddToCart'
 
 interface BundleCardProps {
   bundle: HealthBundle
@@ -13,14 +13,9 @@ interface BundleCardProps {
 }
 
 export function BundleCard({ bundle, product }: BundleCardProps) {
-  const href = product
-    ? getProductUrl(product.handle)
-    : `/balicky#${bundle.slug}`
-
-  const price = product?.variants.edges[0]?.node.price ?? product?.priceRange.minVariantPrice
-  const compareAt =
-    product?.variants.edges[0]?.node.compareAtPrice ??
-    product?.compareAtPriceRange.minVariantPrice
+  const variant = product?.variants.edges[0]?.node
+  const price = variant?.price ?? product?.priceRange.minVariantPrice
+  const compareAt = variant?.compareAtPrice ?? product?.compareAtPriceRange.minVariantPrice
 
   const hasShopifyPrice = Boolean(product && price)
   const hasDiscount =
@@ -29,10 +24,12 @@ export function BundleCard({ bundle, product }: BundleCardProps) {
     parseFloat(compareAt.amount) > parseFloat(price!.amount)
 
   return (
-    <Link
-      href={href}
+    <article
       className="bundle-card liquid-glass liquid-glass--heavy"
-      id={product ? undefined : bundle.slug}
+      id={bundle.slug}
+      data-testid="bundle-card"
+      data-bundle-slug={bundle.slug}
+      data-has-shopify-product={product ? 'true' : 'false'}
     >
       <span className="bundle-card__badge">−{bundle.discountPercent} %</span>
       <h3 className="bundle-card__title">{bundle.name}</h3>
@@ -49,7 +46,7 @@ export function BundleCard({ bundle, product }: BundleCardProps) {
           {BUNDLE_CATEGORY_LABELS[bundle.category]}
         </span>
         {hasShopifyPrice ? (
-          <span className="text-sm font-bold text-(--color-primary)">
+          <span className="text-sm font-bold text-(--color-primary)" data-testid="bundle-price">
             {hasDiscount && (
               <span className="text-(--color-text-muted) line-through font-normal mr-1.5">
                 {compareAt!.amount} €
@@ -63,6 +60,14 @@ export function BundleCard({ bundle, product }: BundleCardProps) {
           </span>
         )}
       </div>
-    </Link>
+
+      {product && variant ? (
+        <BundleAddToCart
+          variantId={variant.id}
+          availableForSale={product.availableForSale && variant.availableForSale}
+          productUrl={getProductUrl(product.handle)}
+        />
+      ) : null}
+    </article>
   )
 }
