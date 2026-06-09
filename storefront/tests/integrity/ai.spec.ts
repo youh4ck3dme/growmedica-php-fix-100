@@ -115,7 +115,9 @@ test.describe('AI Integration — Premium Frontend & Animations', () => {
     await page.goto('/produkty/mycomedica-cordyceps-50-90-rastlinnych-kapsul')
 
     // Skontrolujeme nadpis bloku ProductFitBox
-    const heading = page.locator('h3', { hasText: 'Je MycoMedica Cordyceps 50% 90 rastlinných kapsúl pre vás vhodný?' })
+    const heading = page.locator('h3', {
+      hasText: 'Hodí sa vám produkt MycoMedica Cordyceps 50% 90 rastlinných kapsúl?',
+    })
     await expect(heading).toBeVisible()
 
     // Skontrolujeme, či sa zobrazuje textarea pre popis cieľov/obáv
@@ -123,7 +125,7 @@ test.describe('AI Integration — Premium Frontend & Animations', () => {
     await expect(textarea).toBeVisible()
 
     // Skontrolujeme overovacie tlačidlo
-    const checkButton = page.locator('button', { hasText: 'Overiť vhodnosť' })
+    const checkButton = page.locator('button', { hasText: 'Overiť vhodnosť pre mňa' })
     await expect(checkButton).toBeVisible()
     await expect(checkButton).toBeDisabled() // Tlačidlo by malo byť vypnuté pokiaľ je vstup prázdny
   })

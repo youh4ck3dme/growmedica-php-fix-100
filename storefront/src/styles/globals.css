@@ -738,8 +738,9 @@
   }
 
   .hero-slider__cta {
-    padding: 0.4375rem 0.875rem;
-    font-size: 0.46875rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.25;
     border-radius: var(--radius-btn);
   }
 
@@ -2428,7 +2429,7 @@
   .assistant-drawer__backdrop {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: 110;
     border: none;
     background: rgba(16, 22, 21, 0.45);
     backdrop-filter: blur(4px);
@@ -2439,7 +2440,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 61;
+    z-index: 111;
     display: flex;
     flex-direction: column;
     width: min(100%, 28rem);
@@ -2646,6 +2647,7 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.75rem 0.75rem;
+    min-height: 2.75rem;
     border-radius: 0.5rem;
     border: 1px solid var(--color-border);
     background: var(--color-surface-2);
@@ -2653,6 +2655,10 @@
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 2;
   }
 
   .assistant-mobile-trigger:hover {

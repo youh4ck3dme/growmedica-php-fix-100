@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
 import { useEffect } from 'react'
 import Logo from '@/components/ui/Logo'
-import { AssistantChatTrigger } from '@/components/ai/PharmacistAssistantDrawer'
+import { openPharmacistAssistant } from '@/lib/ai/pharmacist-assistant-events'
 import { StorefrontThemeSwitcher } from '@/components/theme/StorefrontThemeSwitcher'
 import { ThemeSearch } from '@/components/ui/ThemeSearch'
 import type { NavLinkItem } from '@/lib/navigation/primary-nav'
@@ -39,14 +39,14 @@ export default function MobileNav({
   return (
     <>
       <div
-        className="fixed inset-0 z-40 bg-[#101615]/40 backdrop-blur-sm"
+        className="fixed inset-0 z-[90] bg-[#101615]/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
       <nav
         id="mobile-nav"
-        className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-(--color-surface) shadow-xl"
+        className="fixed inset-y-0 left-0 z-[100] flex w-72 flex-col bg-(--color-surface) shadow-xl"
         aria-label="Mobilná navigácia"
         role="dialog"
         aria-modal="true"
@@ -126,11 +126,20 @@ export default function MobileNav({
           )}
         </div>
 
-        <div className="border-t border-(--color-border) p-4 space-y-3">
-          <AssistantChatTrigger className="assistant-mobile-trigger" onOpen={onClose}>
+        <div className="relative z-[1] shrink-0 border-t border-(--color-border) p-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-3">
+          <button
+            type="button"
+            className="assistant-mobile-trigger"
+            data-testid="assistant-mobile-trigger"
+            aria-label="Poradiť sa s lekárnikom"
+            onClick={() => {
+              openPharmacistAssistant()
+              onClose()
+            }}
+          >
             <MessageCircle size={18} aria-hidden="true" />
             Poradiť sa s lekárnikom
-          </AssistantChatTrigger>
+          </button>
           {!shouldHideThemeSwitcher() && <StorefrontThemeSwitcher compact />}
           <p className="text-xs text-(--color-text-light)">© {new Date().getFullYear()} GrowMedica.sk</p>
         </div>

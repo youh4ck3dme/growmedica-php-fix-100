@@ -106,4 +106,19 @@ test.describe('Pharmacist Assistant — UI', () => {
     await footerTrigger.click()
     await expect(page.getByTestId('pharmacist-assistant-drawer')).toBeVisible()
   })
+
+  test('7. mobile menu opens assistant chat above overlays', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    await page.locator('#mobile-nav-toggle').click()
+    await expect(page.locator('#mobile-nav')).toBeVisible()
+
+    const mobileTrigger = page.getByTestId('assistant-mobile-trigger')
+    await expect(mobileTrigger).toBeVisible()
+    await mobileTrigger.click({ force: false })
+
+    await expect(page.locator('#mobile-nav')).toBeHidden()
+    await expect(page.getByTestId('pharmacist-assistant-drawer')).toBeVisible()
+  })
 })

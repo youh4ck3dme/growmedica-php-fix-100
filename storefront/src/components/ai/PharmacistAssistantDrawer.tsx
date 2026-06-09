@@ -248,8 +248,8 @@ export function AssistantChatTrigger({
       aria-label={ariaLabel}
       data-testid="assistant-chat-trigger"
       onClick={() => {
-        onOpen?.()
         openPharmacistAssistant()
+        onOpen?.()
       }}
     >
       {children}
