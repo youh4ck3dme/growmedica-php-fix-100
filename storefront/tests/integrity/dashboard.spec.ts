@@ -57,7 +57,7 @@ test.describe('Dashboard route — smoke', () => {
     expect(content).toContain('Dashboard nie je nakonfigurovaný')
     expect(content).toContain('data-testid="dashboard-unconfigured"')
     expect(content).toContain('data-testid="dashboard-nexus-direct-link"')
-    expect(content).toContain('https://growmedica-nexus.vercel.app/admin/prihlasenie')
+    expect(content).toContain('https://growmedica-nexus.lovable.app/admin/prihlasenie')
   })
 
   test('renders iframe when NEXT_PUBLIC_DASHBOARD_URL is set', () => {

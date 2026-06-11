@@ -1,6 +1,6 @@
 # Dashboard deploy (iframe bridge)
 
-Externý admin dashboard **growmedica-nexus** beží na samostatnom Vercel projekte. Storefront ho vkladá na `/dashboard` cez full-screen iframe — bez merge kódu do Next.js projektu.
+Externý admin dashboard **growmedica-nexus** beží na samostatnom hostingu (Lovable: `https://growmedica-nexus.lovable.app`). Storefront ho vkladá na `/dashboard` cez full-screen iframe — bez merge kódu do Next.js projektu.
 
 Vzor je analogický k NOOR demo ([`NOOR_DEMO_DEPLOY.md`](./NOOR_DEMO_DEPLOY.md)): samostatný deploy, prepojenie cez env.
 
@@ -19,7 +19,7 @@ Používateľ naviguje na `https://<storefront>/dashboard`. URL v prehliadači z
 
 | Premenná | Príklad | Účel |
 |---|---|---|
-| `NEXT_PUBLIC_DASHBOARD_URL` | `https://growmedica-nexus.vercel.app/admin` | `src` atribút iframe na `/dashboard` |
+| `NEXT_PUBLIC_DASHBOARD_URL` | `https://growmedica-nexus.lovable.app/admin` | `src` atribút iframe na `/dashboard` |
 
 Nastaviť vo Vercel projekte **`growmedicanextjs`** (Production + Preview podľa potreby).
 
@@ -30,7 +30,7 @@ Ak premenná chýba, `/dashboard` zobrazí dev-friendly fallback (nie 500).
 ```bash
 cd storefront
 # .env.local
-NEXT_PUBLIC_DASHBOARD_URL=https://growmedica-nexus.vercel.app/admin
+NEXT_PUBLIC_DASHBOARD_URL=https://growmedica-nexus.lovable.app/admin
 yarn dev
 ```
 
@@ -112,7 +112,7 @@ Pridajte všetky tieto domény:
 
 | Doména | Účel |
 |---|---|
-| `growmedica-nexus.vercel.app` | Nexus admin (iframe `src` origin) |
+| `growmedica-nexus.lovable.app` | Nexus admin (iframe `src` origin) |
 | `growmedicanextjs.vercel.app` | Storefront Vercel preview/production |
 | `growmedica.sk` | Storefront produkčná doména |
 | `grow.nexify-studio.tech` | Storefront staging / alternatívna doména |
@@ -161,7 +161,7 @@ Vnútorná navigácia (`/admin/produkty`, `/admin/prihlasenie`, …) zostáva v 
 
 | Služba | URL |
 |---|---|
-| **growmedica-nexus** (admin iframe) | https://growmedica-nexus.vercel.app/admin |
+| **growmedica-nexus** (admin iframe) | https://growmedica-nexus.lovable.app/admin |
 | **growmedicanextjs** (storefront bridge) | https://growmedicanextjs.vercel.app/dashboard |
 
 Vercel projekty: `h4ck3d/growmedica-nexus`, `h4ck3d/growmedicanextjs`.
@@ -179,7 +179,7 @@ Ak Nexus ešte nepovolí embed, storefront iframe bude prázdny — debugujte na
 ### Nexus URL status (overiť po deployi)
 
 ```bash
-curl -sI https://growmedica-nexus.vercel.app/admin
+curl -sI https://growmedica-nexus.lovable.app/admin
 ```
 
 | Stav | Význam |

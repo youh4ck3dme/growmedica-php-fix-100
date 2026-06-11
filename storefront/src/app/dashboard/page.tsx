@@ -1,7 +1,7 @@
 import DashboardFrame from '@/components/dashboard/DashboardFrame'
 import { getDashboardUrl } from '@/lib/dashboard'
 
-const NEXUS_ADMIN_LOGIN_URL = 'https://growmedica-nexus.vercel.app/admin/prihlasenie'
+const NEXUS_ADMIN_LOGIN_URL = 'https://growmedica-nexus.lovable.app/admin/prihlasenie'
 const isDev = process.env.NODE_ENV === 'development'
 
 function NexusDirectLink({ className = '' }: { className?: string }) {
