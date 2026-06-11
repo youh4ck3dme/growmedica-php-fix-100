@@ -11,6 +11,8 @@ const shopifyTestEnv: Record<string, string> = {
   SHOPIFY_STOREFRONT_ACCESS_TOKEN:
     process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ?? 'mock-storefront-token',
   SHOPIFY_API_VERSION: process.env.SHOPIFY_API_VERSION ?? '2025-01',
+  SHOPIFY_REVALIDATION_SECRET:
+    process.env.SHOPIFY_REVALIDATION_SECRET ?? 'mock-revalidation-secret',
   MISTRAL_MOCK_MODE: process.env.MISTRAL_MOCK_MODE ?? '1',
   MISTRAL_API_KEY: process.env.MISTRAL_API_KEY ?? 'mock-mistral-api-key',
   MISTRAL_MODEL: process.env.MISTRAL_MODEL ?? 'mistral-large-latest',
