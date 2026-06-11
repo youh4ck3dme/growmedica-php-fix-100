@@ -49,7 +49,36 @@ test.describe('Health bundle catalog', () => {
     await expect(linked.getByTestId('bundle-add-to-cart')).toBeVisible()
   })
 
-  test('9. bundle add-to-cart updates cart badge', async ({ page }) => {
+  test('9. linked bundles render compare-at savings', async ({ page }) => {
+    await page.goto('/balicky')
+    await acceptCookies(page)
+
+    const linked = page.locator('[data-has-shopify-product="true"]').first()
+    await expect(linked).toBeVisible()
+
+    const price = linked.getByTestId('bundle-price')
+    await expect(price).toContainText('€')
+    await expect(price.locator('.line-through')).toBeVisible()
+  })
+
+  test('10. unlinked bundles show SKU fallback without cart CTA', async ({ page }) => {
+    await page.goto('/balicky')
+    await acceptCookies(page)
+
+    const unlinked = page.locator('[data-has-shopify-product="false"]').first()
+    await expect(unlinked).toBeVisible()
+    await expect(unlinked).toContainText('SKU:')
+    await expect(unlinked.getByTestId('bundle-add-to-cart')).toHaveCount(0)
+  })
+
+  test('11. legacy health bundle collection redirects to /balicky', async ({ request }) => {
+    const response = await request.get('/kolekcie/balicky-zdravia', { maxRedirects: 0 })
+
+    expect([301, 308]).toContain(response.status())
+    expect(response.headers().location).toContain('/balicky')
+  })
+
+  test('12. bundle add-to-cart updates cart badge', async ({ page }) => {
     await page.goto('/balicky')
     await acceptCookies(page)
     await page.getByTestId('bundle-add-to-cart').first().click()

@@ -9,11 +9,27 @@ test.describe('Dashboard route — smoke', () => {
     expect(response.status()).toBe(200)
   })
 
-  test('skips shop chrome (no site header or footer)', async ({ page }) => {
+  test('skips shop chrome and deferred overlays', async ({ page }) => {
     await page.goto('/dashboard')
+    await page.waitForTimeout(1_000)
+
     await expect(page.locator('#site-logo')).toHaveCount(0)
     await expect(page.locator('footer')).toHaveCount(0)
     await expect(page.locator('.usp-bar')).toHaveCount(0)
+    await expect(page.getByRole('dialog', { name: 'Súhlas s cookies' })).toHaveCount(0)
+    await expect(page.getByTestId('assistant-fab-trigger')).toHaveCount(0)
+  })
+
+  test('sends frame-src CSP for the dashboard iframe target', async ({ request }) => {
+    const response = await request.get('/dashboard')
+    expect(response.status()).toBe(200)
+
+    const csp = response.headers()['content-security-policy'] ?? ''
+    expect(csp).toContain("frame-src 'self'")
+
+    if (dashboardUrl) {
+      expect(csp).toContain(new URL(dashboardUrl).origin)
+    }
   })
 
   test('robots.txt disallows /dashboard', async ({ request }) => {
