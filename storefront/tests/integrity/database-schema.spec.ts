@@ -76,7 +76,7 @@ test.describe('Dashboard code & component integrity tests', () => {
     // Expect page to render fallback with a direct Nexus link
     expect(content).toContain('data-testid="dashboard-unconfigured"')
     expect(content).toContain('data-testid="dashboard-nexus-direct-link"')
-    expect(content).toContain('https://growmedica-nexus.vercel.app/admin/prihlasenie')
+    expect(content).toContain('https://growmedica-nexus.lovable.app/admin/prihlasenie')
   })
 
   test('DashboardFrame component renders iframe and handles load errors', () => {
